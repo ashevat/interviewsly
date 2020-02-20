@@ -1,0 +1,29 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "links" %}
+{% set title = "Links" %}
+{% block content %}
+    <h1>Links</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Links inside paragraphs are <a href="javascript:void(0)">underlined</a>. It ensures link visibility when users scan a text and also facilitates link identification for color-blind users.</p>
+
+    <p>If you need to underline a link that is not included in a paragraph, you can use the <code>&lt;u&gt;</code> tag.</p>
+
+    <a href="#" class="d-block mb-4"><u>This link is underlined.</u></a>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;a href="#"&gt;&lt;u&gt;This link is underlined.&lt;/u&gt;&lt;/a&gt;
+        </code>
+    </pre>
+
+    <h2>Featured link</h2>
+    <p>Highlight a link adding <code>.link-cta</code>.</p>
+    <a class="d-inline-block link-cta mb-3" href="javascript:void(0)">Featured link</a>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;a class="link-cta" href="#">Featured link&lt;/a&gt;
+        </code>
+    </pre>
+{% endblock %}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>{{ title }} - Boost Theme</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Goole fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700%7CMerriweather+Sans:300,400,700" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ '../' if folder }}assets/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ '../' if folder }}assets/css/theme.css">
+
+    {%- if folder === "docs" %}
+    <!-- Prism (only for docs) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism-coy.min.css">
+    {% endif %}
+
+    <!-- JS -->
+    <script src="{{ '../' if folder }}assets/js/jquery.slim.min.js" defer></script>
+    <script src="{{ '../' if folder }}assets/js/popper.min.js" defer></script>
+    <script src="{{ '../' if folder }}assets/js/bootstrap.min.js" defer></script>
+
+    {%- if folder === "docs" %}
+    <!-- Prism (only for docs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js" defer></script>
+    {% endif %}
+</head>
+
+<body>
+    <header class="site-header">
+        <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3" aria-label="Main navigation">
+                <a class="navbar-brand text-dark" href="{{ '../' if folder }}index.html">
+                    <img src="{{ '../' if folder }}assets/img/logo-boost.svg" alt="Boost Theme">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav align-items-lg-center text-uppercase pt-3 pt-lg-0 ml-auto">
+                        <li class="nav-item{{ ' active' if page == 'pages' }}">
+                            <a class="nav-link" href="{{ '../' if folder }}pages.html">Pages</a>
+                        </li>
+                        <li class="nav-item {{ 'active' if folder == 'docs' }}">
+                            <a class="nav-link" href="{{ '../' if folder }}docs/index.html">Documentation</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>

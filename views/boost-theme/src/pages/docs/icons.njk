@@ -1,0 +1,60 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "icons" %}
+{% set title = "Icons" %}
+{% block content %}
+    <h1>Icons</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Boost uses Font Awesome, the world’s most popular and easiest to use icon set.</p>
+
+    <p>To add an icon with a background color, add a container with the class <code>icon</code> and the <code>icon-{color}</code>. You can change the icon size adding <code>.icon-sm</code> or <code>.icon-lg</code>. Then include an icon inside with the class <code>.icon-inner</code>.</p>
+
+    <div class="py-3">
+        <span class="icon icon-lg icon-success mb-2 mr-2">
+            <i class="icon-inner fas fa-desktop"></i>
+        </span>
+        <span class="icon icon-warning mb-2 mr-2">
+            <i class="icon-inner fas fa-tablet-alt"></i>
+        </span>
+        <span class="icon icon-sm icon-primary mb-2 mr-2">
+            <i class="icon-inner fas fa-mobile-alt"></i>
+        </span>
+    </div>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;span class="icon icon-sm icon-primary"&gt;
+                &lt;i class="icon-inner fas fa-mobile-alt"&gt;&lt;/i&gt;
+            &lt;/span&gt;
+            &lt;span class="icon icon-warning"&gt;
+                &lt;i class="icon-inner fas fa-tablet-alt"&gt;&lt;/i&gt;
+            &lt;/span&gt;
+            &lt;span class="icon icon-lg icon-success"&gt;
+                &lt;i class="icon-inner fas fa-desktop"&gt;&lt;/i&gt;
+            &lt;/span&gt;
+        </code>
+    </pre>
+
+    <h2>Accessibility</h2>
+    <p>If your icons are purely decorative, you’ll need to add an <code>aria-hidden</code> attribute to each of your icons so they’re accessible.</p>
+
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;span class="icon icon-sm icon-primary"&gt;
+                &lt;i class="icon-inner fas fa-mobile-alt" aria-hidden="true"&gt;&lt;/i&gt;
+            &lt;/span&gt;
+        </code>
+    </pre>
+
+    <p>If your icons have semantic meaning, in addition to the <code>aria-hidden</code> attribute, you'll need to provide a text alternative. You can hide this text while keeping it accessible for assistive technologies using <code>.sr-only</code>.</p>
+
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;a class="icon icon-sm icon-secondary" href="#"&gt;
+                &lt;i class="icon-inner fab fa-twitter" aria-hidden="true"&gt;&lt;/i&gt;
+                &lt;span class="sr-only"&gt;Twitter&lt;/span&gt;
+            &lt;/a&gt;&gt;
+        </code>
+    </pre>
+
+    <p><a href="https://fontawesome.com/icons?d=gallery&m=free" target="_blank" rel="noopener">See all available icons</a>.</p>
+{% endblock %}

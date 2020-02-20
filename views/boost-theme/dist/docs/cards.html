@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Cards - Boost Theme</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Goole fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700%7CMerriweather+Sans:300,400,700" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/theme.css">
+    <!-- Prism (only for docs) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism-coy.min.css">
+    
+
+    <!-- JS -->
+    <script src="../assets/js/jquery.slim.min.js" defer></script>
+    <script src="../assets/js/popper.min.js" defer></script>
+    <script src="../assets/js/bootstrap.min.js" defer></script>
+    <!-- Prism (only for docs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js" defer></script>
+    
+</head>
+
+<body>
+    <header class="site-header">
+        <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3" aria-label="Main navigation">
+                <a class="navbar-brand text-dark" href="../index.html">
+                    <img src="../assets/img/logo-boost.svg" alt="Boost Theme">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav align-items-lg-center text-uppercase pt-3 pt-lg-0 ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../pages.html">Pages</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="../docs/index.html">Documentation</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <nav class="nav-docs navbar navbar-expand-lg navbar-ligh sticky-top mt-1 mb-3" aria-label="Docs navigation">
+                <a class="collapsed btn-block d-lg-none btn btn-outline-dark mb-3 p-3 text-center" href="#collapseOne" data-toggle="collapse" data-target="#navbarDocs" aria-expanded="false" aria-controls="navbarDocs" aria-label="Toggle navigation">Navigation</a>
+
+                <div class="collapse navbar-collapse" id="navbarDocs">
+
+                    <dl class="navbar-nav flex-column">
+                        <dt class="text-uppercase mb-2">Getting Started</dt>
+                        <dd>
+                            <a href="index.html" >Introduction</a>
+                        </dd>
+                        <dd>
+                            <a href="accessibility.html" >Accessibility</a>
+                        </dd>
+                        <dd>
+                            <a href="template.html" >Basic template</a>
+                        </dd>
+                        <dd>
+                            <a href="changelog.html" >Changelog</a>
+                        </dd>
+
+                        <dt class="text-uppercase mt-3 mb-2">Style</dt>
+                        <dd>
+                            <a href="colors.html" >Colors</a>
+                        </dd>
+                        <dd>
+                            <a href="typography.html" >Typography</a>
+                        </dd>
+
+                        <dt class="text-uppercase mt-3 mb-2">Components</dt>
+                        <dd>
+                            <a href="accordion.html" >Accordion</a>
+                        </dd>
+                        <dd>
+                            <a href="alerts.html" >Alerts</a>
+                        </dd>
+                        <dd>
+                            <a href="avatars.html" >Avatars</a>
+                        </dd>
+                        <dd>
+                            <a href="backgrounds.html" >Backgrounds</a>
+                        </dd>
+                        <dd>
+                            <a href="buttons.html" >Buttons</a>
+                        </dd>
+                        <dd>
+                            <a href="cards.html" class=active>Cards</a>
+                        </dd>
+                        <dd>
+                            <a href="devices.html" >Devices</a>
+                        </dd>
+                        <dd>
+                            <a href="forms.html" >Forms</a>
+                        </dd>
+                        <dd>
+                            <a href="icons.html" >Icons</a>
+                        </dd>
+                        <dd>
+                            <a href="links.html" >Links</a>
+                        </dd>
+                        <dd>
+                            <a href="navbar.html" >Navbar</a>
+                        </dd>
+                        <dd>
+                            <a href="pagination.html" >Pagination</a>
+                        </dd>
+                        <dd>
+                            <a href="tables.html" >Tables</a>
+                        </dd>
+                    </dl>
+                </div>
+            </nav>
+        </div>
+        <div class="col-lg-9">
+            <main id="main">
+                
+    <h1>Cards</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Bootstrap’s cards provide a flexible and extensible content container with multiple variants and options.</p>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card mb-4">
+                <img class="card-img-top" src="../assets/img/cactus.jpg" alt="A succulent in a white ceramic pot against a blue wall">
+                <div class="card-body">
+                    <h2 class="h4 card-title">Card default</h2>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary btn-sm rounded-pill">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-hover mb-4">
+                <img class="card-img-top" src="../assets/img/beach.jpg" alt="Sand beach shoreline underneath the blue sky">
+                <div class="card-body">
+                    <h2 class="h4 card-title">Card rising</h2>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary btn-sm rounded-pill">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Add <code>.card-hover</code> to animate a card on hover.</p>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;div class="card shadow"&gt;
+                &lt;img class="card-img-top" src="assets/img/cactus.jpg" alt="A succulent in a white ceramic pot against a blue wall"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;h2 class="h4 card-title"&gt;Card default&lt;/h2&gt;
+                    &lt;p class="card-text"&gt;Some quick example text to build on the card title and make up the bulk of the card's content.&lt;/p&gt;
+                    &lt;a href="#" class="btn btn-primary btn-sm rounded-pill"&gt;Go somewhere&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="card card-hover"&gt;
+                &lt;img class="card-img-top" src="assets/img/beach.jpg" alt="Sand beach shoreline underneath the blue sky"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;h2 class="h4 card-title"&gt;Card rising&lt;/h2&gt;
+                    &lt;p class="card-text"&gt;Some quick example text to build on the card title and make up the bulk of the card's content.&lt;/p&gt;
+                    &lt;a href="#" class="btn btn-primary btn-sm rounded-pill"&gt;Go somewhere&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+
+    <h2 class="my-4">Pricing cards</h2>
+    <p>Show prices and options available using pricing cards.</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-price shadow-lg mb-4">
+                <div class="card-header">
+                    <h3 class="h4 font-weight-normal">Basic</h3>
+                    <div class="d-flex justify-content-center">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">0</span>
+                    </div>
+                    <span class="text-muted">forever</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled text-secondary mb-4">
+                        <li class="py-2 ">5 downloads / month</li>
+                        <li class="py-2">Email support</li>
+                        <li class="py-2">No credit card required</li>
+                        <li class="py-2">Easy cancellation</li>
+                    </ul>
+                    <a class="btn btn-outline-primary rounded-pill mb-3" href="#">Get started</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-price card-featured shadow-lg mb-4">
+                <div class="card-header">
+                    <h3 class="h4 font-weight-normal">Unlimited</h3>
+                    <div class="d-flex justify-content-center">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">5</span>
+                    </div>
+                    <span class="text-muted">per month</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled text-secondary mb-4">
+                        <li class="py-2">Unlimited downloads</li>
+                        <li class="py-2">Online support</li>
+                        <li class="py-2">Easy payment</li>
+                        <li class="py-2">Easy cancellation</li>
+                    </ul>
+                    <a class="btn btn-primary rounded-pill mb-3" href="#">Get started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Add <code>.card-featured</code> to highlight a card price.</p>
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;div class="card card-price shadow-lg mb-4"&gt;
+                &lt;div class="card-header"&gt;
+                    &lt;h3 class="h4 font-weight-normal"&gt;Basic&lt;/h3&gt;
+                    &lt;div class="d-flex justify-content-center"&gt;
+                        &lt;span class="h4 font-weight-normal mt-1"&gt;$&lt;/span&gt;
+                        &lt;span class="display-4 font-weight-bold"&gt;0&lt;/span&gt;
+                    &lt;/div&gt;
+                    &lt;span class="text-muted"&gt;forever&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;ul class="list-unstyled text-secondary mb-4"&gt;
+                    &lt;li class="py-2"&gt;5 downloads / month&lt;/li&gt;
+                    &lt;li class="py-2"&gt;Email support&lt;/li&gt;
+                    &lt;li class="py-2"&gt;No credit card required&lt;/li&gt;
+                    &lt;li class="py-2"&gt;Easy cancellation&lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;a class="btn btn-outline-primary rounded-pill mb-3" href="#"&gt;Get started&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="card card-price card-featured shadow mb-4"&gt;
+                &lt;div class="card-header"&gt;
+                    &lt;h3 class="h4 font-weight-normal"&gt;Unlimited&lt;/h3&gt;
+                    &lt;div class="d-flex justify-content-center"&gt;
+                        &lt;span class="h4 font-weight-normal mt-1"&gt;$&lt;/span&gt;&lt;span class="display-4 font-weight-bold"&gt;5&lt;/span&gt;
+                    &lt;/div&gt;
+                    &lt;span class="text-muted"&gt;per month&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;ul class="list-unstyled text-secondary mb-4"&gt;
+                        &lt;li class="py-2"&gt;Unlimited downloads&lt;/li&gt;
+                        &lt;li class="py-2"&gt;Online support&lt;/li&gt;
+                        &lt;li class="py-2"&gt;Easy payment&lt;/li&gt;
+                        &lt;li class="py-2"&gt;Easy cancellation&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;a class="btn btn-primary rounded-pill mb-3" href="#"&gt;Get started&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/components/card/" target="_blank" rel="noopener">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+</main>
+        </div>
+    </div>
+</div>
+</body>
+</html>

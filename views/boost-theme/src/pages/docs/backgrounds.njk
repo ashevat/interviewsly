@@ -1,0 +1,59 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "backgrounds" %}
+{% set title = "Backgrounds" %}
+{% block content %}
+    <h1>Backgrounds</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Add background images or a skewed background in different colors.</p>
+
+    <h2>Image background</h2>
+    <div class="bg-cover d-flex align-items-center position-relative mb-4" style="background-image: url(../assets/img/holding-mobile.jpg);">
+        <div class="bg-overlay bg-dark alpha-7"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 py-4">
+                    <p class="h1 display-4 text-white py-4 px-4">Elegant theme built with Bootstrap</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Add <code>.bg-cover</code> to include a responsive background image. Add a <code>div</code> inside with <code>.bg-overlay</code> and <code>.bg-{color}</code> to get a color overlay. Then you can change the opacity with <code>.alpha-#</code>.</p>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;div class="bg-cover d-flex align-items-center position-relative" style="background-image:
+            url(assets/img/image.jpg)"&gt;
+                &lt;div class="bg-overlay bg-dark alpha-7"&gt;&lt;/div&gt;
+                &lt;div class="container"&gt;
+                    &lt;div class="row"&gt;
+                        &lt;div class="col-md-6 py-4"&gt;
+                            &lt;h1 class="display-4 text-white py-4 px-4"&gt;Elegant theme built with Bootstrap&lt;/h1&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+
+    <h2>Skew background</h2>
+    <div class="bg-skew bg-skew-light">
+        <p>Add a <code>div</code> with the <code>.bg-skew</code> class to include a skew background in a page.</p>
+        <pre class="mb-5">
+            <code class="lang-html py-3">
+                &lt;div class="bg-skew bg-skew-light"&gt;
+                ..
+                &lt;/div&gt;
+            </code>
+        </pre>
+    </div>
+    <div class="bg-skew bg-skew-primary text-white">
+        <p>And set the background color using the color utilities.</p>
+        <pre class="mb-5">
+            <code class="lang-html py-3">
+                &lt;div class="bg-skew bg-skew-primary text-white"&gt;
+                ..
+                &lt;/div&gt;
+            </code>
+        </pre>
+    </div>
+{% endblock %}

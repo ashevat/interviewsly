@@ -1,0 +1,85 @@
+{% include "includes/header.njk" -%}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <nav class="nav-docs navbar navbar-expand-lg navbar-ligh sticky-top mt-1 mb-3" aria-label="Docs navigation">
+                <a class="collapsed btn-block d-lg-none btn btn-outline-dark mb-3 p-3 text-center" href="#collapseOne" data-toggle="collapse" data-target="#navbarDocs" aria-expanded="false" aria-controls="navbarDocs" aria-label="Toggle navigation">Navigation</a>
+
+                <div class="collapse navbar-collapse" id="navbarDocs">
+
+                    <dl class="navbar-nav flex-column">
+                        <dt class="text-uppercase mb-2">Getting Started</dt>
+                        <dd>
+                            <a href="index.html" {{ 'class=active' if page == 'introduction' }}>Introduction</a>
+                        </dd>
+                        <dd>
+                            <a href="accessibility.html" {{ 'class=active' if page == 'accessibility' }}>Accessibility</a>
+                        </dd>
+                        <dd>
+                            <a href="template.html" {{ 'class=active' if page == 'template' }}>Basic template</a>
+                        </dd>
+                        <dd>
+                            <a href="changelog.html" {{ 'class=active' if page == 'changelog' }}>Changelog</a>
+                        </dd>
+
+                        <dt class="text-uppercase mt-3 mb-2">Style</dt>
+                        <dd>
+                            <a href="colors.html" {{ 'class=active' if page == 'colors' }}>Colors</a>
+                        </dd>
+                        <dd>
+                            <a href="typography.html" {{ 'class=active' if page == 'typography' }}>Typography</a>
+                        </dd>
+
+                        <dt class="text-uppercase mt-3 mb-2">Components</dt>
+                        <dd>
+                            <a href="accordion.html" {{ 'class=active' if page == 'accordion' }}>Accordion</a>
+                        </dd>
+                        <dd>
+                            <a href="alerts.html" {{ 'class=active' if page == 'alerts' }}>Alerts</a>
+                        </dd>
+                        <dd>
+                            <a href="avatars.html" {{ 'class=active' if page == 'avatars' }}>Avatars</a>
+                        </dd>
+                        <dd>
+                            <a href="backgrounds.html" {{ 'class=active' if page == 'backgrounds' }}>Backgrounds</a>
+                        </dd>
+                        <dd>
+                            <a href="buttons.html" {{ 'class=active' if page == 'buttons' }}>Buttons</a>
+                        </dd>
+                        <dd>
+                            <a href="cards.html" {{ 'class=active' if page == 'cards' }}>Cards</a>
+                        </dd>
+                        <dd>
+                            <a href="devices.html" {{ 'class=active' if page == 'devices' }}>Devices</a>
+                        </dd>
+                        <dd>
+                            <a href="forms.html" {{ 'class=active' if page == 'forms' }}>Forms</a>
+                        </dd>
+                        <dd>
+                            <a href="icons.html" {{ 'class=active' if page == 'icons' }}>Icons</a>
+                        </dd>
+                        <dd>
+                            <a href="links.html" {{ 'class=active' if page == 'links' }}>Links</a>
+                        </dd>
+                        <dd>
+                            <a href="navbar.html" {{ 'class=active' if page == 'navbar' }}>Navbar</a>
+                        </dd>
+                        <dd>
+                            <a href="pagination.html" {{ 'class=active' if page == 'pagination' }}>Pagination</a>
+                        </dd>
+                        <dd>
+                            <a href="tables.html" {{ 'class=active' if page == 'tables' }}>Tables</a>
+                        </dd>
+                    </dl>
+                </div>
+            </nav>
+        </div>
+        <div class="col-lg-9">
+            <main id="main">
+                {% block content %} {% endblock -%}
+            </main>
+        </div>
+    </div>
+</div>
+</body>
+</html>

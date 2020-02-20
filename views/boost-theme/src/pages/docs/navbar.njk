@@ -1,0 +1,71 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "navbar" %}
+{% set title = "Navbar" %}
+{% block content %}
+    <h1>Navbar</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Create a navigation bar with a dropdown menu.</p>
+
+    <nav class="navbar navbar-expand-md navbar-light bg-light p-3 mb-4">
+        <a href="#" class="navbar-brand text-uppercase text-dark">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle main navigation">
+            <i class="fas fa-bars fa-lg"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+            <ul class="navbar-nav text-uppercase ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Item</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Item</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown<i class="fas fa-chevron-down ml-1"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Item 1</a>
+                        <a class="dropdown-item" href="#">Item 2</a>
+                        <a class="dropdown-item" href="#">Item 3</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;nav class="navbar navbar-expand-md navbar-light"&gt;
+                &lt;a href="#" class="navbar-brand text-uppercase text-dark"&gt;Navbar&lt;/a&gt;
+                &lt;button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle main navigation"&gt;
+                    &lt;i class="fas fa-bars fa-lg"&gt;&lt;/i&gt;
+                &lt;/button&gt;
+                &lt;div class="collapse navbar-collapse" id="navbarToggle"&gt;
+                    &lt;ul class="navbar-nav text-uppercase ml-auto"&gt;
+                        &lt;li class="nav-item"&gt;
+                            &lt;a class="nav-link" href="#"&gt;Item&lt;/a&gt;
+                        &lt;/li&gt;
+                        &lt;li class="nav-item"&gt;
+                            &lt;a class="nav-link" href="#"&gt;Item&lt;/a&gt;
+                        &lt;/li&gt;
+                        &lt;li class="nav-item dropdown"&gt;
+                            &lt;a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;
+                                Dropdown&lt;i class="fas fa-chevron-down ml-1&gt;&lt;i&gt;
+                            &lt;/a&gt;
+                            &lt;div class="dropdown-menu" aria-labelledby="navbarDropdown"&gt;
+                                &lt;a class="dropdown-item" href="#"&gt;Item 1&lt;/a&gt;
+                                &lt;a class="dropdown-item" href="#"&gt;Item 2&lt;/a&gt;
+                                &lt;a class="dropdown-item" href="#"&gt;Item 3&lt;/a&gt;
+                            &lt;/div&gt;
+                        &lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+            &lt;/nav&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/components/navbar/" target="_blank" rel="noopener">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

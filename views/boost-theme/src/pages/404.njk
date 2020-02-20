@@ -1,0 +1,17 @@
+{% extends "layouts/default.njk" %}
+{% set title = "Page not found" %}
+{% block content %}
+    <main id="main">
+        <div class="d-flex flex-column justify-content-center bg-skew bg-skew-light min-vh-70 overflow-hidden">
+            <div class="container">
+                <div class="row justify-content-lg-center text-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-4 mb-5">Page not found</h1>
+                        <p class="lead mb-5">The page you are looking for does not exist. Please go to the home page by clicking the button below.</p>
+                        <a href="index.html" class="btn btn-primary rounded-pill">Go to home page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

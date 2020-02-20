@@ -1,0 +1,114 @@
+{% extends "layouts/default.njk" %}
+{% set title = "Pricing Table" %}
+{% block content %}
+    <main id="main">
+
+        <!-- Hero -->
+        <div class="container">
+            <div class="row justify-content-center py-4 py-md-5 py-xl-6">
+                <div class="col-lg-10 col-xl-8 text-center mb-xl-4">
+                    <h1 class="display-4 mb-4">Pricing Table</h1>
+                    <p class="lead">We offer competitive rates and pricing plans to help you find one that fits your needs and budget.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="bg-skew bg-skew-light py-4">
+
+            <div class="container">
+                <h2 class="text-center mb-5">Pick a plan that works for you</h2>
+
+                <!-- Pricing table -->
+                <table class="table bg-white shadow pricing-table table-responsive-md mb-5">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">
+                                <span class="d-block h4 mb-1">Basic</span>
+                                <div class="d-flex">
+                                    <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-normal">0</span>
+                                </div>
+                                <small class="d-block text-muted">forever</small>
+                                <a class="btn btn-sm btn-outline-primary rounded-pill mt-4" href="#">Get started</a>
+                            </th>
+                            <th scope="col">
+                                <span class="d-block h4 mb-1">Standard</span>
+                                <div class="d-flex">
+                                    <span class="h4 mt-1">$</span><span class="display-4 font-weight-normal">5</span>
+                                </div>
+                                <small class="d-block text-muted">per month</small>
+                                <a class="btn btn-sm btn-primary rounded-pill mt-4" href="#">Get started</a>
+                            </th>
+                            <th scope="col">
+                                <span class="d-block h4 mb-1">Unlimited</span>
+                                <div class="d-flex">
+                                    <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-normal">10</span>
+                                </div>
+                                <small class="d-block text-muted">per month</small>
+                                <a class="btn btn-sm btn-outline-primary rounded-pill mt-4" href="#">Get started</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Downloads<br><small class="text-secondary">per month</small></th>
+                            <td>5</td>
+                            <td>15</td>
+                            <td>Unlimited</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Email support<br><small class="text-secondary">24/7 support</small></th>
+                            <td>
+                                <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                                <span class="sr-only">Yes</span>
+                            </td>
+                            <td>
+                                <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                                <span class="sr-only">Yes</span>
+                            </td>
+                            <td>
+                                <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                                <span class="sr-only">Yes</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">White Labeling<br><small class="text-secondary">use your branding</small></th>
+                            <td>-</td>
+                            <td>
+                                <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                                <span class="sr-only">Yes</span>
+                            </td>
+                            <td>
+                                <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                                <span class="sr-only">Yes</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 class="py-5 text-center">Questions you might have</h2>
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-5 px-lg-4">
+                        <h3 class="h6">Are there discounts for yearly plans?</h3>
+                        <p class="text-secondary">Ut sit amet neque sed mauris elementum pellentesque. In viverra sed justo a eleifend. Vestibulum a finibus nunc, ut malesuada nisl.</p>
+                        <h3 class="h6">How long are your contracts?</h3>
+                        <p class="text-secondary">Sed tincidunt euismod augue sit amet finibus. Phasellus ullamcorper ante quis eros sagittis, vel efficitur risus porta.</p>
+                    </div>
+                    <div class="col-lg-5 px-lg-4">
+                        <h3 class="h6">Can I change my plan later on?</h3>
+                        <p class="text-secondary">Quisque suscipit, enim ut porta vulputate, lacus sem venenatis mauris, id convallis dui mauris et urna.</p>
+
+                        <h3 class="h6">Can I cancel my account at any time?</h3>
+                        <p class="text-secondary">Sed vestibulum eu urna a condimentum. Nullam molestie efficitur ex, eu tincidunt dui eleifend quis.</p>
+                    </div>
+                </div>
+
+
+                <p class="text-center pb-5">Still have questions? <a href="contact.html">Get in touch</a></p>
+            </div>
+
+        </div><!-- end bg-skew -->
+
+    </main>
+{% endblock %}

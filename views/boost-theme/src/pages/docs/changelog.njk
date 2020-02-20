@@ -1,0 +1,100 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "changelog" %}
+{% set title = "Changelog" %}
+{% block content %}
+    <h1>Changelog</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+
+    <h2 class="h3 mt-4"><span class="badge badge-light p-2">1.4.0</span> - <span class="h5 font-weight-normal">February 03, 2020</span></h2>
+    <span class="badge badge-light mb-2 p-2">Updated</span>
+    <ul>
+        <li>Bootstrap to v4.4.1</li>
+        <li>Popper.js to v1.16.0</li>
+        <li>Font Awesome to v5.12.0</li>
+        <li>Dev dependencies, including <code>package.json</code> and <code>gulpfile.js</code></li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Added</span>
+    <ul>
+        <li>Page <code>title</code> variable to <code>njk</code> templates</li>
+        <li>PurgeCSS tool to remove unused CSS</li>
+        <li><code>_user-vars.scss</code> and <code>_user.scss</code> files</li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Changed</span>
+    <ul>
+        <li>Extended and revised documentation</li>
+        <li>Revised headings hierarchy in all templates</li>
+        <li>Increased theme colors contrast ratio</li>
+        <li>Minor CSS changes</li>
+        <li>Moved scripts files to <code>&lt;head&gt;</code>, adding <code>defer</code> attribute</li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Deleted</span>
+    <ul>
+        <li><code>.btn-pill</code> and replaced by Bootstrap <code>.rounded-pill</code></li>
+    </ul>
+
+    <h2 class="h3"><span class="badge badge-light p-2">1.3.2</span> - <span class="h5 font-weight-normal">May 18, 2019</span></h2>
+    <span class="badge badge-light mb-2 p-2">Updated</span>
+    <ul>
+        <li>jQuery to v3.4.1</li>
+        <li>Popper.js to v1.15.0</li>
+        <li>Font Awesome to v5.8.2</li>
+    </ul>
+
+    <h2 class="h3"><span class="badge badge-light p-2">1.3.1</span> - <span class="h5 font-weight-normal">April 27, 2019</span></h2>
+    <span class="badge badge-light mb-2 p-2">Added</span>
+    <ul>
+        <li><code>min-height</code> to cards to fix image height on IE11: <code>_card.scss</code></li>
+    </ul>
+
+    <h2 class="h3"><span class="badge badge-light p-2">1.3.0</span> - <span class="h5 font-weight-normal">April 04, 2019</span></h2>
+    <span class="badge badge-light mb-2 p-2">Added</span>
+    <ul>
+        <li>New demo pages</li>
+        <li>Styles
+            <ul>
+                <li>Font family class (serif/sans-serif): <code>_text.scss</code></li>
+                <li>Class for minimum height size: <code>_sizing.scss</code></li>
+                <li>Spacing value: <code> _variables.scss</code></li>
+                <li>Style for centered blockquote: <code>_type.scss</code></li>
+                <li>Hover effect to linked thumbnails: <code>_images.scss</code></li>
+            </ul>
+        </li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Updated</span>
+    <ul>
+        <li>Bootstrap to v4.3.1</li>
+        <li>Font Awesome to v5.8.1</li>
+        <li>Gulp to v4.0.0</li>
+    </ul>
+
+    <h2 class="h3"><span class="badge badge-light p-2">1.2.0</span> - <span class="h5 font-weight-normal">February 04, 2019</span></h2>
+    <span class="badge badge-light mb-2 p-2">Updated</span>
+    <ul>
+        <li>Bootstrap to v4.2.1</li>
+        <li>Popper.js to v1.14.7</li>
+        <li>Font Awesome to v5.7.0</li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Changed</span>
+    <ul>
+        <li>Minor CSS changes</li>
+    </ul>
+
+    <h2 class="h3"><span class="badge badge-light p-2">1.1.0</span> - <span class="h5 font-weight-normal">October 24, 2018</span></h2>
+    <span class="badge badge-light mb-2 p-2">Added</span>
+    <ul>
+        <li>New demo pages</li>
+        <li>Pagination styles: <code>_pagination.scss</code></li>
+        <li>Table styles: <code>_tables.scss</code></li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Updated</span>
+    <ul>
+        <li>Font Awesome to v5.4.1</li>
+    </ul>
+    <span class="badge badge-light mb-2 p-2">Changed</span>
+    <ul>
+        <li>Transition properties: <code>_cards.scss, _links.scss</code> </li>
+    </ul>
+
+    <h2 class="h3"><span class="badge badge-light p-2">1.0.0</span> - <span class="h5 font-weight-normal">Initial release</span></h2>
+{% endblock %}
