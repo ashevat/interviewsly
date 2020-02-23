@@ -1,6 +1,6 @@
 module.exports = {
 
-  getAddQuestionResponse: async function (req, pool) {
+  getAddQuestionResponse: async function (req, res, pool) {
     let response_view1 = {
       "trigger_id": `${req.body.trigger_id}`,
       "view": {
@@ -8,7 +8,7 @@ module.exports = {
         "callback_id": "modal-identifier",
         "title": {
           "type": "plain_text",
-          "text": "Just a modal"
+          "text": "Add a question"
         },
         "submit": {
           "type": "plain_text",
@@ -173,7 +173,140 @@ module.exports = {
     return response_view1;
   },
 
-  getQuestionResponse: async function (req, pool) {
+
+  getInterviewResponse: async function (req, res, pool) {
+    let response_view1 = {
+      "trigger_id": `${req.body.trigger_id}`,
+      "view": {
+        "type": "modal",
+        "callback_id": "create-interview",
+        "title": {
+          "type": "plain_text",
+          "text": "Setup an interview"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Create an interview",
+          "emoji": true
+        },
+        "blocks":
+          [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Please fill  the data bellow - once done we will create a channel and continue the interview planning process there.\n\n"
+              }
+            },
+            {
+              "type": "input",
+              "block_id": "candidate_name",
+              "element": {
+                "type": "plain_text_input",
+                "action_id": "candidate_name_value",
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Candidate name:",
+                "emoji": true
+              }
+            },
+            {
+              "type": "input",
+              "block_id": "linkedin_url",
+              "element": {
+                "type": "plain_text_input",
+                "action_id": "linkedin_url",
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Candidate LinkedIn",
+                "emoji": true
+              }
+            },
+            {
+              "type": "input",
+              "block_id": "question_roles",
+              "element": {
+                "type": "static_select",
+                "action_id": "question_roles_value",
+                "placeholder": {
+                  "type": "plain_text",
+                  "text": "Select options",
+                  "emoji": true
+                },
+                "options": [
+                  // to be filled 
+
+                ]
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "This quetion applies to the following roles",
+                "emoji": true
+              }
+            },
+
+            {
+              "type": "input",
+              "block_id": "question_role_levels",
+              "element": {
+                "type": "static_select",
+                "action_id": "question_role_levels_value",
+                "placeholder": {
+                  "type": "plain_text",
+                  "text": "Select options",
+                  "emoji": true
+                },
+                "options": [
+                  // to be filled 
+
+                ]
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Level or seniority",
+                "emoji": true
+              }
+            },
+
+            {
+              "type": "input",
+              "optional": true,
+              "block_id": "notes",
+              "element": {
+                "type": "plain_text_input",
+                "action_id": "notes",
+                "multiline": true
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Addtional notes",
+                "emoji": true
+              }
+            }
+          ]
+      }
+    };
+
+    try {
+      const client = await pool.connect()
+      let result = await client.query('SELECT * FROM roles');
+      populateDropdown(response_view1.view.blocks[3].element.options, result.rows);
+
+      let result2 = await client.query('SELECT * FROM levels');
+      populateDropdown(response_view1.view.blocks[4].element.options, result2.rows);
+
+      client.release();
+    } catch (err) {
+      console.error(err);
+      res.send("Error " + err);
+    }
+
+    return response_view1;
+  },
+
+  getQuestionResponse: async function (req, res, pool, context) {
 
     let response_message = {
       "response_type": "in_channel",
@@ -192,8 +325,10 @@ module.exports = {
 
         {
           "type": "actions",
+          "block_id":`${this.encodeBlockID(context)}`,
           "elements": [
-              {
+            {
+              "action_id":"filter_by_role",
               "type": "static_select",
               "placeholder": {
                 "type": "plain_text",
@@ -201,10 +336,11 @@ module.exports = {
                 "emoji": true
               },
               "options": [
-                
+
               ]
             },
             {
+              "action_id":"filter_by_level",
               "type": "static_select",
               "placeholder": {
                 "type": "plain_text",
@@ -212,10 +348,11 @@ module.exports = {
                 "emoji": true
               },
               "options": [
-                
-              ]
+
+              ],
             },
             {
+              "action_id":"filter_by_type",
               "type": "static_select",
               "placeholder": {
                 "type": "plain_text",
@@ -223,21 +360,10 @@ module.exports = {
                 "emoji": true
               },
               "options": [
-                
-              ]
-            },
-            {
-              "type": "static_select",
-              "placeholder": {
-                "type": "plain_text",
-                "text": "Question tag",
-                "emoji": true
-              },
-              "options": [
-                
+
               ]
             }
-         ]
+          ]
         },
         {
           "type": "divider"
@@ -246,71 +372,11 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "*Propose a new time:*"
+            "text": "*Questions founds:*"
           }
         },
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "*Today - 4:30-5pm*\nEveryone is available: @iris, @zelda"
-          },
-          "accessory": {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "emoji": true,
-              "text": "Choose"
-            },
-            "value": "click_me_123"
-          }
-        },
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "*Tomorrow - 4-4:30pm*\nEveryone is available: @iris, @zelda"
-          },
-          "accessory": {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "emoji": true,
-              "text": "Choose"
-            },
-            "value": "click_me_123"
-          }
-        },
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "*Tomorrow - 6-6:30pm*\nSome people aren't available: @iris, ~@zelda~"
-          },
-          "accessory": {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "emoji": true,
-              "text": "Choose"
-            },
-            "value": "click_me_123"
-          }
-        },
-        {
-          "type": "actions",
-          "elements": [
-            {
-              "type": "button",
-              "text": {
-                "type": "plain_text",
-                "emoji": true,
-                "text": "Next Results"
-              },
-              "value": "click_me_123"
-            }
-          ]
-        }
+        
+        
       ]
     };
 
@@ -318,22 +384,92 @@ module.exports = {
     try {
       const client = await pool.connect()
       let result = await client.query('SELECT * FROM roles');
-      populateDropdown(response_message.blocks[2].elements[0].options, result.rows);
+      let selected = populateDropdown(response_message.blocks[2].elements[0].options, result.rows , context.role);
+      if(selected){
+        response_message.blocks[2].elements[0].initial_option = selected;
+      }
 
       let result2 = await client.query('SELECT * FROM levels');
-      populateDropdown(response_message.blocks[2].elements[1].options, result2.rows);
-
+      selected = populateDropdown(response_message.blocks[2].elements[1].options, result2.rows, context.level);
+      if(selected){
+        response_message.blocks[2].elements[1].initial_option = selected;
+      }
 
       const result3 = await client.query('SELECT * FROM question_type');
-      populateDropdown(response_message.blocks[2].elements[2].options, result3.rows);
+      selected = populateDropdown(response_message.blocks[2].elements[2].options, result3.rows, context.type);
+      if(selected){
+        response_message.blocks[2].elements[2].initial_option = selected;
+      }
+      //const result4 = await client.query('SELECT * FROM tags');
+      //populateDropdown(response_message.blocks[2].elements[3].options, result4.rows);
 
-      const result4 = await client.query('SELECT * FROM tags');
-      populateDropdown(response_message.blocks[2].elements[3].options, result4.rows);
+      // pupulate questions
+      let offset = context.result_index;
+      let limit = 3;
+      let innerJoinStatment = "";
+      let where = "";
+      if(context.role >0){
+        innerJoinStatment  = " INNER JOIN question_roles ON questions.id = question_roles.question_id " ;
+        where = ` WHERE question_roles.role_id='${context.role}' `;
+        if(context.level>0){
+          innerJoinStatment += " INNER JOIN question_levels ON questions.id = question_levels.question_id " ;
+          where += ` AND question_levels.level_id='${context.level}' `;
+        }
+      }else if(context.level>0){
+        innerJoinStatment = " INNER JOIN question_levels ON questions.id = question_levels.question_id " ;
+        where = `WHERE question_levels.level_id='${context.level}' `;
+      }
+      
+      console.log("Statment =" + `SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
+      const questions = await client.query(`SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
+      populateQuestions(response_message.blocks, questions.rows);
+
+      const nextQuestions = await client.query(`SELECT questions.id FROM questions ${innerJoinStatment} ${where} OFFSET ${offset + limit} LIMIT 1`);
+      if(offset>0){
+        response_message.blocks.push({
+          "type": "actions",
+          "block_id":`${this.encodeBlockID(context)}`,
+          "elements": [
+            {
+              "type": "button",
+              "action_id":"get_prev_questions",
+              "text": {
+                "type": "plain_text",
+                "emoji": true,
+                "text": "Prev Results"
+              },
+              "value": "get_prev_questions"
+            }
+          ]
+        }
+        );
+      }
+      if(nextQuestions.rows.length >0){
+        response_message.blocks.push({
+          "type": "actions",
+          "block_id":`${this.encodeBlockID(context)}`,
+          "elements": [
+            {
+              "type": "button",
+              "action_id":"get_next_questions",
+              "text": {
+                "type": "plain_text",
+                "emoji": true,
+                "text": "Next Results"
+              },
+              "value": "get_next_questions"
+            }
+          ]
+        }
+        );
+      }
+      
+
 
       client.release();
     } catch (err) {
       console.error(err);
-      res.send("Error " + err);
+      //res.send("Error " + err);
     }
 
 
@@ -341,29 +477,66 @@ module.exports = {
   },
 
   encodeBlockID: function (context) {
-    let seed  = Math.floor((Math.random() * 10000) + 1);
+    let seed = Math.floor((Math.random() * 10000) + 1);
     let str = Object.keys(context).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(context[k])}`).join('&');
-  
+
     return `${seed}|${str}`;
   },
 
-  decodeBlockID: function(block_id){
-    //string contextStr = block_id.split
-  } 
+  decodeBlockID: function (block_id) {
+    var query = {};
+    block_id = block_id.split("|")[1];
+    var pairs = (block_id[0] === '?' ? block_id.substr(1) : block_id).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+    return query;
+  }
 }
 
-
-function populateDropdown(dropdown, list) {
-
+// returns selected item if avilable 
+function populateDropdown(dropdown, list , selected_value) {
+  let selected_result = null;
   for (let index = 0; index < list.length; index++) {
     const resultset = list[index];
-    dropdown.push({
+    item = {
       "text": {
         "type": "plain_text",
         "text": `${resultset.name}`,
         "emoji": true
       },
       "value": `${resultset.id}`
+    }
+    dropdown.push(item);
+    if(resultset.id == selected_value){
+      selected_result =  item;
+    }
+  }
+  return selected_result;
+
+}
+
+
+function populateQuestions(blockList, list) {
+
+  for (let index = 0; index < list.length; index++) {
+    const resultset = list[index];
+    blockList.push({
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": `:memo: ${resultset.question}`
+      },
+      "accessory": {
+        "type": "button",
+        "text": {
+          "type": "plain_text",
+          "emoji": true,
+          "text": "Pick"
+        },
+        "value": "click_me_123"
+      }
     });
   }
 
