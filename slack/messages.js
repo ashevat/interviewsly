@@ -56,7 +56,7 @@ module.exports = {
               },
               "label": {
                 "type": "plain_text",
-                "text": "This quetion applies to the following roles",
+                "text": "This question applies to the following roles",
                 "emoji": true
               }
             },
@@ -216,7 +216,7 @@ module.exports = {
               "block_id": "linkedin_url",
               "element": {
                 "type": "plain_text_input",
-                "action_id": "linkedin_url",
+                "action_id": "linkedin_url_value",
               },
               "label": {
                 "type": "plain_text",
@@ -226,10 +226,10 @@ module.exports = {
             },
             {
               "type": "input",
-              "block_id": "question_roles",
+              "block_id": "role",
               "element": {
                 "type": "static_select",
-                "action_id": "question_roles_value",
+                "action_id": "role_value",
                 "placeholder": {
                   "type": "plain_text",
                   "text": "Select options",
@@ -242,17 +242,17 @@ module.exports = {
               },
               "label": {
                 "type": "plain_text",
-                "text": "This quetion applies to the following roles",
+                "text": "Candidate role",
                 "emoji": true
               }
             },
 
             {
               "type": "input",
-              "block_id": "question_role_levels",
+              "block_id": "role_level",
               "element": {
                 "type": "static_select",
-                "action_id": "question_role_levels_value",
+                "action_id": "role_level_value",
                 "placeholder": {
                   "type": "plain_text",
                   "text": "Select options",
@@ -276,7 +276,7 @@ module.exports = {
               "block_id": "notes",
               "element": {
                 "type": "plain_text_input",
-                "action_id": "notes",
+                "action_id": "notes_value",
                 "multiline": true
               },
               "label": {
@@ -304,6 +304,124 @@ module.exports = {
     }
 
     return response_view1;
+  },
+
+  getInterviewDashboardResponse: async function (interview, pool, context) {
+    //console.log("datboard for interview" + JSON.stringify(interview));
+
+    let roleName = await interview.getCachedRoleName(pool);
+    let roleLevelName = await interview.getCachedRoleLevelName(pool);
+    let ownerName = await interview.getCachedOwnerName(pool);
+
+    let response_message = [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `:couple: @${ownerName} started an interview process:`
+        }
+      },
+      {
+        "type": "section",
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": `*Candidate Name:*\n${interview.candidate_name}`
+          },
+          {
+            "type": "mrkdwn",
+            "text": `*LinkedIn URL:*\n${interview.linkedin}`
+          },
+          {
+            "type": "mrkdwn",
+            "text": `*Role:*\n${roleName}`
+          },
+          {
+            "type": "mrkdwn",
+            "text": `*Seniority:*\n${roleLevelName}`
+          }
+        ]
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `*Notes:*\n ${ interview.notes}`
+        }
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Pannelists:"
+        }
+      },
+      {
+        "type": "actions",
+        "block_id":`${this.encodeBlockID(context)}`,
+        "elements": [
+          {
+            "type": "users_select",
+            "action_id":"select_pannelist",
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Select a user",
+              "emoji": true
+            }
+          },
+          {
+            "type": "static_select",
+            "action_id":"select_attribute",
+            "placeholder": {
+              "type": "plain_text",
+              "text": "Interview Attribute",
+              "emoji": true
+            },
+            "options": [
+              
+            ]
+          },
+          {
+            "type": "button",
+            "action_id":"add_pannelist",
+            "text": {
+              "type": "plain_text",
+              "emoji": true,
+              "text": "Add Pannelist"
+            },
+            "style": "primary",
+            "value": "click_me_123"
+          }
+        ]
+      }
+    ];
+
+    try {
+    const client = await pool.connect()
+    const result3 = await client.query('SELECT * FROM question_type');
+      selected = populateDropdown(response_message[5].elements[1].options, result3.rows, context.type);
+      if(selected){
+        response_message[5].elements[1].initial_option = selected;
+      }
+
+      if(context.pannelist_id){
+        response_message[5].elements[0].initial_user = context.pannelist_id;
+      }
+
+      let pannelists = await interview.getPannelists(pool); 
+      populatePannelists(response_message, pannelists, context);
+
+      client.release();
+    } catch (err) {
+      console.error(err);
+      //res.send("Error " + err);
+    }
+
+    return response_message;
+
   },
 
   getQuestionResponse: async function (req, res, pool, context) {
@@ -542,3 +660,39 @@ function populateQuestions(blockList, list) {
 
 }
 
+
+function populatePannelists(blocklist, pannellists, context){
+  for (let index = 0; index < pannellists.length; index++) {
+    const pannelist = pannellists[index];
+    block = {
+      "type": "section",
+      "block_id":`${encd(context)}`,
+      "text": {
+        "type": "mrkdwn",
+        "text": `:writing_hand: *${pannelist.username}* will observe _${pannelist.name}_ attributes `
+      },
+      "accessory": {
+        "type": "button",
+        "action_id": "remove_pannelist",
+        "text": {
+          "type": "plain_text",
+          "emoji": true,
+          "text": "Remove"
+        },
+        "value": `${pannelist.slack_user_id}`
+      }
+    }
+    blocklist.push(block)
+    
+  }
+
+
+   function encd(context) {
+    let seed = Math.floor((Math.random() * 10000) + 1);
+    let str = Object.keys(context).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(context[k])}`).join('&');
+
+    return `${seed}|${str}`;
+  }
+  
+
+}
