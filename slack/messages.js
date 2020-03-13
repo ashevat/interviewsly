@@ -637,7 +637,7 @@ module.exports = {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": `:champagne: Pannel Results (published by the request of ${user.name}):`
+        "text": `:champagne: Panel Results (published by the request of ${user.name}):`
       }
     }];
     let result = await interview.getInterviewAssessments(pool);
@@ -726,7 +726,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Onsite Interviews and Pannelists:*"
+          "text": "*Onsite Interviews and Panelists:*"
         }
       }
     ];

@@ -114,12 +114,12 @@ express()
 
   })
   .post('/setup', express.urlencoded({ extended: true }), async (req, res) => {
-    await setTeamAndUser(req);
+    await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.status(200).send(':writing_hand: Preping setup...:writing_hand: ');
     setupHandler.handleSetupSlashCommand(req, res, pool, slackTool, team, user);
 
   }).post('/interview', express.urlencoded(), async (req, res) => {
-    await setTeamAndUser(req);
+    await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.end(":hourglass_flowing_sand: preping an interview :hourglass_flowing_sand:");
 
     let msg = await slackTool.getInterviewResponse(req, res, pool);
@@ -143,11 +143,10 @@ express()
   })
 
   .post('/interactive_callback', express.urlencoded(), async (req, res) => {
-
+    
     res.status(200).send('');
     const response = JSON.parse(req.body.payload);
-    const userDO = new User();
-    const user = await userDO.getUserBySlackID(response.user.id, pool);
+    await setTeamAndUser(response.user.id, response.team.id);
 
     if (response.type === "block_actions") {
       let response_url = response.response_url;
@@ -183,7 +182,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(msg)}`
           });
@@ -210,7 +209,7 @@ express()
               method: 'post',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${slackToken}`
+                'Authorization': `Bearer ${team.token}`
               },
               body: `${JSON.stringify(msg)}`
             });
@@ -230,7 +229,7 @@ express()
               method: 'post',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${slackToken}`
+                'Authorization': `Bearer ${team.token}`
               },
               body: `${JSON.stringify(msg)}`
             });
@@ -250,7 +249,7 @@ express()
               method: 'post',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${slackToken}`
+                'Authorization': `Bearer ${team.token}`
               },
               body: `${JSON.stringify(msg)}`
             });
@@ -323,7 +322,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(msg)}`
           });
@@ -338,7 +337,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(msg)}`
           });
@@ -351,7 +350,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(msg)}`
           });
@@ -379,7 +378,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(msg)}`
           });
@@ -400,7 +399,7 @@ express()
               method: 'post',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-                'Authorization': `Bearer ${slackToken}`
+                'Authorization': `Bearer ${team.token}`
               },
               body: `user=${slackUserId}`
             });
@@ -425,7 +424,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
           });
@@ -452,7 +451,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(imParams)}`
           });
@@ -472,7 +471,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(invite_options)}`
           }).then((response) => {
@@ -511,7 +510,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(imParams)}`
           });
@@ -537,7 +536,7 @@ express()
               method: 'post',
               headers: {
                 'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-                'Authorization': `Bearer ${slackToken}`
+                'Authorization': `Bearer ${team.token}`
               },
               body: `${JSON.stringify(imParams)}`
             });
@@ -553,7 +552,7 @@ express()
               method: 'post',
               headers: {
                 'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-                'Authorization': `Bearer ${slackToken}`
+                'Authorization': `Bearer ${team.token}`
               },
               body: `${JSON.stringify(imParams)}`
             });
@@ -599,7 +598,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
         });
@@ -628,7 +627,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams)}`
         });
@@ -651,7 +650,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams2)}`
         });
@@ -679,7 +678,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
         });
@@ -708,7 +707,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams)}`
         });
@@ -750,7 +749,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams)}`
         });
@@ -794,7 +793,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams)}`
         });
@@ -825,7 +824,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams)}`
         });
@@ -856,7 +855,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(imParams)}`
         });
@@ -909,7 +908,7 @@ express()
           method: 'post',
           headers: {
             'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': `Bearer ${slackToken}`
+            'Authorization': `Bearer ${team.token}`
           },
           body: `${JSON.stringify(options)}`
         }).then((response) => {
@@ -929,7 +928,7 @@ express()
             method: 'post',
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
-              'Authorization': `Bearer ${slackToken}`
+              'Authorization': `Bearer ${team.token}`
             },
             body: `${JSON.stringify(invite_options)}`
           }).then((response) => {
@@ -978,7 +977,7 @@ async function postInterviewDashboard(interview, req, res, pool, context) {
     method: 'post',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `Bearer ${slackToken}`
+      'Authorization': `Bearer ${team.token}`
     },
     body: `${JSON.stringify(msg)}`
   });
@@ -987,11 +986,12 @@ async function postInterviewDashboard(interview, req, res, pool, context) {
   interview.updateDashboardId(ts, pool);
 }
 
-async function setTeamAndUser(req) {
-  let user_id = req.body.user_id;
-  let team_id = req.body.team_id;
+async function setTeamAndUser(slack_user_id, slack_team_id) {
+  //let slack_user_id = req.body.user_id;
+  //let slack_team_id = req.body.team_id;
+
   let teamDO = new Team();
-  team = await teamDO.getTeamBySlackID(team_id, pool);
+  team = await teamDO.getTeamBySlackID(slack_team_id, pool);
 
   if (!team) {
     console.error("got request from an unknow team - " + JSON.stringify(req));
@@ -1000,7 +1000,7 @@ async function setTeamAndUser(req) {
   let token = team.token;
 
   let userDO = new User();
-  user = await userDO.getUserBySlackID(user_id, pool);
+  user = await userDO.getUserBySlackID(slack_user_id, pool);
   if (!user) {
     // create user
     const fetch = require('node-fetch');
@@ -1010,7 +1010,7 @@ async function setTeamAndUser(req) {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': `Bearer ${token}`
       },
-      body: `user=${user_id}`
+      body: `user=${slack_user_id}`
     });
     const responseJSON1 = await responseinfo1.json();
     let userData = {
