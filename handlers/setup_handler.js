@@ -4,7 +4,7 @@ class SetupHandler {
     }
     
 
-    async handleSetupSlashCommand(req, res,pool, slackTool ) {
+    async handleSetupSlashCommand(req, res,pool, slackTool ,team, user ) {
     let context = {
       action: this.ACTION_SETUP,
       role: -1,
@@ -13,10 +13,10 @@ class SetupHandler {
       result_index: 0,
     };
     let response_message = await slackTool.getSetupResponse(req, res, pool, context);
-
+    
     let imParams = {
       "text": `some message`,
-      "channel": `${req.body.user_id}`,
+      "channel": `${user.slack_user_id}`,
       "blocks": response_message.blocks
     }
     const fetch = require('node-fetch');
@@ -24,7 +24,7 @@ class SetupHandler {
       method: 'post',
       headers: {
         'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-        'Authorization': `Bearer ${slackTool.getSlackToket(req, res,pool)}`
+        'Authorization': `Bearer ${team.token}`
       },
       body: `${JSON.stringify(imParams)}`
     })

@@ -28,13 +28,24 @@ class User {
         this.username = params.username;
         this.name = params.name;
         this.team_id = params.team_id;
+        this.raw = params.raw;
 
         const client = await pool.connect();
-        let res1 = await client.query(`INSERT INTO users(id, slack_user_id, username, name, team_id )VALUES(DEFAULT, '${this.slack_user_id}', '${this.username}', '${this.name}'  , '${this.team_id}'  ) RETURNING id`);
+        let res1 = await client.query(`INSERT INTO users(id, slack_user_id, username, name, team_id, raw )VALUES(DEFAULT, '${this.slack_user_id}', '${this.username}', '${this.name}'  , '${this.team_id}' , '${this.raw}' ) RETURNING id`);
         this.id = res1.rows[0].id;
         client.release(); 
         return this;
     }
+
+    async updateTeamId(team_id, pool){
+        const client = await pool.connect();
+        let result = await client.query(`UPDATE users SET team_id='${team_id}' WHERE id='${this.id}'`);
+        this.team_id = team_id;
+        client.release(); 
+        return this;
+
+    }
+
 
 
   }

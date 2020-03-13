@@ -28,7 +28,7 @@ class Interview {
 
     }
 
-    async getTemplate(pool){
+    async getTemplate(pool) {
         const Template = require('./template');
         const templateDO = new Template(pool);
         //todo: fix team
@@ -57,37 +57,115 @@ class Interview {
         return this;
     }
 
-    async addPanelist(pannelist_id, questions_type, pool) {
+    async addAssessment(panelist_id, competency_id, assessment, notes, pool) {
         const client = await pool.connect();
-        //console.log(`INSERT INTO interview_pannelists (id, interview_id, pannelist_id, questions_type )VALUES(DEFAULT, '${this.id}' ,'${pannelist_id}', '${questions_type}'`);
         const result1 = await client.query(
-            `INSERT INTO interview_pannelists (id, interview_id, pannelist_id, questions_type )VALUES(DEFAULT, '${this.id}' ,'${pannelist_id}', '${questions_type}')`);
+            `INSERT INTO assessments(id, interview_id, competency_id, panelist_id, assessment, notes )VALUES(DEFAULT, '${this.id}' ,'${competency_id}',  '${panelist_id}', '${assessment}','${notes}')`);
         client.release();
 
         return this;
     }
 
-    async removePanelist(pannelistId, questionsType, pool) {
+    async updateAssessment(assessment_id, assessment, notes, pool) {
         const client = await pool.connect();
         const result1 = await client.query(
-            `DELETE FROM interview_pannelists WHERE interview_id='${this.id}' AND pannelist_id='${pannelistId}' AND questions_type='${questionsType}'`);
+            `UPDATE assessments SET assessment='${assessment}', notes='${notes}' WHERE id='${assessment_id}'`);
         client.release();
 
         return this;
     }
 
+    async getAssessment(panelist_id, competency_id, pool) {
+        const client = await pool.connect();
+
+        let result = await client.query(`SELECT * FROM assessments WHERE panelist_id='${panelist_id}' AND competency_id='${competency_id}' AND interview_id='${this.id}' `);
+
+        client.release();
+        if (result.rows.length == 0) {
+            return null;
+        } else {
+            return result.rows[0];
+        }
+
+    }
+
+    async addInterviewAssessment(panelist_id, interview_type, score, notes, pool) {
+        const client = await pool.connect();
+        const result1 = await client.query(
+            `INSERT INTO interview_assessments(id, interview_id, interview_type_id, panelist_id, score, notes )VALUES(DEFAULT, '${this.id}' ,'${interview_type}',  '${panelist_id}', '${score}','${notes}')`);
+        client.release();
+
+        return this;
+    }
+
+    async getInterviewAssessment(panelist_id, interview_type, pool) {
+        const client = await pool.connect();
+
+        let result = await client.query(`SELECT * FROM interview_assessments WHERE panelist_id='${panelist_id}' AND interview_type_id='${interview_type}' AND interview_id='${this.id}' `);
+
+        client.release();
+        if (result.rows.length == 0) {
+            return null;
+        } else {
+            return result.rows[0];
+        }
+
+    }
+
+    async getInterviewAssessments(pool) {
+        const client = await pool.connect();
+
+        let result = await client.query(`SELECT * FROM interview_assessments INNER JOIN users ON interview_assessments.panelist_id = users.id INNER JOIN template_interview_types ON interview_assessments.interview_type_id = template_interview_types.id WHERE interview_assessments.interview_id='${this.id}' `);
+        
+        client.release();
+        return result.rows;
+
+
+    }
+
+    async addPanelist(panelist_id, questions_type, message_id, channel_id, pool) {
+        const client = await pool.connect();
+        const result1 = await client.query(
+            `INSERT INTO interview_panelists (id, interview_id, panelist_id, questions_type, message_id, channel_id, active )VALUES(DEFAULT, '${this.id}' ,'${panelist_id}', '${questions_type}', '${message_id}', '${channel_id}', '1')`);
+        client.release();
+
+        return this;
+    }
+
+    async removePanelist(panelistId, questionsType, pool) {
+        const client = await pool.connect();
+        const result1 = await client.query(
+            `UPDATE interview_panelists SET active='0' WHERE interview_id='${this.id}' AND panelist_id='${panelistId}' AND questions_type='${questionsType}' AND active='1' RETURNING message_id, channel_id `);
+
+        client.release();
+
+        return result1.rows[0];
+    }
 
     async getPanelists(pool) {
         const client = await pool.connect();
-        let result = await client.query(`SELECT * FROM interview_pannelists INNER JOIN users ON interview_pannelists.pannelist_id = users.id INNER JOIN question_type ON interview_pannelists.questions_type = question_type.id WHERE interview_id='${this.id}'`);
+        let result = await client.query(`SELECT * FROM interview_panelists INNER JOIN users ON interview_panelists.panelist_id = users.id INNER JOIN question_type ON interview_panelists.questions_type = question_type.id WHERE interview_id='${this.id}' AND interview_panelists.active='1'`);
         client.release();
 
         return result.rows;
     }
 
-    async isPanelists(pannelistId, pool) {
+    async getPanelist(questions_type, pool) {
         const client = await pool.connect();
-        let result = await client.query(`SELECT id FROM interview_pannelists WHERE interview_id='${this.id}' AND pannelist_id='${pannelistId}' `);
+        let result = await client.query(`SELECT * FROM interview_panelists INNER JOIN users ON interview_panelists.panelist_id = users.id WHERE interview_id='${this.id}' AND questions_type='${questions_type}' AND interview_panelists.active='1' `);
+
+
+        client.release();
+        if (result.rows.length == 0) {
+            return null;
+        } else {
+            return result.rows[0];
+        }
+    }
+
+    async isPanelists(panelistId, pool) {
+        const client = await pool.connect();
+        let result = await client.query(`SELECT id FROM interview_panelists WHERE interview_id='${this.id}' AND panelist_id='${panelistId}' AND active='1' `);
         client.release();
 
         return result.rows.length > 0;
@@ -107,6 +185,16 @@ class Interview {
         const result1 = await client.query(
             `UPDATE interviews SET slack_channel_id ='${channel_id}' WHERE id='${this.id}'  RETURNING slack_channel_id`);
         this.slack_channel_id = result1.rows[0].slack_channel_id;
+        client.release();
+        return this;
+    }
+
+
+    async updateDashboardId(ts, pool) {
+        const client = await pool.connect();
+        const result1 = await client.query(
+            `UPDATE interviews SET slack_dashboard_msg_id ='${ts}' WHERE id='${this.id}'  RETURNING slack_dashboard_msg_id`);
+        this.slack_dashboard_msg_id = result1.rows[0].slack_dashboard_msg_id;
         client.release();
         return this;
     }

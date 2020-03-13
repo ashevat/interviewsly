@@ -1,10 +1,6 @@
 module.exports = {
 
 
-  getSlackToket: function (req, res, pool) {
-    
-  },
-
   getAddQuestionResponse: async function (req, res, pool) {
     let response_view1 = {
       "trigger_id": `${req.body.trigger_id}`,
@@ -636,6 +632,49 @@ module.exports = {
     return response_view1;
   },
 
+  getInterviewFinalAssessmentResultsResponse: async function (interview, pool, context, user) {
+    let response = [{
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": `:champagne: Pannel Results (published by the request of ${user.name}):`
+      }
+    }];
+    let result = await interview.getInterviewAssessments(pool);
+    let score = ["NA", "Strong don't hire", "Don't hire", "Hire", "Strong hire"];
+    for (let index = 0; index < result.length; index++) {
+      const element = result[index];
+      console.log("element " + JSON.stringify(element));
+      let interviewAssessmentResults = {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `:notebook_with_decorative_cover: *${element.name} interview* conducted by ${element.username}: *${score[element.score]}* :notebook_with_decorative_cover:\n\n General notes: ${element.notes} `
+        }
+      }
+      response.push(interviewAssessmentResults);
+      const templateDO = await interview.getTemplate(pool);
+      let competencies = await templateDO.getCompetencies(element.interview_type_id);
+      for (let index2 = 0; index2 < competencies.length; index2++) {
+        const competency = competencies[index2];
+        let panelistDetailsAssessment = await interview.getAssessment(element.panelist_id, competency.id, pool);
+        if(panelistDetailsAssessment){
+          let detailedAssessmentResults = {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `Competency -  _${competency.competency}_ \n\n Assessment:  ${panelistDetailsAssessment.assessment} `
+            }
+          }
+          response.push(detailedAssessmentResults);
+        }  
+      }
+
+    
+    }
+    return response;
+
+  },
   getInterviewDashboardResponse: async function (interview, pool, context) {
     //console.log("datboard for interview" + JSON.stringify(interview));
 
@@ -700,42 +739,138 @@ module.exports = {
       //todo fix team to interview.team_id
       let template = await templateDO.getTemplate(interview.role_id, interview.role_level_id, -1);
       let interviewTypes = await template.getInterviewTypes()
+      let assessmentCollected = 0;
+      let onsiteCount = 0;
       for (let index = 0; index < interviewTypes.length; index++) {
+        onsiteCount++;
         const onsite = interviewTypes[index];
-        let dividerBlock ={
+        let dividerBlock = {
           "type": "divider"
         };
-        let onsiteBlock = {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": `:pencil: Onsite Interview: ${onsite.name}`
+        let pannelist = await interview.getPanelist(onsite.id, pool);
+
+        if (pannelist) {
+          let finalAssessment = await interview.getInterviewAssessment(pannelist.id, onsite.id, pool);
+          if (finalAssessment) {
+            assessmentCollected++;
+            let assesment_submitted = {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": `:white_check_mark: Assessment for *_${onsite.name}_ interview* submitted by @${pannelist.name}`
+
+              }
+            };
+            response_message.push(assesment_submitted);
+          } else {
+            let onsiteBlock = {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": `:pencil:_${onsite.name}_ interview will be done by @${pannelist.name}`
+              }
+            };
+            let selectPanalistBlock = {
+              "type": "section",
+              "block_id": `${this.encodeBlockID(context)}`,
+              "text": {
+                "type": "mrkdwn",
+                "text": "Reassign the panelist (interviewer) for this onsite:"
+              },
+              "accessory": {
+                "type": "button",
+                "action_id": "remove_panelist",
+                "style": "primary",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Reassign",
+                  "emoji": true
+                },
+                "value": `${pannelist.slack_user_id}|${onsite.id}`
+              }
+            };
+
+            response_message.push(onsiteBlock);
+            response_message.push(selectPanalistBlock);
           }
-        };
-        let selectPanalistBlock = {
-          "type": "section",
-                "block_id":`${this.encodeBlockID(context)}`,
-          "text": {
-            "type": "mrkdwn",
-            "text": "Assign a panelist (interviewer) for this onsite:"
-          },
-          "accessory": {
-            "type": "users_select",
-                    "action_id": `select_panelist|${onsite.id}`,
-            "placeholder": {
-              "type": "plain_text",
-              "text": "Select an panelist",
-              "emoji": true
+
+
+        } else {
+          let onsiteBlock = {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `:pencil: _${onsite.name}_ interview`
             }
-          }
-        };
-        
-        response_message.push(onsiteBlock);
-        response_message.push(selectPanalistBlock);
+          };
+          let selectPanalistBlock = {
+            "type": "section",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "text": {
+              "type": "mrkdwn",
+              "text": "Assign a panelist (interviewer) for this onsite:"
+            },
+            "accessory": {
+              "type": "users_select",
+              "action_id": `select_panelist|${onsite.id}`,
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Select an panelist",
+                "emoji": true
+              }
+            }
+          };
+
+          response_message.push(onsiteBlock);
+          response_message.push(selectPanalistBlock);
+
+        }
+
         response_message.push(dividerBlock);
       }
 
+      if (assessmentCollected) {
+        if (assessmentCollected < onsiteCount) {
+          let publishResult = {
+            "type": "actions",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "elements": [
+              {
+                "type": "button",
+                "action_id": `publish_result|${interview.id}`,
+                "text": {
+                  "type": "plain_text",
+                  "text": ":no_entry_sign: Publish results (not rec.)",
+                  "emoji": true
+                },
+                "value": "click_me_123"
+              }
+            ]
+          }
+          response_message.push(publishResult);
+        } else {
+          let publishResult = {
+            "type": "actions",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "elements": [
+              {
+                "type": "button",
+                "action_id": `publish_result|${interview.id}`,
+                "text": {
+                  "type": "plain_text",
+                  "text": ":white_check_mark: Publish results",
+                  "emoji": true
+                },
+                "style": "primary",
+                "value": "click_me_123"
+              }
+            ]
+          }
+          response_message.push(publishResult);
 
+        }
+
+      }
 
       client.release();
     } catch (err) {
@@ -746,7 +881,207 @@ module.exports = {
     return response_message;
 
   },
-  getPannelistQuestionResponse: async function (interview, interviewType, pool, context) {
+
+  getFinalAssesmentResponse: async function (trigger_id, interview, context, orgAssessment, pool) {
+    let response_view = {
+      "trigger_id": `${trigger_id}`,
+      "view": {
+        "type": "modal",
+        "callback_id": "interview-assessment",
+        "private_metadata": `${this.encodeBlockID(context)}`,
+        "title": {
+          "type": "plain_text",
+          "text": "Interview Assessment"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit assessment",
+          "emoji": true
+        },
+        "blocks":
+          [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Please fill your candidate assessment:"
+              }
+            },
+            {
+              "type": "input",
+              "block_id": "final_assesment",
+              "element": {
+                "type": "static_select",
+                "action_id": "final_assesment_value",
+                "placeholder": {
+                  "type": "plain_text",
+                  "text": "Select an item",
+                  "emoji": true
+                },
+                "options": [
+                  {
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":trophy: Strong yes ",
+                      "emoji": true
+                    },
+                    "value": "4"
+                  },
+                  {
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":thumbsup: Yes ",
+                      "emoji": true
+                    },
+                    "value": "3"
+                  },
+                  {
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":thumbsdown: No",
+                      "emoji": true
+                    },
+                    "value": "2"
+                  },
+                  {
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":scream: Strong no",
+                      "emoji": true
+                    },
+                    "value": "1"
+                  }
+
+                ]
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Should we hire this candidate?",
+                "emoji": true
+              }
+            },
+            {
+              "type": "input",
+              "block_id": "final_assesment_notes",
+              "element": {
+                "type": "plain_text_input",
+                "action_id": "final_assesment_notes_value",
+                "multiline": true
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Comments",
+                "emoji": true
+              }
+            }
+          ]
+      }
+    };
+    return response_view;
+
+  },
+
+  getAssesmentResponse: async function (trigger_id, interview, competency_id, context, orgAssessment, pool) {
+    let response_view = {
+      "trigger_id": `${trigger_id}`,
+      "view": {
+        "type": "modal",
+        "callback_id": "assesment-intake",
+        "private_metadata": `${this.encodeBlockID(context)}`,
+        "title": {
+          "type": "plain_text",
+          "text": "Assessment intake"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Save assessment",
+          "emoji": true
+        },
+        "blocks":
+          [
+
+          ]
+      }
+    };
+    try {
+      const client = await pool.connect();
+      let template = await interview.getTemplate(pool);
+      let competency = await template.getCompetency(competency_id);
+      let competencyPrompt = {
+        "type": "section",
+        "block_id": `${this.encodeBlockID(context)}`,
+        "text": {
+          "type": "mrkdwn",
+          "text": `:muscle: *What to assess:*  _${competency.competency}_`
+        }
+      };
+      let questions = await template.getQuestions(competency.id);
+      for (let index3 = 0; index3 < questions.length; index3++) {
+        const element3 = questions[index3];
+        competencyPrompt.text.text += `\n :pencil: Example question: ${element3.question} `;
+      }
+      response_view.view.blocks.push(competencyPrompt);
+      let divider = {
+        "type": "divider"
+      }
+      response_view.view.blocks.push(divider);
+
+      client.release();
+
+    } catch (err) {
+      console.error(err);
+      //res.send("Error " + err);
+    }
+
+    let assessmentQuestion = {
+      "type": "input",
+      "block_id": `onsite_interview`,
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "onsite_interview_value",
+        "multiline": true,
+        "placeholder": {
+          "type": "plain_text",
+          "text": "The candidate demonstrated deep understanding in.. ",
+        },
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "What was the candidate's answer? What is your assessment?",
+        "emoji": true
+      }
+    };
+    if (orgAssessment) {
+      assessmentQuestion.element.initial_value = orgAssessment.assessment;
+    }
+    response_view.view.blocks.push(assessmentQuestion);
+
+    let assessmentNotes = {
+      "type": "input",
+      "optional": true,
+      "block_id": `interview_notes`,
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "interview_notes_value",
+        "multiline": true,
+        "placeholder": {
+          "type": "plain_text",
+          "text": "The candidate seemed very relaxed.. ",
+        },
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Addtional notes",
+        "emoji": true
+      }
+    };
+    if (orgAssessment) {
+      assessmentNotes.element.initial_value = orgAssessment.notes;
+    }
+    response_view.view.blocks.push(assessmentNotes);
+    return response_view;
+  },
+  getPannelistQuestionResponse: async function (interview, interviewType, linkToDashboard, pool, context) {
     let roleName = await interview.getCachedRoleName(pool);
     let roleLevel = await interview.getCachedRoleLevelName(pool);
     let response_message = [
@@ -766,7 +1101,7 @@ module.exports = {
           },
           {
             "type": "mrkdwn",
-            "text": `*LinkedIn URL:*\n${interview.linkedin}`
+            "text": `*Candidate interview dashboard:*\n <${linkToDashboard}|Interview Dashboard>`
           },
           {
             "type": "mrkdwn",
@@ -777,17 +1112,6 @@ module.exports = {
             "text": `*Seniority:*\n${roleLevel}`
           }
         ]
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `*Notes:*\n ${interview.notes}`
-        }
-      },
-
-      {
-        "type": "divider"
       },
       {
         "type": "section",
@@ -805,103 +1129,143 @@ module.exports = {
       const client = await pool.connect();
       let template = await interview.getTemplate(pool);
       let competencies = await template.getCompetencies(interviewType);
-            for (let index2 = 0; index2 < competencies.length; index2++) {
-              const element2 = competencies[index2];
-              let competencyPrompt = {
-                "type": "section",
-                "block_id": `${this.encodeBlockID(context)}`,
-                "text": {
-                  "type": "mrkdwn",
-                  "text": `:muscle: _ Competency:  ${element2.competency}_`
-                },
-                "accessory": {
-                  "type": "overflow",
-                  "action_id": "competency_actions",
-                  "options": [
-                    {
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":pencil2: Edit",
-                        "emoji": true
-                      },
+      for (let index2 = 0; index2 < competencies.length; index2++) {
+        const element2 = competencies[index2];
 
-                      "value": `edit|${element2.id}`
-                    },
-                    {
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":put_litter_in_its_place: Remove",
-                        "emoji": true
-                      },
-                      "value": `remove|${element2.id}`
-                    }
-                  ]
-                }
-              };
-              let questions = await template.getQuestions(element2.id);
-              for (let index3 = 0; index3 < questions.length; index3++) {
-                const element3 = questions[index3];
-                competencyPrompt.text.text += `\n :pencil: Competency question: ${element3.question} `;
-              }
-              response_message.push(competencyPrompt);
+        let competencyPrompt = {
+          "type": "section",
+          "block_id": `${this.encodeBlockID(context)}`,
+          "text": {
+            "type": "mrkdwn",
+            "text": `:muscle: _ What to assess:  ${element2.competency}_`
+          },
+          "accessory": {
+            "type": "button",
+            "action_id": `start_assessment|${element2.id}`,
+            "style": "primary",
+            "text": {
+              "type": "plain_text",
+              "text": "Start assesment :pencil2:",
+              "emoji": true
+            },
+            "value": `${element2.id}`
+          }
+        };
+        let questions = await template.getQuestions(element2.id);
+        for (let index3 = 0; index3 < questions.length; index3++) {
+          const element3 = questions[index3];
+          competencyPrompt.text.text += `\n :pencil: Example question: ${element3.question} `;
+        }
+        let assessment = await interview.getAssessment(context.panelist_id, element2.id, pool);
+        //console.log("got assessment"+JSON.stringify(assessment));
+        if (assessment) {
+          competencyPrompt.accessory = {
+            "type": "button",
+            "action_id": `edit_assessment|${element2.id}`,
+            "text": {
+              "type": "plain_text",
+              "text": ":white_check_mark: Edit my assessment",
+              "emoji": true
+            },
+            "value": `${element2.id}`
+          }
+
+        }
+
+        response_message.push(competencyPrompt);
+        let divider = {
+          "type": "divider"
+        }
+        response_message.push(divider);
+      }
+      let finalAssessment = await interview.getInterviewAssessment(context.panelist_id, interviewType, pool);
+      if (finalAssessment) {
+        let done = {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": `:white_check_mark: Thank you! You have sucessfully submitted your interview assessment! Results will show up <${linkToDashboard}|here> when all interviews are finished.`
+          }
+        };
+        response_message.push(done);
+      } else {
+        let actions = {
+          "type": "actions",
+          "block_id": `${this.encodeBlockID(context)}`,
+          "elements": [
+            {
+              "type": "button",
+              "action_id": `submit_final_assessment|${interviewType}`,
+              "style": "primary",
+              "text": {
+                "type": "plain_text",
+                "text": "Submit final assessment :thumbsup::thumbsdown: ",
+                "emoji": true
+              },
+              "value": `submit`
             }
+          ]
+        }
+        response_message.push(actions);
+      }
+
 
       // pupulate questions
 
-        /*
-      let offset = context.result_index;
-      let limit = 3;
-      let innerJoinStatment = "";
-      let where = "";
+      /*
+    let offset = context.result_index;
+    let limit = 3;
+    let innerJoinStatment = "";
+    let where = "";
 
-    
-      innerJoinStatment = " INNER JOIN question_roles ON questions.id = question_roles.question_id INNER JOIN question_levels ON questions.id = question_levels.question_id  ";
-      where = ` WHERE question_roles.role_id='${interview.role_id}' AND question_levels.level_id='${interview.role_level_id}' AND questions.question_type='${questionsType}' `;
+  
+    innerJoinStatment = " INNER JOIN question_roles ON questions.id = question_roles.question_id INNER JOIN question_levels ON questions.id = question_levels.question_id  ";
+    where = ` WHERE question_roles.role_id='${interview.role_id}' AND question_levels.level_id='${interview.role_level_id}' AND questions.question_type='${questionsType}' `;
 
 
-      console.log("Statment =" + `SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
-      const questions = await client.query(`SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
-      populateQuestions(response_message, questions.rows);
+    console.log("Statment =" + `SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
+    const questions = await client.query(`SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
+    populateQuestions(response_message, questions.rows);
 
-      const nextQuestions = await client.query(`SELECT questions.id FROM questions ${innerJoinStatment} ${where} OFFSET ${offset + limit} LIMIT 1`);
-      if (offset > 0) {
-        response_message.push({
-          "type": "actions",
-          "block_id": `${this.encodeBlockID(context)}`,
-          "elements": [
-            {
-              "type": "button",
-              "action_id": "get_prev_questions",
-              "text": {
-                "type": "plain_text",
-                "emoji": true,
-                "text": "Prev Results"
-              },
-              "value": "get_prev_questions"
-            }
-          ]
-        }
-        );
+    const nextQuestions = await client.query(`SELECT questions.id FROM questions ${innerJoinStatment} ${where} OFFSET ${offset + limit} LIMIT 1`);
+    if (offset > 0) {
+      response_message.push({
+        "type": "actions",
+        "block_id": `${this.encodeBlockID(context)}`,
+        "elements": [
+          {
+            "type": "button",
+            "action_id": "get_prev_questions",
+            "text": {
+              "type": "plain_text",
+              "emoji": true,
+              "text": "Prev Results"
+            },
+            "value": "get_prev_questions"
+          }
+        ]
       }
-      if (nextQuestions.rows.length > 0) {
-        response_message.push({
-          "type": "actions",
-          "block_id": `${this.encodeBlockID(context)}`,
-          "elements": [
-            {
-              "type": "button",
-              "action_id": "get_next_questions",
-              "text": {
-                "type": "plain_text",
-                "emoji": true,
-                "text": "Next Results"
-              },
-              "value": "get_next_questions"
-            }
-          ]
-        }
-        );
+      );
+    }
+    if (nextQuestions.rows.length > 0) {
+      response_message.push({
+        "type": "actions",
+        "block_id": `${this.encodeBlockID(context)}`,
+        "elements": [
+          {
+            "type": "button",
+            "action_id": "get_next_questions",
+            "text": {
+              "type": "plain_text",
+              "emoji": true,
+              "text": "Next Results"
+            },
+            "value": "get_next_questions"
+          }
+        ]
       }
+      );
+    }
 
 */
 
