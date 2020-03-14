@@ -63,6 +63,26 @@ class Team {
 
 
 
+    async updateToken(token, pool) {
+        
+        const client = await pool.connect();
+        let res1 = await client.query(`UPDATE teams SET token='${token}' WHERE id='${this.id}' RETURNING id`);
+        this.id = res1.rows[0].id;
+        client.release(); 
+        return this;
+    }
+
+    async updateRaw(raw, pool) {
+        
+        const client = await pool.connect();
+        let res1 = await client.query(`UPDATE teams SET raw='${raw}' WHERE id='${this.id}' RETURNING id`);
+        this.id = res1.rows[0].id;
+        client.release(); 
+        return this;
+    }
+
+
+
   }
 
   module.exports = Team;

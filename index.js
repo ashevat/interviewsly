@@ -13,6 +13,11 @@ const Interview = require('./data-objects/interview');
 const SetupHandler = require('./handlers/setup_handler');
 const setupHandler = new SetupHandler();
 
+const StartHandler = require('./handlers/start_handler');
+const startHandler = new StartHandler();
+
+
+// user and team for the context
 let user = null;
 let team = null;
 
@@ -93,13 +98,20 @@ express()
       }
 
       curteam = await team.create(teamParams, pool);
+    } else {
+      await curteam.updateToken(responseJSON.access_token, pool);
+      await curteam.updateRaw(JSON.stringify(responseJSON), pool);
     }
 
     ownerUser.updateTeamId(curteam.id, pool);
-
+    let context = {
+      action: startHandler.ACTION_START,
+    };
+    let welcomeBlocks = await slackTool.getWelcomeResponse(context);
     let imParams = {
       "text": `Thank you for installing Interviewsly!`,
-      "channel": `${ownerUser.slack_user_id}`
+      "channel": `${ownerUser.slack_user_id}`,
+      "blocks": welcomeBlocks
     }
     const fetch2 = require('node-fetch');
     let http_response = fetch2("https://slack.com/api/chat.postMessage", {
@@ -122,7 +134,7 @@ express()
     await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.end(":hourglass_flowing_sand: preping an interview :hourglass_flowing_sand:");
 
-    let msg = await slackTool.getInterviewResponse(req, res, pool);
+    let msg = await slackTool.getInterviewResponse(req.body.trigger_id, pool);
     console.log(msg);
     const fetch = require('node-fetch');
     fetch("https://slack.com/api/views.open", {
@@ -132,18 +144,20 @@ express()
         'Authorization': `Bearer ${team.token}`
       },
       body: `${JSON.stringify(msg)}`
-    }).then((response) => {
-      return response.json();
-    }).then((myJson) => {
-      // console.log("got respond" + JSON.stringify(myJson));
     });
     //console.log("end fetch" + JSON.stringify(response_view1));
 
+  }).post('/start', express.urlencoded(), async (req, res) => {
+    await setTeamAndUser(req.body.user_id, req.body.team_id);
+    res.end("");
+
+    let responseBlocks = slackTool.getStartResponse();
+    startHandler.handleStartSlashCommand(slackTool, team, user);
 
   })
 
   .post('/interactive_callback', express.urlencoded(), async (req, res) => {
-    
+
     res.status(200).send('');
     const response = JSON.parse(req.body.payload);
     await setTeamAndUser(response.user.id, response.team.id);
@@ -158,7 +172,25 @@ express()
       let contextStr = value.block_id;
       let context = slackTool.decodeBlockID(contextStr);
 
-      if (context.action == setupHandler.ACTION_SETUP) {
+      if (context.action == startHandler.ACTION_START) {
+        let trigger = response.trigger_id;
+        if (value.action_id === "new_interview") {
+          let msg = await slackTool.getInterviewResponse(trigger, pool);
+          console.log(msg);
+          const fetch = require('node-fetch');
+          fetch("https://slack.com/api/views.open", {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${team.token}`
+            },
+            body: `${JSON.stringify(msg)}`
+          });
+        } else if (value.action_id === "setup") {
+          setupHandler.handleSetupSlashCommand(req, res, pool, slackTool, team, user);
+        }
+
+      } else if (context.action == setupHandler.ACTION_SETUP) {
 
         if (value.action_id === "filter_by_role") {
           context.role = parseInt(value.selected_option.value);
@@ -170,6 +202,25 @@ express()
           console.log("got user" + user);
           let newTemplate = await templateDO.createTemplate(context.role, context.level, -1, "Custom Template", user.id);
           context.template_id = newTemplate.id;
+        } else if (value.action_id === "done_template_setup") {
+          let imParams = {
+            "text": `Thank you for installing Interviewsly!`,
+            "blocks": [{
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Setup done!\n _Pro tip: You can always re-access interviewsly setup by typing `/interviewsly` in Slack._"
+              }
+    
+            }]
+          }
+          const fetch = require('node-fetch');
+          let debug = await fetch(response_url, {
+            method: 'post',
+            body: `${JSON.stringify(imParams)}`
+          })
+          return;
+
         } else if (value.action_id === "add_onsite_interview_type") {
           // prompt user to add Competency
           context.org_msg_ts = response.container.message_ts;
@@ -391,9 +442,7 @@ express()
           let userDO = new User();
           let user = await userDO.getUserBySlackID(slackUserId, pool);
           if (user == null) {
-            // create user on the fly
-            //todo: catpture email and handle team //${myJson.user.team_id}
-
+            // create user on the fly          
             const fetch = require('node-fetch');
             const responseinfo = await fetch("https://slack.com/api/users.info", {
               method: 'post',
@@ -408,7 +457,8 @@ express()
               slack_user_id: `${responseJSON.user.id}`,
               username: `${responseJSON.user.name}`,
               name: `${responseJSON.user.real_name}`,
-              team_id: `2`
+              team_id: team.id,
+              raw: JSON.stringify(responseJSON)
             }
 
             user = await userDO.create(userData, pool);

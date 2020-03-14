@@ -1,6 +1,132 @@
 module.exports = {
 
 
+  getWelcomeResponse: async function (context){
+    let response = [
+      {
+        "type": "section",
+        "text": {
+          "type": "plain_text",
+          "text": "Thank you for installing interviewsly! You are awesome and here is an image, we have picked for you, to show our gratitude:",
+          "emoji": true
+        }
+      },
+      {
+        "type": "image",
+        "title": {
+          "type": "plain_text",
+          "text": "Thank you!",
+          "emoji": true
+        },
+        "image_url": "https://www.kindspring.org/my/pics/mem/101310/up_5b576d1140ffb5.26064668_lg.jpg",
+        "alt_text": "Thank you!"
+      },
+          {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*Let's get started:* \n\n :bulb:  You can always access interviewsly by typing `/interviewsly` in Slack. \n\n :checkered_flag:  Here is our control pannel, use it to start a new interview pannel process, or configure Interviewsly process to fit your company's processes."
+        }
+      }, 
+      {
+         "type": "section",
+         "text": {
+           "type": "mrkdwn",
+           "text": ":control_knobs: Your interviewsly control panel:"
+         }
+       },
+       {
+         "type": "actions",
+         "block_id": `${this.encodeBlockID(context)}`,
+         "elements": [
+           {
+             "type": "button",
+             "action_id":"new_interview",
+             "text": {
+               "type": "plain_text",
+               "text": ":white_check_mark: Start an Interview Panel",
+               "emoji": true
+             },
+             "style": "primary",
+             "value": "click_me_123"
+           },
+           /*{
+             "type": "button",
+             "action_id":"my_interviews",
+             "text": {
+               "type": "plain_text",
+               "text": ":pencil: See My Active Interviews",
+               "emoji": true
+             },
+             "value": "click_me_123"
+           },*/
+           {
+             "type": "button",
+             "action_id":"setup",
+             "text": {
+               "type": "plain_text",
+               "text": ":gear: Configuration",
+               "emoji": true
+             },
+             "value": "click_me_123"
+           }
+         ]
+       }
+     ];
+     return response;
+ 
+   },
+
+  getStartResponse: async function (context){
+   let response = [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": ":control_knobs: Your interviewsly control panel:"
+        }
+      },
+      {
+        "type": "actions",
+        "block_id": `${this.encodeBlockID(context)}`,
+        "elements": [
+          {
+            "type": "button",
+            "action_id":"new_interview",
+            "text": {
+              "type": "plain_text",
+              "text": ":white_check_mark: Start an Interview Panel",
+              "emoji": true
+            },
+            "style": "primary",
+            "value": "click_me_123"
+          },
+          /*{
+            "type": "button",
+            "action_id":"my_interviews",
+            "text": {
+              "type": "plain_text",
+              "text": ":pencil: See My Active Interviews",
+              "emoji": true
+            },
+            "value": "click_me_123"
+          },*/
+          {
+            "type": "button",
+            "action_id":"setup",
+            "text": {
+              "type": "plain_text",
+              "text": ":gear: Configuration",
+              "emoji": true
+            },
+            "value": "click_me_123"
+          }
+        ]
+      }
+    ];
+    return response;
+
+  },
   getAddQuestionResponse: async function (req, res, pool) {
     let response_view1 = {
       "trigger_id": `${req.body.trigger_id}`,
@@ -500,9 +626,9 @@ module.exports = {
     return response_view;
   },
 
-  getInterviewResponse: async function (req, res, pool) {
+  getInterviewResponse: async function (trigger_id, pool) {
     let response_view1 = {
-      "trigger_id": `${req.body.trigger_id}`,
+      "trigger_id": `${trigger_id}`,
       "view": {
         "type": "modal",
         "callback_id": "create-interview",
@@ -626,7 +752,6 @@ module.exports = {
       client.release();
     } catch (err) {
       console.error(err);
-      res.send("Error " + err);
     }
 
     return response_view1;
