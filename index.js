@@ -58,10 +58,10 @@ express()
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
-  .get('/auth/slack', passport.authorize('slack'))
-  .get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
+  .get('/auth/slack', passport.authenticate('slack'))
+  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
   .get('/installed', (req, res) => res.render('pages/index'))
-  .get('/dashboard', passport.authenticate('slack'), async (req, res) => {
+  .get('/dashboard', passport.authenticate('slack' , { failureRedirect: '/login' }), async (req, res) => {
     console.log("user = "+ JSON.stringify(req.user));
     let results = {"user":req.user};
     res.render('pages/dashboard', results);
