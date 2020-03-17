@@ -61,8 +61,9 @@ passport.deserializeUser(function(user, done) {
 
 express()
   .use(express.static(path.join(__dirname, 'public')))
-  .use(passport.initialize())
   .use(require('body-parser').urlencoded({ extended: true }))
+  .use(passport.initialize())
+  .use(passport.session())
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
