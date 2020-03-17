@@ -79,7 +79,7 @@ express()
   } /* Successful authentication, redirect home.*/)
   .get('/dashboard', async (req, res) => {
     console.log("user = "+ JSON.stringify(req.user));
-    let results = {"user":"dd"};
+    let results = {"data":req.user};
     res.render('pages/dashboard', results);
   })
   .get('/auth', async (req, res) => {
