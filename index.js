@@ -1,12 +1,10 @@
 
 var slackTool = require('./slack/messages');
+const SlackStrategy = require('passport-slack').Strategy;
+const passport = require('passport');
 const express = require('express')
 const path = require('path')
 
-// data objects
-const User = require('./data-objects/user');
-const Team = require('./data-objects/team');
-const Interview = require('./data-objects/interview');
 
 
 // handlers
@@ -35,14 +33,32 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: false
 });
+
+// data objects
+const User = require('./data-objects/user');
+const Team = require('./data-objects/team');
+const Interview = require('./data-objects/interview');
 const Template = require('./data-objects/template');
 const templateDO = new Template(pool);
 
+passport.use(new SlackStrategy({
+  clientID: clientId,
+  clientSecret: clientSecret
+}, (accessToken, refreshToken, profile, done) => {
+  // optionally persist profile data
+  done(null, profile);
+}
+));
+
 express()
   .use(express.static(path.join(__dirname, 'public')))
+  .use(passport.initialize())
+  .use(require('body-parser').urlencoded({ extended: true }))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
+  .get('/auth/slack', passport.authorize('slack'))
+  .get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/' }), (req, res) => res.redirect('/dashboard')
   .get('/dashboard', (req, res) => res.render('pages/dashboard'))
   .get('/installed', (req, res) => res.render('pages/index'))
   .get('/auth', async (req, res) => {
