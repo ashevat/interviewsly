@@ -62,6 +62,7 @@ express()
   .get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
   .get('/installed', (req, res) => res.render('pages/index'))
   .get('/dashboard', async (req, res) => {
+    console.log("user = "+ JSON.stringify(req.user));
     let results = {"user":req.user};
     res.render('pages/dashboard', results);
   })
