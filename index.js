@@ -63,7 +63,7 @@ express()
   .get('/installed', (req, res) => res.render('pages/index'))
   .get('/dashboard', passport.authenticate('slack' , { failureRedirect: '/login' }), async (req, res) => {
     console.log("user = "+ JSON.stringify(req.user));
-    let results = {"user":req.user};
+    let results = {"user":"dd"};
     res.render('pages/dashboard', results);
   })
   .get('/auth', async (req, res) => {
