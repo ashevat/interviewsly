@@ -58,9 +58,11 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
+session = require("express-session");
 
 express()
   .use(express.static(path.join(__dirname, 'public')))
+  .use(session({ secret: "cats" }))
   .use(require('body-parser').urlencoded({ extended: true }))
   .use(passport.initialize())
   .use(passport.session())
