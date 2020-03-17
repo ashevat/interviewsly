@@ -60,8 +60,11 @@ express()
   .get('/', (req, res) => res.render('pages/index'))
   .get('/auth/slack', passport.authorize('slack'))
   .get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
-  .get('/dashboard', (req, res) => res.render('pages/dashboard'))
   .get('/installed', (req, res) => res.render('pages/index'))
+  .get('/dashboard', async (req, res) => {
+    let results = req.user;
+    res.render('pages/dashboard', results);
+  })
   .get('/auth', async (req, res) => {
 
     let code = req.query.code;
