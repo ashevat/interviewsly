@@ -59,9 +59,9 @@ express()
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .get('/auth/slack', passport.authenticate('slack'))
-  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
+  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
   .get('/installed', (req, res) => res.render('pages/index'))
-  .get('/dashboard', passport.authenticate('slack' , { failureRedirect: '/login' }), async (req, res) => {
+  .get('/dashboard', passport.authenticate('slack' , { failureRedirect: '/' }), async (req, res) => {
     console.log("user = "+ JSON.stringify(req.user));
     let results = {"user":"dd"};
     res.render('pages/dashboard', results);
