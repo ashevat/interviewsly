@@ -43,7 +43,8 @@ const templateDO = new Template(pool);
 
 passport.use(new SlackStrategy({
   clientID: clientId,
-  clientSecret: clientSecret
+  clientSecret: clientSecret,
+  callbackURL:"https://www.interviewsly.com/auth/slack/callback"
 }, (accessToken, refreshToken, profile, done) => {
   // optionally persist profile data
   done(null, profile);
@@ -58,7 +59,7 @@ express()
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .get('/auth/slack', passport.authorize('slack'))
-  .get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/') /* Successful authentication, redirect home.*/)
+  .get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: '/login' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
   .get('/dashboard', (req, res) => res.render('pages/dashboard'))
   .get('/installed', (req, res) => res.render('pages/index'))
   .get('/auth', async (req, res) => {
