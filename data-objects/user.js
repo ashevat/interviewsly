@@ -12,6 +12,7 @@ class User {
             u.username = result.rows[0].username;
             u.name = result.rows[0].name;
             u.team_id = result.rows[0].team_id;
+            u.raw = result.rows[0].raw;
             client.release(); 
             return u;
         }else{

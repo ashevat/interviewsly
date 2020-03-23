@@ -1,6 +1,6 @@
 
 class Interview {
-
+    
     async getInterviewById(id, pool) {
 
         const client = await pool.connect();
@@ -18,6 +18,7 @@ class Interview {
             i.slack_channel_id = result.rows[0].slack_channel_id;
             i.slack_dashboard_msg_id = result.rows[0].slack_dashboard_msg_id;
             i.team_id = result.rows[0].team_id;
+            i.status = result.rows[0].status;
             client.release();
             return i;
         } else {
@@ -25,7 +26,13 @@ class Interview {
             return null;
         }
 
+    }
 
+    async getInterviewDataByStatus(status, pool){
+        const client = await pool.connect();
+        let result = await client.query(`SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id WHERE status='${status}'`);
+        client.release();
+        return result.rows;
     }
 
     async getTemplate(pool) {
@@ -116,7 +123,7 @@ class Interview {
         const client = await pool.connect();
 
         let result = await client.query(`SELECT * FROM interview_assessments INNER JOIN users ON interview_assessments.panelist_id = users.id INNER JOIN template_interview_types ON interview_assessments.interview_type_id = template_interview_types.id WHERE interview_assessments.interview_id='${this.id}' `);
-        
+
         client.release();
         return result.rows;
 

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>Interviewsly</title>
+    <link href="assets/img/favicon.png" rel="icon" type="image/x-icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -22,10 +23,9 @@
 
 <body>
     <header class="site-header">
-        <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-light py-3" aria-label="Main navigation">
-                <a class="navbar-brand text-dark" href="index.html">
+                <a class="navbar-brand text-dark" href="/">
                     <img src="assets/img/ilogo.png" alt="Interviewsly">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,19 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav align-items-lg-center text-uppercase pt-3 pt-lg-0 ml-auto">
-                        
+                      <% if (!user) { %>
+                        <li class="nav-item">
+                          <a class="nav-link" href="/auth/slack">Login with Slack</a>
+                      </li> 
+                      <% } %>
+                      <% if (user) { %>
+                        <li class="nav-item">
+                          <a class="nav-link" href="/dashboard">Dashboard</a>
+                      </li> 
+                      <li class="nav-item">
+                        <a class="nav-link" href="/logout">logout</a>
+                    </li>
+                      <% } %>
                     </ul>
                 </div>
             </nav>

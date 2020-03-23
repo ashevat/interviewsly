@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        function OnStandardPlan(params) {
+            var stripe = Stripe(`<%= stripe.pk %>`);
+            stripe.redirectToCheckout({
+                // Make the id field from the Checkout Session creation API response
+                // available to this file, so you can provide it as parameter here
+                // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                sessionId: `<%= stripe.standard_plan_session.id %>`
+            }).then(function (result) {
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, display the localized error message to your customer
+                // using `result.error.message`.
+            });
+        }
+    </script>
+    <title>Interviewsly Dashboard</title>
+    <link href="assets/img/favicon.png" rel="icon" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Goole fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700%7CMerriweather+Sans:300,400,700"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="assets/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/theme.css">
+
+    <!-- JS -->
+    <script src="assets/js/jquery.slim.min.js" defer></script>
+    <script src="assets/js/popper.min.js" defer></script>
+    <script src="assets/js/bootstrap.min.js" defer></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3" aria-label="Main navigation">
+                <a class="navbar-brand text-dark" href="/">
+                    <img src="assets/img/ilogo.png" alt="Interviewsly">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav align-items-lg-center text-uppercase pt-3 pt-lg-0 ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <!-- Hero -->
+        <section class="container">
+            <div class="row justify-content-center py-4 py-md-5 py-xl-6">
+                <div class="col-lg-10 col-xl-8 text-center mb-xl-4">
+                    <h1 class="display-4 mb-4">Welcome <%= data.user.name %></h1>
+                    <p class="lead">Please activate your account to get started:</p>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="bg-skew bg-skew-light py-4">
+
+            <!-- Pricing cards -->
+            <section class="container">
+                <h2 class="text-center mb-4">Pick a plan that works for you- all plans come with 14 days free trial.
+                </h2>
+
+                <div class="row py-5">
+                    <div class="col-lg-6">
+                        <div class="card card-price card-featured shadow-lg mb-6">
+                            <div class="card-header">
+                                <h3 class="h4 font-weight-normal">Standard</h3>
+                                <div class="d-flex justify-content-center">
+                                    <span class="h4 font-weight-normal mt-1">$</span><span
+                                        class="display-4 font-weight-bold">29</span>
+                                </div>
+                                <span class="d-block text-muted">per month, billed yearly</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled text-secondary mb-4">
+                                    <li class="py-2">Unlimited seats</li>
+                                    <li class="py-2">Unlimited interviews</li>
+                                    <li class="py-2">Unlimited panelists</li>
+                                </ul>
+                                <a class="btn btn-primary rounded-pill mb-3" style="color: white;" onclick="OnStandardPlan();">Activate</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card card-price shadow-lg mb-6">
+                            <div class="card-header">
+                                <h3 class="h4 font-weight-normal">Enterprise</h3>
+                                <div class="d-flex justify-content-center">
+                                    <span class="h4 font-weight-normal mt-1">Contact us</span>
+                                </div>
+                                <span class="text-muted">yearly</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-4">
+                                    <li class="py-2 text-secondary">Everything in Standard +</li>
+                                    <li class="py-2 text-secondary">Active directory support</li>
+                                    <li class="py-2 text-secondary">Full audit log</li>
+                                </ul>
+                                <a class="btn btn-outline-primary rounded-pill mb-3"
+                                    href="mailto:support@interviewsly.com">Contact us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="sep border-primary">
+
+            <!-- Accordion -->
+            <section class="container">
+                <h2 class="my-5 text-center">Frequently Asked Questions</h2>
+                <div class="row justify-content-lg-center pb-5">
+                    <div class="col-lg-9">
+                        <div class="accordion" id="accordionQuestions">
+
+
+                            <div class="card mb-2 shadow">
+                                <div class="card-header" id="headingTwo">
+                                    <h3 class="card-title font-weight-normal">
+                                        <a class="collapsed" role="button" href="#collapseOne" data-toggle="collapse"
+                                            data-target="#collapseOne" aria-expanded="false"
+                                            aria-controls="collapseOne">
+                                            Do I need to enter my credit card details to sign up? <i
+                                                class="fas fa-angle-down float-right rotate-icon"
+                                                aria-hidden="true"></i>
+                                        </a>
+                                    </h3>
+                                </div>
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingTwo"
+                                    data-parent="#accordionQuestions">
+                                    <div class="card-body">
+                                        <p>Yes, but you get 14 days free trial and can cancel if you are not perfectly
+                                            happy with our product. </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-2 shadow">
+                                <div class="card-header" id="headingThree">
+                                    <h3 class="card-title font-weight-normal">
+                                        <a class="collapsed" role="button" href="#collapseThree" data-toggle="collapse"
+                                            data-target="#collapseThree" aria-expanded="false"
+                                            aria-controls="collapseThree">
+                                            Can I change my plan later on? <i
+                                                class="fas fa-angle-down float-right rotate-icon"
+                                                aria-hidden="true"></i>
+                                        </a>
+                                    </h3>
+                                </div>
+                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                                    data-parent="#accordionQuestions">
+                                    <div class="card-body">
+                                        <p>Yes, you can always change your plan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-2 shadow">
+                                <div class="card-header" id="headingFour">
+                                    <h3 class="card-title font-weight-normal">
+                                        <a class="collapsed" role="button" href="#collapseFour" data-toggle="collapse"
+                                            data-target="#collapseFour" aria-expanded="false"
+                                            aria-controls="collapseFour">
+                                            Can I cancel my account at any time? <i
+                                                class="fas fa-angle-down float-right rotate-icon"
+                                                aria-hidden="true"></i>
+                                        </a>
+                                    </h3>
+                                </div>
+                                <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
+                                    data-parent="#accordionQuestions">
+                                    <div class="card-body">
+                                        <p>Yes, you can cancel at any time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="container pb-5">
+                <p class="text-center">Still have questions? <a href="mailto:support@interviewsly.com">Get in touch</a>
+                </p>
+            </div>
+
+        </div><!-- end bg-skew -->
+
+    </main>
+
+    <footer class="site-footer mt-5">
+        <div class="container">
+
+            <hr role="presentation">
+
+            <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-center">
+                <div class="text-muted mb-3">&copy; Interviewsly LLC</div>
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <a class="icon icon-sm icon-secondary" href="https://Twitter.com/interviewslyhq"><i
+                                class="icon-inner fab fa-twitter" aria-hidden="true"></i><span
+                                class="sr-only">Twitter</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

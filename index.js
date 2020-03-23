@@ -4,7 +4,7 @@ const SlackStrategy = require('passport-slack').Strategy;
 const passport = require('passport');
 const express = require('express')
 const path = require('path')
-
+const bodyParser = require('body-parser');
 
 
 // handlers
@@ -24,15 +24,22 @@ const ACTION_GET_QUESTION = 1;
 const ACTION_INTERVIEW_DASHBOARD = 2;
 const ACTION_PANELIST_QUESTION = 3;
 const ACTION_ASSESSMENT = 5;
-
 const clientId = process.env.SLACK_CLIENT_ID;
 const clientSecret = process.env.SLACK_CLIENT_SECRET;
+const baseURL = process.env.BASE_URL;
+const stripeSK = process.env.STRIPE_SK;
+const stripePK = process.env.STRIPE_PK;
+const stripeStandardPlan = process.env.STRIPE_STANDARD_PLAN;
+const stripeActivateWebhookSigning  = process.env.STRIPE_WEBHOOK_SIGNING;
+const stripeDeactivateWebhookSigning  = process.env.STRIPE_DEACTIVATE_WEBHOOK_SIGNING;
+
 const PUBLIC_TEAM_ID = -1;
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: false
 });
+const stripe = require('stripe')(stripeSK);
 
 // data objects
 const User = require('./data-objects/user');
@@ -41,21 +48,22 @@ const Interview = require('./data-objects/interview');
 const Template = require('./data-objects/template');
 const templateDO = new Template(pool);
 
+
 passport.use(new SlackStrategy({
   clientID: clientId,
   clientSecret: clientSecret,
-  callbackURL:"https://www.interviewsly.com/auth/slack/callback"
+  callbackURL: baseURL+"/auth/slack/callback"
 }, (accessToken, refreshToken, profile, done) => {
   // optionally persist profile data
   done(null, profile);
 }
 ));
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 session = require("express-session");
@@ -68,18 +76,167 @@ express()
   .use(passport.session())
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
+  .get('/', (req, res) => {
+    let results = { "user": req.user };
+    res.render('pages/index', results);
+  })
+  .get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+  })
   .get('/auth/slack', passport.authenticate('slack'))
-  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/' }),(req, res) => res.redirect('/dashboard') /* Successful authentication, redirect home.*/)
-  .get('/installed', (req, res) => res.render('pages/index'))
-  .get('/user', passport.authenticate('slack', { failureRedirect: '/' }),(req, res) => {
-    console.log("user = "+ JSON.stringify(req.user));
-    let results = {"user":"dd"};
-    res.render('pages/dashboard', results);
-  } /* Successful authentication, redirect home.*/)
+  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/' }), (req, res) => res.redirect('/billed') )
+  .get('/pre-active', async (req, res) => {
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    
+    console.log("pre active user"+ JSON.stringify(req.user));
+    console.log("pre active user id"+ JSON.stringify(req.user.id));
+    const userDO = new User();
+    let ownerUser = await userDO.getUserBySlackID(req.user.id, pool);
+    let rawdata = JSON.parse(ownerUser.raw); 
+
+    const standardStripeSession = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      subscription_data: {
+        items: [{
+          plan:stripeStandardPlan,
+        }],
+        trial_from_plan: true,
+      },
+      success_url: baseURL+'/billed?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: baseURL+'/pre-active',
+      client_reference_id:req.user.id,
+      customer_email:rawdata.user.profile.email
+    });
+
+   
+    let results = { "data": req.user, "stripe":{"standard_plan_session":standardStripeSession, "pk":stripePK} };
+    //console.log("Resutls"+ JSON.stringify(results));
+
+    res.render('pages/pre-active', results);
+  }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+    // this is a callback webhook from stripe when a user pays.
+    const sig = request.headers['stripe-signature'];
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(request.body, sig, stripeDeactivateWebhookSigning);
+    } catch (err) {
+      return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    console.log(":(  team unsubscribed "+ JSON.stringify(event));
+    response.json({received: true});
+  })
+  .post('/activate', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+    // this is a callback webhook from stripe when a user pays.
+    const sig = request.headers['stripe-signature'];
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(request.body, sig, stripeActivateWebhookSigning);
+    } catch (err) {
+      return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+  
+    // Handle the checkout.session.completed event
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      //console.log("user id "+JSON.stringify(session));
+      let paying_user_id = session.client_reference_id;
+      let userDO = new User();
+      user = await userDO.getUserBySlackID(paying_user_id, pool);
+      console.log("plan: "+JSON.stringify(session.display_items[0]));
+
+      let teamDO = new Team();
+      team = await teamDO.getTeam(user.team_id, pool);
+      await team.activateTeam(session.display_items[0].plan.id,JSON.stringify(session), pool);
+      console.log("Team activated "+ team.slack_team_id);
+    }
+  
+    // Return a response to acknowledge receipt of the event
+    response.json({received: true});
+  })
+  .get('/billed', async (req, res) => {
+    // routes the user to the dashboard if account is active or to the re-active page if not.
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    //console.log("got user billed check"+ JSON.stringify(req.user));
+    let teamDO = new Team();
+    team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
+    if(team.status == 1){
+      res.redirect("/dashboard");
+    }else{
+      res.redirect("/pre-active")
+    }
+    //console.log("Billed user!"+req.query.session_id);
+    
+  }).get('/unsubscribe', async (req, res) => {
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    const userDO = new User();
+    let currentUser = await userDO.getUserBySlackID(req.user.id, pool);
+    
+    let teamDO = new Team();
+    team = await teamDO.getTeam(currentUser.team_id, pool);
+    let rawData = JSON.parse(await team.deactivateTeam(pool));
+    let subscription = rawData.subscription;
+    stripe.subscriptions.del(subscription);
+    res.redirect("/pre-active");
+  })
+  .get('/account', async (req, res) => {
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+
+    const userDO = new User();
+    let currentUser = await userDO.getUserBySlackID(req.user.id, pool);
+    let rawData = JSON.parse(currentUser.raw);
+    let teamDO = new Team();
+    team = await teamDO.getTeam(currentUser.team_id, pool);
+    if(team.status < 1){
+      res.redirect("/pre-active");
+      return;
+    }
+    currentUser.photo = rawData.user.profile.image_48;
+    let results={
+      user:currentUser,
+      team:team,
+    };
+    res.render('pages/account', results);
+
+  })
   .get('/dashboard', async (req, res) => {
-    console.log("user = "+ JSON.stringify(req.user));
-    let results = {"data":req.user};
+    // routes the user to the dashboard if account is active or to the re-active page if not.
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    
+    const userDO = new User();
+    let currentUser = await userDO.getUserBySlackID(req.user.id, pool);
+    let rawData = JSON.parse(currentUser.raw);
+    let teamDO = new Team();
+    team = await teamDO.getTeam(currentUser.team_id, pool);
+    if(team.status < 1){
+      res.redirect("/pre-active");
+      return;
+    }
+    let interviewDO = new Interview();
+    let activeInterviews = await interviewDO.getInterviewDataByStatus(1, pool); 
+    //console.log("User photo: "+ JSON.stringify(rawData.user.profile.image_48));
+    currentUser.photo = rawData.user.profile.image_48;
+
+    let results={
+      user:currentUser,
+      team:team,
+      activeInterviews:activeInterviews
+    };
     res.render('pages/dashboard', results);
   })
   .get('/auth', async (req, res) => {
@@ -141,7 +298,7 @@ express()
       await curteam.updateRaw(JSON.stringify(responseJSON), pool);
     }
 
-    ownerUser.updateTeamId(curteam.id, pool);
+    ownerUser = await ownerUser.updateTeamId(curteam.id, pool);
     let context = {
       action: startHandler.ACTION_START,
     };
@@ -160,7 +317,24 @@ express()
       },
       body: `${JSON.stringify(imParams)}`
     });
-    res.redirect("/installed");
+
+    let systemUser = { 
+        "user":{"name": ownerUser.name, "id": ownerUser.slack_user_id},
+        "team":{"id":curteam.slack_team_id},
+        "id":ownerUser.slack_user_id
+    }
+
+    console.log("login user"+ JSON.stringify(systemUser));
+
+    req.login(systemUser, function (err) {
+      if (err) {
+        console.error(err);
+        return next(err);
+      }
+      //console.log("auto login user"+ JSON.stringify(req.user));
+      return res.redirect('/billed');
+    });
+
 
   })
   .post('/setup', express.urlencoded({ extended: true }), async (req, res) => {
@@ -249,7 +423,7 @@ express()
                 "type": "mrkdwn",
                 "text": "Setup done!\n _Pro tip: You can always re-access interviewsly setup by typing `/interviewsly` in Slack._"
               }
-    
+
             }]
           }
           const fetch = require('node-fetch');

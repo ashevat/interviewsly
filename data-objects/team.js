@@ -14,6 +14,8 @@ class Team {
             u.raw = result.rows[0].raw;
             u.owner_slack_id = result.rows[0].owner_slack_id;
             u.token = result.rows[0].token;
+            u.plan_id = result.rows[0].plan_id;
+            u.status = result.rows[0].status;
             client.release(); 
             return u;
         }else{
@@ -37,6 +39,8 @@ class Team {
             u.raw = result.rows[0].raw;
             u.owner_slack_id = result.rows[0].owner_slack_id;
             u.token = result.rows[0].token;
+            u.plan_id = result.rows[0].plan_id;
+            u.status = result.rows[0].status;
             client.release(); 
             return u;
         }else{
@@ -53,7 +57,7 @@ class Team {
         this.owner_slack_id = params.owner_slack_id;
         this.raw = params.raw;
         this.token = params.token
-
+        this.status = -1;
         const client = await pool.connect();
         let res1 = await client.query(`INSERT INTO teams(id, slack_team_id, name, owner_id, owner_slack_id, token, raw )VALUES(DEFAULT, '${this.slack_team_id}', '${this.name}', '${this.owner_id}', '${this.owner_slack_id}', '${this.token}',  '${this.raw}'  ) RETURNING id`);
         this.id = res1.rows[0].id;
@@ -79,6 +83,24 @@ class Team {
         this.id = res1.rows[0].id;
         client.release(); 
         return this;
+    }
+
+    async activateTeam(plan, raw, pool){
+        const client = await pool.connect();
+        let res1 = await client.query(`UPDATE teams SET billing_data_raw='${raw}', status='1', plan_id='${plan}'  WHERE id='${this.id}' RETURNING id`);
+        this.id = res1.rows[0].id;
+        client.release(); 
+        return this;
+
+    }
+
+    async deactivateTeam(pool){
+        const client = await pool.connect();
+        let res1 = await client.query(`UPDATE teams SET  status='-2'  WHERE id='${this.id}' RETURNING billing_data_raw`);
+        
+        client.release(); 
+        return res1.rows[0].billing_data_raw;
+
     }
 
 
