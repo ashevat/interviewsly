@@ -117,7 +117,13 @@ express()
     //console.log("Resutls"+ JSON.stringify(results));
 
     res.render('pages/pre-active', results);
-  }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+  }).post('/events', express.json(), async (request, response) => {
+    //console.log("got event"+ JSON.stringify(request.body));
+    //response.send("ok");
+    //console.log(request.body);
+    response.send(request.body.challenge); 
+  
+  }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (req, res) => {
     // this is a callback webhook from stripe when a user pays.
     const sig = request.headers['stripe-signature'];
     let event;
@@ -229,13 +235,15 @@ express()
     }
     let interviewDO = new Interview();
     let activeInterviews = await interviewDO.getInterviewDataByStatus(1, pool); 
+    let archivedInterviews = await interviewDO.getInterviewDataByStatus(0, pool);
     //console.log("User photo: "+ JSON.stringify(rawData.user.profile.image_48));
     currentUser.photo = rawData.user.profile.image_48;
 
     let results={
       user:currentUser,
       team:team,
-      activeInterviews:activeInterviews
+      activeInterviews:activeInterviews,
+      archivedInterviews:archivedInterviews
     };
     res.render('pages/dashboard', results);
   })
