@@ -118,10 +118,25 @@ express()
 
     res.render('pages/pre-active', results);
   }).post('/events', express.json(), async (request, response) => {
-    //console.log("got event"+ JSON.stringify(request.body));
-    //response.send("ok");
+    let team_id = request.body.team_id;
+    let teamDO = new Team();
+    team = await teamDO.getTeamBySlackID(team_id, pool);
+    let eventType = request.body.event.type;
+    let channelId = request.body.event.channel;
+    if(eventType == "group_archive"){
+      let interviewDO = new Interview();
+      let interview = await interviewDO.getInterviewByChannel(channelId, pool);
+      if(interview) interview.updateStatus(0,pool); 
+    }else if(eventType == "group_unarchive"){
+      let interviewDO = new Interview();
+      let interview = await interviewDO.getInterviewByChannel(channelId, pool);
+      if(interview) interview.updateStatus(1,pool); 
+    }
+
+    console.log("got event"+ JSON.stringify(request.body));
+    response.send("ok");
     //console.log(request.body);
-    response.send(request.body.challenge); 
+    //response.send(request.body.challenge); 
   
   }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (req, res) => {
     // this is a callback webhook from stripe when a user pays.
@@ -752,7 +767,24 @@ express()
           context.type = null;
 
 
-        } else if (value.action_id == "remove_panelist") {
+        } else if (value.action_id == "schedule") {
+
+          let panelistId = value.value.split("|")[0];
+          let questionsType = value.value.split("|")[1];
+
+          let msg = await slackTool.getScheduleResponse(response.trigger_id,  context, pool);
+          const fetch = require('node-fetch');
+          let debug = await fetch("https://slack.com/api/views.open", {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${team.token}`
+            },
+            body: `${JSON.stringify(msg)}`
+          });
+
+        
+        }else if (value.action_id == "remove_panelist") {
 
           let panelistId = value.value.split("|")[0];
           let questionsType = value.value.split("|")[1];

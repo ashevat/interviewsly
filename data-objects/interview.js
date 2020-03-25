@@ -28,6 +28,33 @@ class Interview {
 
     }
 
+    async getInterviewByChannel(channel_id, pool) {
+
+        const client = await pool.connect();
+        let result = await client.query(`SELECT * FROM interviews WHERE slack_channel_id='${channel_id}'`);
+
+        if (result.rows[0]) {
+            let i = new Interview()
+            i.id = result.rows[0].id;
+            i.owner_id = result.rows[0].owner_id;
+            i.candidate_name = result.rows[0].candidate_name;
+            i.role_id = result.rows[0].role_id;
+            i.role_level_id = result.rows[0].role_level_id;
+            i.linkedin = result.rows[0].linkedin;
+            i.notes = result.rows[0].notes;
+            i.slack_channel_id = result.rows[0].slack_channel_id;
+            i.slack_dashboard_msg_id = result.rows[0].slack_dashboard_msg_id;
+            i.team_id = result.rows[0].team_id;
+            i.status = result.rows[0].status;
+            client.release();
+            return i;
+        } else {
+            client.release();
+            return null;
+        }
+
+    }
+
     async getInterviewDataByStatus(status, pool){
         const client = await pool.connect();
         let result = await client.query(`SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id WHERE status='${status}'`);
@@ -192,6 +219,15 @@ class Interview {
         const result1 = await client.query(
             `UPDATE interviews SET slack_channel_id ='${channel_id}' WHERE id='${this.id}'  RETURNING slack_channel_id`);
         this.slack_channel_id = result1.rows[0].slack_channel_id;
+        client.release();
+        return this;
+    }
+
+    async updateStatus(status, pool) {
+        const client = await pool.connect();
+        const result1 = await client.query(
+            `UPDATE interviews SET status ='${status}' WHERE id='${this.id}'  RETURNING status`);
+        this.status = result1.rows[0].status;
         client.release();
         return this;
     }

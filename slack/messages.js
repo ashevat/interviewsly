@@ -1,7 +1,7 @@
 module.exports = {
 
 
-  getWelcomeResponse: async function (context){
+  getWelcomeResponse: async function (context) {
     let response = [
       {
         "type": "section",
@@ -21,64 +21,13 @@ module.exports = {
         "image_url": "https://www.kindspring.org/my/pics/mem/101310/up_5b576d1140ffb5.26064668_lg.jpg",
         "alt_text": "Thank you!"
       },
-          {
+      {
         "type": "section",
         "text": {
           "type": "mrkdwn",
           "text": "*Let's get started:* \n\n :bulb:  You can always access interviewsly by typing `/interviewsly` in Slack. \n\n :checkered_flag:  Here is our control pannel, use it to start a new interview pannel process, or configure Interviewsly process to fit your company's processes."
         }
-      }, 
-      {
-         "type": "section",
-         "text": {
-           "type": "mrkdwn",
-           "text": ":control_knobs: Your interviewsly control panel:"
-         }
-       },
-       {
-         "type": "actions",
-         "block_id": `${this.encodeBlockID(context)}`,
-         "elements": [
-           {
-             "type": "button",
-             "action_id":"new_interview",
-             "text": {
-               "type": "plain_text",
-               "text": ":white_check_mark: Start an Interview Panel",
-               "emoji": true
-             },
-             "style": "primary",
-             "value": "click_me_123"
-           },
-           /*{
-             "type": "button",
-             "action_id":"my_interviews",
-             "text": {
-               "type": "plain_text",
-               "text": ":pencil: See My Active Interviews",
-               "emoji": true
-             },
-             "value": "click_me_123"
-           },*/
-           {
-             "type": "button",
-             "action_id":"setup",
-             "text": {
-               "type": "plain_text",
-               "text": ":gear: Configuration",
-               "emoji": true
-             },
-             "value": "click_me_123"
-           }
-         ]
-       }
-     ];
-     return response;
- 
-   },
-
-  getStartResponse: async function (context){
-   let response = [
+      },
       {
         "type": "section",
         "text": {
@@ -92,7 +41,7 @@ module.exports = {
         "elements": [
           {
             "type": "button",
-            "action_id":"new_interview",
+            "action_id": "new_interview",
             "text": {
               "type": "plain_text",
               "text": ":white_check_mark: Start an Interview Panel",
@@ -113,7 +62,58 @@ module.exports = {
           },*/
           {
             "type": "button",
-            "action_id":"setup",
+            "action_id": "setup",
+            "text": {
+              "type": "plain_text",
+              "text": ":gear: Configuration",
+              "emoji": true
+            },
+            "value": "click_me_123"
+          }
+        ]
+      }
+    ];
+    return response;
+
+  },
+
+  getStartResponse: async function (context) {
+    let response = [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": ":control_knobs: Your interviewsly control panel:"
+        }
+      },
+      {
+        "type": "actions",
+        "block_id": `${this.encodeBlockID(context)}`,
+        "elements": [
+          {
+            "type": "button",
+            "action_id": "new_interview",
+            "text": {
+              "type": "plain_text",
+              "text": ":white_check_mark: Start an Interview Panel",
+              "emoji": true
+            },
+            "style": "primary",
+            "value": "click_me_123"
+          },
+          /*{
+            "type": "button",
+            "action_id":"my_interviews",
+            "text": {
+              "type": "plain_text",
+              "text": ":pencil: See My Active Interviews",
+              "emoji": true
+            },
+            "value": "click_me_123"
+          },*/
+          {
+            "type": "button",
+            "action_id": "setup",
             "text": {
               "type": "plain_text",
               "text": ":gear: Configuration",
@@ -783,7 +783,7 @@ module.exports = {
       for (let index2 = 0; index2 < competencies.length; index2++) {
         const competency = competencies[index2];
         let panelistDetailsAssessment = await interview.getAssessment(element.panelist_id, competency.id, pool);
-        if(panelistDetailsAssessment){
+        if (panelistDetailsAssessment) {
           let detailedAssessmentResults = {
             "type": "section",
             "text": {
@@ -792,10 +792,10 @@ module.exports = {
             }
           }
           response.push(detailedAssessmentResults);
-        }  
+        }
       }
 
-    
+
     }
     return response;
 
@@ -890,9 +890,21 @@ module.exports = {
           } else {
             let onsiteBlock = {
               "type": "section",
+              "block_id": `${this.encodeBlockID(context)}`,
               "text": {
                 "type": "mrkdwn",
                 "text": `:pencil:_${onsite.name}_ interview will be done by @${pannelist.name}`
+              },
+              "accessory": {
+                "type": "button",
+                "action_id": "schedule",
+                "style": "primary",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Schedule",
+                  "emoji": true
+                },
+                "value": `${pannelist.slack_user_id}|${onsite.id}`
               }
             };
             let selectPanalistBlock = {
@@ -900,12 +912,11 @@ module.exports = {
               "block_id": `${this.encodeBlockID(context)}`,
               "text": {
                 "type": "mrkdwn",
-                "text": "Reassign the panelist (interviewer) for this onsite:"
+                "text": " "
               },
               "accessory": {
                 "type": "button",
                 "action_id": "remove_panelist",
-                "style": "primary",
                 "text": {
                   "type": "plain_text",
                   "text": "Reassign",
@@ -1104,6 +1115,92 @@ module.exports = {
     };
     return response_view;
 
+  },
+  getScheduleResponse: async function (trigger_id, context, pool) {
+    let response_view = {
+      "trigger_id": `${trigger_id}`,
+      "view": {
+        "type": "modal",
+        "callback_id": "schedule-set",
+        "private_metadata": `${this.encodeBlockID(context)}`,
+        "title": {
+          "type": "plain_text",
+          "text": "Schedule interview"
+        },
+        "submit": {
+          "type": "plain_text",
+          "text": "Schedule",
+          "emoji": true
+        },
+        "blocks":
+          [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "We will notify the interviewer of the interview schedule\n\n *Please day and time for this interview:*"
+              }
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "actions",
+              "elements": [
+                {
+                  "type": "datepicker",
+                  "initial_date": "1990-04-28",
+                  "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select a date",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "static_select",
+                  "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select an item",
+                    "emoji": true
+                  },
+                  "options": [
+                    
+                  ]
+                }
+              ]
+            }
+          ]
+      }
+    };
+
+    var hours, minutes, ampm;
+    for (var i = 420; i <= 1320; i += 15) {
+      hours = Math.floor(i / 60);
+      minutes = i % 60;
+      if (minutes < 10) {
+        minutes = '0' + minutes; // adding leading zero
+      }
+      ampm = hours % 24 < 12 ? 'AM' : 'PM';
+      hours = hours % 12;
+      if (hours === 0) {
+        hours = 12;
+      }
+      let timeSlot = {
+        "text": {
+          "type": "plain_text",
+          "text": hours + ':' + minutes + ' ' + ampm,
+          "emoji": true
+        },
+        "value": hours + ':' + minutes + ' ' + ampm
+      };
+      response_view.view.blocks[2].elements[1].options.push(timeSlot);
+    }
+
+    var moment = require('moment');
+    var today =  moment().format("YYYY-MM-DD");
+    response_view.view.blocks[2].elements[0].initial_date = today;
+
+    return response_view;
   },
 
   getAssesmentResponse: async function (trigger_id, interview, competency_id, context, orgAssessment, pool) {
@@ -1427,12 +1524,15 @@ module.exports = {
     try {
       const client = await pool.connect()
       //console.log("current template: "+ currentTemplate.description);
+
       if (currentTemplate) {
+        let roleName = await currentTemplate.getRoleName();
+        let levelName = await currentTemplate.getLevelName();
         let templatePrompt = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:file_folder: *Template setup: ${currentTemplate.description} *`
+            "text": `:file_folder: *Template setup: ${currentTemplate.description} * [${roleName}, ${levelName}]`
           }
 
         };

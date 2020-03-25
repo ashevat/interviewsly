@@ -43,6 +43,23 @@ class Template {
         return template;
     }
 
+
+    async getRoleName(){
+        const client = await this.pool.connect();
+        let result = await client.query(`SELECT name FROM roles WHERE id='${this.role_id}'`);
+        client.release();
+        return result.rows[0].name;
+
+    }
+
+    async getLevelName(){
+        const client = await this.pool.connect();
+        let result = await client.query(`SELECT name FROM levels WHERE id='${this.level_id}'`);
+        client.release();
+        return result.rows[0].name;
+
+    }
+
     async getPublicTemplate(template_id) {
         const client = await this.pool.connect();
         let result = await client.query(`SELECT * FROM templates WHERE id='${template_id}'`);
