@@ -771,7 +771,8 @@ express()
 
           let panelistId = value.value.split("|")[0];
           let questionsType = value.value.split("|")[1];
-
+          context.panelistId = panelistId;
+          context.questionsType = questionsType;
           let msg = await slackTool.getScheduleResponse(response.trigger_id,  context, pool);
           const fetch = require('node-fetch');
           let debug = await fetch("https://slack.com/api/views.open", {
@@ -883,7 +884,83 @@ express()
 
 
     } else if (response.type === "view_submission") {
-      if (response.view.callback_id == "interview-assessment") {
+      if (response.view.callback_id == "schedule-interview"){
+        const values = response.view.state.values;
+        let metadata = response.view.private_metadata;
+        let context = slackTool.decodeBlockID(metadata);
+        let date = values.interview_date.interview_date_value.selected_date;
+        let time =  values.interview_time.interview_time_value.selected_option.value;
+        //console.log(`context: ${JSON.stringify(context)}`);
+        let interviewId = context.interview_id;
+        let interviewType = context.questionsType;
+        let panelistId = context.panelistId;
+        const interviewDO = new Interview();
+        let interview = await interviewDO.getInterviewById(interviewId, pool);
+        await interview.setInterviewTypeTimeAndDate(interviewType, panelistId, date, time, pool );
+
+        // update the panelist interview panel
+        const fetch1 = require('node-fetch');
+        const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${team.token}`
+          },
+          body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
+        });
+        const premLinkResJSON = await responsePremLinkinfo.json();
+        let link = premLinkResJSON.permalink;
+        let assessmentContext = {
+          "interview_id": context.interview_id,
+          "interview_type": context.questionsType,
+          "panelist_id": panelistId,
+          "action": ACTION_ASSESSMENT
+        };
+
+        let questions = await slackTool.getPannelistQuestionResponse(interview, context.questionsType, link, pool, assessmentContext);
+        let onsite = await interview.getPanelist(context.questionsType, pool);
+        let imParams = {
+          "text": `updated`,
+          "channel": `${onsite.channel_id}`,
+          "ts": `${onsite.message_id}`,
+          "blocks": questions
+        }
+        const fetch = require('node-fetch');
+        let http_response = await fetch("https://slack.com/api/chat.update", {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+            'Authorization': `Bearer ${team.token}`
+          },
+          body: `${JSON.stringify(imParams)}`
+        });
+
+        // update the dashboard
+
+        let dashboardContext = {
+          "interview_id": context.interview_id,
+          "action": ACTION_INTERVIEW_DASHBOARD
+        };
+        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, dashboardContext);
+        let imParams2 = {
+          "text": `updated`,
+          "channel": `${interview.slack_channel_id}`,
+          "ts": `${interview.slack_dashboard_msg_id}`,
+          "blocks": response_message
+        }
+        const fetch2 = require('node-fetch');
+        let http_response2 = await fetch2("https://slack.com/api/chat.update", {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+            'Authorization': `Bearer ${team.token}`
+          },
+          body: `${JSON.stringify(imParams2)}`
+        });
+
+
+
+      }else if (response.view.callback_id == "interview-assessment") {
         const values = response.view.state.values;
         let metadata = response.view.private_metadata;
         let context = slackTool.decodeBlockID(metadata);

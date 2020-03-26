@@ -888,25 +888,54 @@ module.exports = {
             };
             response_message.push(assesment_submitted);
           } else {
-            let onsiteBlock = {
-              "type": "section",
-              "block_id": `${this.encodeBlockID(context)}`,
-              "text": {
-                "type": "mrkdwn",
-                "text": `:pencil:_${onsite.name}_ interview will be done by @${pannelist.name}`
-              },
-              "accessory": {
-                "type": "button",
-                "action_id": "schedule",
-                "style": "primary",
+            let onsiteBlock = {}
+            if(pannelist.date){
+              var moment = require('moment');
+              var date =  moment(pannelist.date).format("dddd, MMMM Do YYYY ");
+              var time =  moment("2013-02-08 "+pannelist.time).format("h:mm a ");
+              onsiteBlock = {
+                "type": "section",
+                "block_id": `${this.encodeBlockID(context)}`,
                 "text": {
-                  "type": "plain_text",
-                  "text": "Schedule",
-                  "emoji": true
+                  "type": "mrkdwn",
+                  "text": `:pencil: *${onsite.name}* interview will be done by *${pannelist.name}* on ${date}at ${time}.`
                 },
-                "value": `${pannelist.slack_user_id}|${onsite.id}`
-              }
-            };
+                "accessory": {
+                  "type": "button",
+                  "action_id": "schedule",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Reschedule",
+                    "emoji": true
+                  },
+                  "value": `${pannelist.id}|${onsite.id}`
+                }
+              };
+
+            }else{
+              onsiteBlock = {
+                "type": "section",
+                "block_id": `${this.encodeBlockID(context)}`,
+                "text": {
+                  "type": "mrkdwn",
+                  "text": `:pencil: *${onsite.name}* interview will be done by ${pannelist.name}`
+                },
+                "accessory": {
+                  "type": "button",
+                  "action_id": "schedule",
+                  "style": "primary",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Schedule",
+                    "emoji": true
+                  },
+                  "value": `${pannelist.id}|${onsite.id}`
+                }
+              };
+
+            }
+
+            
             let selectPanalistBlock = {
               "type": "section",
               "block_id": `${this.encodeBlockID(context)}`,
@@ -1121,7 +1150,7 @@ module.exports = {
       "trigger_id": `${trigger_id}`,
       "view": {
         "type": "modal",
-        "callback_id": "schedule-set",
+        "callback_id": "schedule-interview",
         "private_metadata": `${this.encodeBlockID(context)}`,
         "title": {
           "type": "plain_text",
@@ -1138,36 +1167,51 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "We will notify the interviewer of the interview schedule\n\n *Please day and time for this interview:*"
+                "text": "We will notify the interviewer of the interview schedule\n\n *Please set a date and time for this interview:*"
               }
             },
             {
               "type": "divider"
             },
             {
-              "type": "actions",
-              "elements": [
-                {
-                  "type": "datepicker",
-                  "initial_date": "1990-04-28",
-                  "placeholder": {
-                    "type": "plain_text",
-                    "text": "Select a date",
-                    "emoji": true
-                  }
-                },
-                {
-                  "type": "static_select",
-                  "placeholder": {
-                    "type": "plain_text",
-                    "text": "Select an item",
-                    "emoji": true
-                  },
-                  "options": [
-                    
-                  ]
+              "type": "input",
+              "block_id":"interview_date",
+              "element": {
+                "type": "datepicker",
+                "action_id": "interview_date_value",
+                "initial_date": "1990-04-28",
+                "placeholder": {
+                  "type": "plain_text",
+                  "text": "Select a date",
+                  "emoji": true
                 }
-              ]
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Interview Date",
+                "emoji": true
+              }
+            },
+            {
+              "type": "input",
+              "block_id":"interview_time",
+              "element": {
+                "type": "static_select",
+                "action_id": "interview_time_value",
+                "placeholder": {
+                  "type": "plain_text",
+                  "text": "Select an item",
+                  "emoji": true
+                },
+                "options": [
+                  
+                ]
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Interview time",
+                "emoji": true
+              }
             }
           ]
       }
@@ -1193,12 +1237,12 @@ module.exports = {
         },
         "value": hours + ':' + minutes + ' ' + ampm
       };
-      response_view.view.blocks[2].elements[1].options.push(timeSlot);
+      response_view.view.blocks[3].element.options.push(timeSlot);
     }
 
     var moment = require('moment');
     var today =  moment().format("YYYY-MM-DD");
-    response_view.view.blocks[2].elements[0].initial_date = today;
+    response_view.view.blocks[2].element.initial_date = today;
 
     return response_view;
   },
@@ -1348,7 +1392,22 @@ module.exports = {
 
 
     try {
-      const client = await pool.connect();
+      //console.log("interview type"+interviewType);
+      let interviewData = await interview.getPanelist(interviewType, pool);
+      //console.log("interviewData"+JSON.stringify(interviewData));
+      if(interviewData && interviewData.date){
+        
+        var moment = require('moment');
+        var date =  moment(interviewData.date).format("dddd, MMMM Do YYYY ");
+        var time =  moment("2013-02-08 "+interviewData.time).format("h:mm a ");
+        //console.log("got date for this interview onsite:" + `${date} ${time}`);
+        let dateTime = {
+          "type": "mrkdwn",
+          "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time}` //  \n <${linkToDashboard}|Add to Calendar>
+        }
+        response_message[1].fields.push(dateTime);
+
+      }
       let template = await interview.getTemplate(pool);
       let competencies = await template.getCompetencies(interviewType);
       for (let index2 = 0; index2 < competencies.length; index2++) {
@@ -1491,7 +1550,6 @@ module.exports = {
 
 */
 
-      client.release();
     } catch (err) {
       console.error(err);
       //res.send("Error " + err);

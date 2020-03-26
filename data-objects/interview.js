@@ -187,14 +187,18 @@ class Interview {
     async getPanelist(questions_type, pool) {
         const client = await pool.connect();
         let result = await client.query(`SELECT * FROM interview_panelists INNER JOIN users ON interview_panelists.panelist_id = users.id WHERE interview_id='${this.id}' AND questions_type='${questions_type}' AND interview_panelists.active='1' `);
-
-
         client.release();
         if (result.rows.length == 0) {
             return null;
         } else {
             return result.rows[0];
         }
+    }
+
+    async setInterviewTypeTimeAndDate(interviewType, panelistId, date, time, pool){
+        const client = await pool.connect();
+        await client.query(`UPDATE interview_panelists SET date='${date}', time='${time}' WHERE interview_id='${this.id}' AND questions_type='${interviewType}' and panelist_id='${panelistId}' AND active='1' `);
+        client.release();
     }
 
     async isPanelists(panelistId, pool) {
