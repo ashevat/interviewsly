@@ -1350,6 +1350,12 @@ module.exports = {
   getPannelistQuestionResponse: async function (interview, interviewType, linkToDashboard, pool, context) {
     let roleName = await interview.getCachedRoleName(pool);
     let roleLevel = await interview.getCachedRoleLevelName(pool);
+    let interviewData = await interview.getPanelist(interviewType, pool);
+    //console.log("interviewData"+JSON.stringify(interviewData));
+    let template = await interview.getTemplate(pool);
+    let competencies = await template.getCompetencies(interviewType);
+    let InterviewTypeData = await template.getInterviewTypeById(interviewType);
+
     let response_message = [
       {
         "type": "section",
@@ -1376,6 +1382,10 @@ module.exports = {
           {
             "type": "mrkdwn",
             "text": `*Seniority:*\n${roleLevel}`
+          },
+          {
+            "type": "mrkdwn",
+            "text": `*Interview Type:*\n${InterviewTypeData.name}`
           }
         ]
       },
@@ -1383,7 +1393,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Suggested Questions for this interview:*"
+          "text": `*Suggested Questions for ${InterviewTypeData.name} interview:*`
         }
       },
 
@@ -1393,23 +1403,30 @@ module.exports = {
 
     try {
       //console.log("interview type"+interviewType);
-      let interviewData = await interview.getPanelist(interviewType, pool);
-      //console.log("interviewData"+JSON.stringify(interviewData));
+      
       if(interviewData && interviewData.date){
         
-        var moment = require('moment');
-        var date =  moment(interviewData.date).format("dddd, MMMM Do YYYY ");
-        var time =  moment("2013-02-08 "+interviewData.time).format("h:mm a ");
+        let moment = require('moment');
+        let date =  moment(interviewData.date).format("dddd, MMMM Do YYYY ");
+        let time =  moment("2013-02-08 "+interviewData.time).format("h:mm a ");
+
+        let gdate = moment(moment(interviewData.date).format("YYYY[-]MM[-]DD ")+interviewData.time).format('YYYYMMDD[T]HHmm[00]'); //Ymd\\THi00\\Z
+        let link;
+
+        link = 'http://www.google.com/calendar/event?action=TEMPLATE';
+        link += '&dates=' + encodeURIComponent( gdate +  '/' + gdate );
+        link += '&text=' + encodeURIComponent(`${InterviewTypeData.name} interview with ${interview.candidate_name}`);
+        link += '&location=' + encodeURIComponent( "" );
+        link += '&details=' + encodeURIComponent( `Candidate Dashboard: ${linkToDashboard} `);
         //console.log("got date for this interview onsite:" + `${date} ${time}`);
         let dateTime = {
           "type": "mrkdwn",
-          "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time}` //  \n <${linkToDashboard}|Add to Calendar>
+          "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time} \n <${link}|Add to Calendar>` //  
         }
         response_message[1].fields.push(dateTime);
 
       }
-      let template = await interview.getTemplate(pool);
-      let competencies = await template.getCompetencies(interviewType);
+
       for (let index2 = 0; index2 < competencies.length; index2++) {
         const element2 = competencies[index2];
 

@@ -55,9 +55,9 @@ class Interview {
 
     }
 
-    async getInterviewDataByStatus(status, pool){
+    async getInterviewDataByStatus(status, team_id, pool){
         const client = await pool.connect();
-        let result = await client.query(`SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id WHERE status='${status}'`);
+        let result = await client.query(`SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id WHERE interviews.team_id='${team_id}' AND status='${status}'`);
         client.release();
         return result.rows;
     }

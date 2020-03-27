@@ -138,7 +138,7 @@ express()
     //console.log(request.body);
     //response.send(request.body.challenge); 
   
-  }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (req, res) => {
+  }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (request, response) => {
     // this is a callback webhook from stripe when a user pays.
     const sig = request.headers['stripe-signature'];
     let event;
@@ -249,8 +249,8 @@ express()
       return;
     }
     let interviewDO = new Interview();
-    let activeInterviews = await interviewDO.getInterviewDataByStatus(1, pool); 
-    let archivedInterviews = await interviewDO.getInterviewDataByStatus(0, pool);
+    let activeInterviews = await interviewDO.getInterviewDataByStatus(1, team.id, pool); 
+    let archivedInterviews = await interviewDO.getInterviewDataByStatus(0, team.id, pool);
     //console.log("User photo: "+ JSON.stringify(rawData.user.profile.image_48));
     currentUser.photo = rawData.user.profile.image_48;
 
@@ -367,7 +367,7 @@ express()
 
   }).post('/interview', express.urlencoded(), async (req, res) => {
     await setTeamAndUser(req.body.user_id, req.body.team_id);
-    res.end(":hourglass_flowing_sand: preping an interview :hourglass_flowing_sand:");
+    res.end("");
 
     let msg = await slackTool.getInterviewResponse(req.body.trigger_id, pool);
     console.log(msg);
@@ -527,7 +527,7 @@ express()
             context.org_channel = response.channel.id;
             context.onsite_interview_type_id = onsiteInterview;
             let template = await templateDO.getTemplateById(context.template_id);
-            let onsite = await template.getInterviewById(onsiteInterview);
+            let onsite = await template.getInterviewTypeById(onsiteInterview);
             let msg = await slackTool.getEditOnsiteInterviewTypeResponse(response.trigger_id, context, onsite.name);
             //console.log("****view msg"+ JSON.stringify(msg) );
             const fetch = require('node-fetch');
@@ -1250,14 +1250,13 @@ express()
         const userDO = new User();
         let currentUser = await userDO.getUserBySlackID(response.user.id, pool);
 
-        //todo: fix team_id
         let param = {
           "candidate_name": values.candidate_name.candidate_name_value.value,
           "owner_id": currentUser.id,
           "linkedin": values.linkedin_url.linkedin_url_value.value,
           "role_id": values.role.role_value.selected_option.value,
           "role_level_id": values.role_level.role_level_value.selected_option.value,
-          "team_id": 2,
+          "team_id": team.id,
           "slack_channel_id": "",
           "slack_dashboard_msg_id": "",
           "notes": values.notes.notes_value.value,

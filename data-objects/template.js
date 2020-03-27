@@ -96,7 +96,7 @@ class Template {
         return result.rows;
     }
 
-    async getInterviewById(id) {
+    async getInterviewTypeById(id) {
         const client = await this.pool.connect();
         let result = await client.query(`SELECT * FROM template_interview_types WHERE id='${id}'`);
         client.release();
