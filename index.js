@@ -32,6 +32,7 @@ const stripePK = process.env.STRIPE_PK;
 const stripeStandardPlan = process.env.STRIPE_STANDARD_PLAN;
 const stripeActivateWebhookSigning  = process.env.STRIPE_WEBHOOK_SIGNING;
 const stripeDeactivateWebhookSigning  = process.env.STRIPE_DEACTIVATE_WEBHOOK_SIGNING;
+const cronSecret = process.env.CRON_SECRET;
 
 const PUBLIC_TEAM_ID = -1;
 const { Pool } = require('pg');
@@ -177,8 +178,59 @@ express()
   
     // Return a response to acknowledge receipt of the event
     response.json({received: true});
-  })
-  .get('/billed', async (req, res) => {
+  }).get('/cron', async (req, res) => {
+    let cronSecret = req.query.code;
+    if(!cronSecret || cronSecret != cronSecret){
+      res.status(500).send("unauthorized");
+      return;
+    }
+    console.log("running cron");
+    
+    let teamDO = new Team();
+    let teams = await teamDO.getActiveTeamData(pool);
+    let userDO = new User();
+    for (let index = 0; index < teams.length; index++) {
+      const curTeam = teams[index];
+      console.log("Processing team:"+curTeam.name)
+      let panelists = await userDO.getTodaysPanelistsToNotify(curTeam.id, pool);
+      for (let index = 0; index < panelists.length; index++) {
+        const panelist = panelists[index];
+        console.log(`Notifing panalist ${panelist.name} about message ${panelist.link_to_questions} `);
+        //todo: enable and test this line
+        await userDO.panalistNotified(panelist.panelist_id, panelist.interview_id, pool);
+        let reminder = [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `:bell: Reminder - you have an <${panelist.link_to_questions}|interview> today :bell:`
+            }
+          }
+        ]
+        let imParams = {
+          "text": `Thank you for installing Interviewsly!`,
+          "channel": `${panelist.slack_user_id}`,
+          "blocks": reminder
+        }
+        const fetch2 = require('node-fetch');
+        let http_response = fetch2("https://slack.com/api/chat.postMessage", {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+            'Authorization': `Bearer ${curTeam.token}`
+          },
+          body: `${JSON.stringify(imParams)}`
+        });
+
+        
+      }
+      
+    }
+
+
+    res.status(200).send("done");
+
+  }).get('/billed', async (req, res) => {
     // routes the user to the dashboard if account is active or to the re-active page if not.
     if (!req.user) {
       res.redirect('/');
@@ -702,22 +754,7 @@ express()
           // send a message to the panelist 
           context.result_index = 0;
           context.action == ACTION_PANELIST_QUESTION;
-
-
-          const fetch1 = require('node-fetch');
-          const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Authorization': `Bearer ${team.token}`
-            },
-            body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
-          });
-          const premLinkResJSON = await responsePremLinkinfo.json();
-          let link = premLinkResJSON.permalink;
-          //console.log("****** Link params   = "+`channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`);
-
-          //console.log(">>> context is "+JSON.stringify(context));
+          
           let assessmentContext = {
             "interview_id": context.interview_id,
             "interview_type": interviewType,
@@ -725,7 +762,7 @@ express()
             "action": ACTION_ASSESSMENT
           };
 
-          let questions = await slackTool.getPannelistQuestionResponse(interview, interviewType, link, pool, assessmentContext);
+          let questions = await slackTool.getPannelistQuestionResponse(interview, interviewType,  pool, assessmentContext);
           let imParams = {
             "text": `you have been invited to ${interview.candidate_name}'s interview pannel`,
             "channel": `${slackUserId}`,
@@ -745,7 +782,8 @@ express()
           //console.log(">>>>> "+ JSON.stringify(jsonResults));
           let ts = jsonResults.ts;
           let channel = jsonResults.channel;
-          const res = await interview.addPanelist(user.id, interviewType, ts, channel, pool);
+          let linkToMessage = await getMessageLink(channel, ts, team);
+          const res = await interview.addPanelist(user.id, interviewType, ts, channel, linkToMessage, pool);
           // invite the panelist the channel
 
           let invite_options = {
@@ -899,17 +937,7 @@ express()
         await interview.setInterviewTypeTimeAndDate(interviewType, panelistId, date, time, pool );
 
         // update the panelist interview panel
-        const fetch1 = require('node-fetch');
-        const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
-        });
-        const premLinkResJSON = await responsePremLinkinfo.json();
-        let link = premLinkResJSON.permalink;
+        
         let assessmentContext = {
           "interview_id": context.interview_id,
           "interview_type": context.questionsType,
@@ -917,7 +945,7 @@ express()
           "action": ACTION_ASSESSMENT
         };
 
-        let questions = await slackTool.getPannelistQuestionResponse(interview, context.questionsType, link, pool, assessmentContext);
+        let questions = await slackTool.getPannelistQuestionResponse(interview, context.questionsType, pool, assessmentContext);
         let onsite = await interview.getPanelist(context.questionsType, pool);
         let imParams = {
           "text": `updated`,
@@ -971,21 +999,7 @@ express()
         let interview = await interviewDO.getInterviewById(context.interview_id, pool);
         interview.addInterviewAssessment(context.panelist_id, context.interview_type, interview_assessment, notes, pool);
 
-        // update the panelist interview panel
-        const fetch1 = require('node-fetch');
-        const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
-        });
-        const premLinkResJSON = await responsePremLinkinfo.json();
-        let link = premLinkResJSON.permalink;
-        //console.log("****** Link params   = "+`channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`);
-
-        //console.log(">>> context is "+JSON.stringify(context));
+        // update the panelist interview panel        
         let assessmentContext = {
           "interview_id": context.interview_id,
           "interview_type": context.interview_type,
@@ -993,7 +1007,7 @@ express()
           "action": ACTION_ASSESSMENT
         };
 
-        let questions = await slackTool.getPannelistQuestionResponse(interview, context.interview_type, link, pool, assessmentContext);
+        let questions = await slackTool.getPannelistQuestionResponse(interview, context.interview_type, pool, assessmentContext);
         let onsite = await interview.getPanelist(context.interview_type, pool);
         let imParams = {
           "text": `updated`,
@@ -1052,20 +1066,6 @@ express()
         }
 
         // update the interview panel
-        const fetch1 = require('node-fetch');
-        const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`
-        });
-        const premLinkResJSON = await responsePremLinkinfo.json();
-        let link = premLinkResJSON.permalink;
-        //console.log("****** Link params   = "+`channel=${interview.slack_channel_id}&message_ts=${interview.slack_dashboard_msg_id}`);
-
-        //console.log(">>> context is "+JSON.stringify(context));
         let assessmentContext = {
           "interview_id": context.interview_id,
           "interview_type": context.interview_type,
@@ -1073,7 +1073,7 @@ express()
           "action": ACTION_ASSESSMENT
         };
 
-        let questions = await slackTool.getPannelistQuestionResponse(interview, context.interview_type, link, pool, assessmentContext);
+        let questions = await slackTool.getPannelistQuestionResponse(interview, context.interview_type,  pool, assessmentContext);
         let onsite = await interview.getPanelist(context.interview_type, pool);
         let imParams = {
           "text": `updated`,
@@ -1259,6 +1259,7 @@ express()
           "team_id": team.id,
           "slack_channel_id": "",
           "slack_dashboard_msg_id": "",
+          "link_to_dashboard": "",
           "notes": values.notes.notes_value.value,
         }
 
@@ -1361,7 +1362,8 @@ async function postInterviewDashboard(interview, req, res, pool, context) {
   });
   let jsonResults = await results.json()
   let ts = jsonResults.ts;
-  interview.updateDashboardId(ts, pool);
+  let link = await getMessageLink(interview.slack_channel_id, ts, team);
+  await interview.updateDashboardIdAndLink(ts, link, pool);
 }
 
 async function setTeamAndUser(slack_user_id, slack_team_id) {
@@ -1402,4 +1404,20 @@ async function setTeamAndUser(slack_user_id, slack_team_id) {
     user = await userDO.create(userData, pool);
   }
 
+}
+
+async function getMessageLink(slack_channel_id, slack_message_id, team ) {
+  const fetch1 = require('node-fetch');
+  const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${team.token}`
+    },
+    body: `channel=${slack_channel_id}&message_ts=${slack_message_id}`
+  });
+  const premLinkResJSON = await responsePremLinkinfo.json();
+  let link = premLinkResJSON.permalink;
+  return link;
+  
 }

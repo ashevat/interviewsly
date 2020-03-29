@@ -49,6 +49,13 @@ class Team {
         }
     }
 
+    async getActiveTeamData(pool){
+        const client = await pool.connect();
+        let res1 = await client.query(`SELECT * FROM teams WHERE status='1'`);
+        client.release(); 
+        return res1.rows;
+    }
+
     async create(params, pool) {
         
         this.slack_team_id = params.slack_team_id;

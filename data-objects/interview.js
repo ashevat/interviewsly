@@ -19,6 +19,7 @@ class Interview {
             i.slack_dashboard_msg_id = result.rows[0].slack_dashboard_msg_id;
             i.team_id = result.rows[0].team_id;
             i.status = result.rows[0].status;
+            i.link_to_dashboard = result.rows[0].link_to_dashboard;
             client.release();
             return i;
         } else {
@@ -46,6 +47,7 @@ class Interview {
             i.slack_dashboard_msg_id = result.rows[0].slack_dashboard_msg_id;
             i.team_id = result.rows[0].team_id;
             i.status = result.rows[0].status;
+            i.link_to_dashboard = result.rows[0].link_to_dashboard
             client.release();
             return i;
         } else {
@@ -81,11 +83,12 @@ class Interview {
         this.slack_dashboard_msg_id = params.slack_dashboard_msg_id;
         this.team_id = params.team_id;
         this.status = 1; //active
+        this.link_to_dashboard = params.link_to_dashboard;
 
         const client = await pool.connect();
         const result1 = await client.query(
-            `INSERT INTO interviews (id, owner_id, candidate_name, role_id, role_level_id, linkedin, notes, slack_channel_id, slack_dashboard_msg_id, team_id, status )
-                        VALUES(DEFAULT, '${this.owner_id}' ,'${this.candidate_name}', '${this.role_id}', '${this.role_level_id}','${this.linkedin}','${this.notes}', '${this.slack_channel_id}', '${this.slack_dashboard_msg_id}' ,'${this.team_id}', '${this.status}'  ) RETURNING id`);
+            `INSERT INTO interviews (id, owner_id, candidate_name, role_id, role_level_id, linkedin, notes, slack_channel_id, slack_dashboard_msg_id, link_to_dashboard , team_id, status )
+                        VALUES(DEFAULT, '${this.owner_id}' ,'${this.candidate_name}', '${this.role_id}', '${this.role_level_id}','${this.linkedin}','${this.notes}', '${this.slack_channel_id}', '${this.slack_dashboard_msg_id}', '${this.link_to_dashboard}' ,'${this.team_id}', '${this.status}'  ) RETURNING id`);
         this.id = result1.rows[0].id;
         client.release();
         return this;
@@ -157,10 +160,10 @@ class Interview {
 
     }
 
-    async addPanelist(panelist_id, questions_type, message_id, channel_id, pool) {
+    async addPanelist(panelist_id, questions_type, message_id, channel_id, link_to_questions, pool) {
         const client = await pool.connect();
         const result1 = await client.query(
-            `INSERT INTO interview_panelists (id, interview_id, panelist_id, questions_type, message_id, channel_id, active )VALUES(DEFAULT, '${this.id}' ,'${panelist_id}', '${questions_type}', '${message_id}', '${channel_id}', '1')`);
+            `INSERT INTO interview_panelists (id, interview_id, panelist_id, questions_type, message_id, channel_id, link_to_questions,  active )VALUES(DEFAULT, '${this.id}' ,'${panelist_id}', '${questions_type}', '${message_id}', '${channel_id}', '${link_to_questions}', '1')`);
         client.release();
 
         return this;
@@ -237,10 +240,10 @@ class Interview {
     }
 
 
-    async updateDashboardId(ts, pool) {
+    async updateDashboardIdAndLink(ts,link, pool) {
         const client = await pool.connect();
         const result1 = await client.query(
-            `UPDATE interviews SET slack_dashboard_msg_id ='${ts}' WHERE id='${this.id}'  RETURNING slack_dashboard_msg_id`);
+            `UPDATE interviews SET slack_dashboard_msg_id ='${ts}', link_to_dashboard='${link}' WHERE id='${this.id}'  RETURNING slack_dashboard_msg_id`);
         this.slack_dashboard_msg_id = result1.rows[0].slack_dashboard_msg_id;
         client.release();
         return this;

@@ -47,7 +47,23 @@ class User {
 
     }
 
+    async getTodaysPanelistsToNotify(team_id, pool){
+        const client = await pool.connect();
+        var moment = require('moment');
+        let date =  moment().startOf('day').format("YYYY-MM-DD");
+        //console.log(`SELECT * from interview_panelists INNER JOIN users ON interview_panelists.panelist_id = users.id  WHERE interview_panelists.date='${date}' AND users.team_id='${team_id}' AND interview_panelists.notified='0'`);
+        let result = await client.query(`SELECT * from interview_panelists INNER JOIN users ON interview_panelists.panelist_id = users.id INNER JOIN interviews ON interviews.id = interview_panelists.interview_id  WHERE interviews.status='1' AND interview_panelists.date='${date}' AND users.team_id='${team_id}' AND interview_panelists.active='1' AND interview_panelists.notified='0'`);
+        this.team_id = team_id;
+        client.release(); 
+        return result.rows;        
 
+    }
+
+    async panalistNotified(panelist_id, interview_id, pool){
+        const client = await pool.connect();
+        let result = await client.query(`UPDATE interview_panelists SET notified='1' WHERE panelist_id='${panelist_id}' AND interview_id='${interview_id}'`);
+        client.release(); 
+    }
 
   }
 

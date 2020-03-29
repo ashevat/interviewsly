@@ -1347,7 +1347,7 @@ module.exports = {
     response_view.view.blocks.push(assessmentNotes);
     return response_view;
   },
-  getPannelistQuestionResponse: async function (interview, interviewType, linkToDashboard, pool, context) {
+  getPannelistQuestionResponse: async function (interview, interviewType, pool, context) {
     let roleName = await interview.getCachedRoleName(pool);
     let roleLevel = await interview.getCachedRoleLevelName(pool);
     let interviewData = await interview.getPanelist(interviewType, pool);
@@ -1373,7 +1373,7 @@ module.exports = {
           },
           {
             "type": "mrkdwn",
-            "text": `*Candidate interview dashboard:*\n <${linkToDashboard}|Interview Dashboard>`
+            "text": `*Candidate interview dashboard:*\n <${interview.link_to_dashboard}|Interview Dashboard>`
           },
           {
             "type": "mrkdwn",
@@ -1417,7 +1417,7 @@ module.exports = {
         link += '&dates=' + encodeURIComponent( gdate +  '/' + gdate );
         link += '&text=' + encodeURIComponent(`${InterviewTypeData.name} interview with ${interview.candidate_name}`);
         link += '&location=' + encodeURIComponent( "" );
-        link += '&details=' + encodeURIComponent( `Candidate Dashboard: ${linkToDashboard} `);
+        link += '&details=' + encodeURIComponent( `Candidate Dashboard: ${interview.link_to_dashboard} `);
         //console.log("got date for this interview onsite:" + `${date} ${time}`);
         let dateTime = {
           "type": "mrkdwn",
