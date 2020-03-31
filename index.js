@@ -599,20 +599,19 @@ express()
         if (context.template_id) {
           currentTemplate = await templateDO.getTemplateById(context.template_id);
         } else if (context.role > 0 && context.level > 0 && !context.current_template_id) {
-          //console.log(`looking for  templates ${context.role}, ${context.level} `);
-          // todo: fix team id -1 to be real
-          currentTemplate = await templateDO.getTemplate(context.role, context.level, -1)
+          currentTemplate = await templateDO.getTemplate(context.role, context.level, team.id);
           //console.log("found template: "+currentTemplate.description);
           if (currentTemplate) {
             context.template_id = currentTemplate.id;
           } else {
-            templates = await templateDO.getPublicTemplates(context.role, context.level);
+            // todo: copy the default template to this team, so user can edit it.
+            publicTemplate = await templateDO.getPublicTemplateByRoleAndLevel(context.role, context.level);
           }
 
           //console.log("Found templates"+templates);
         }
 
-        let response_message = await slackTool.getSetupResponse(req, res, pool, context, currentTemplate, templates);
+        let response_message = await slackTool.getSetupResponse(req, res, pool, context, currentTemplate, publicTemplate);
         const fetch = require('node-fetch');
         let debug = await fetch(response_url, {
           method: 'post',
@@ -902,7 +901,7 @@ express()
 
         }
         //console.log("needed context" + JSON.stringify(context));
-        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, context);
+        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, context, team);
 
         let msg = {
           "text": `Starting Interview process`,
@@ -969,7 +968,7 @@ express()
           "interview_id": context.interview_id,
           "action": ACTION_INTERVIEW_DASHBOARD
         };
-        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, dashboardContext);
+        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, dashboardContext, team);
         let imParams2 = {
           "text": `updated`,
           "channel": `${interview.slack_channel_id}`,
@@ -1031,7 +1030,7 @@ express()
           "interview_id": context.interview_id,
           "action": ACTION_INTERVIEW_DASHBOARD
         };
-        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, dashboardContext);
+        let response_message = await slackTool.getInterviewDashboardResponse(interview, pool, dashboardContext, team);
         let imParams2 = {
           "text": `updated`,
           "channel": `${interview.slack_channel_id}`,
@@ -1249,18 +1248,25 @@ express()
 
         const userDO = new User();
         let currentUser = await userDO.getUserBySlackID(response.user.id, pool);
-
+        let linkedIn = values.linkedin_url.linkedin_url_value.value;
+        if(!linkedIn){
+          linkedIn = "N/A";
+        }
+        let notes = values.notes.notes_value.value;
+        if(!notes){
+          notes = "N/A";
+        }
         let param = {
           "candidate_name": values.candidate_name.candidate_name_value.value,
           "owner_id": currentUser.id,
-          "linkedin": values.linkedin_url.linkedin_url_value.value,
+          "linkedin": linkedIn,
           "role_id": values.role.role_value.selected_option.value,
           "role_level_id": values.role_level.role_level_value.selected_option.value,
           "team_id": team.id,
           "slack_channel_id": "",
           "slack_dashboard_msg_id": "",
           "link_to_dashboard": "",
-          "notes": values.notes.notes_value.value,
+          "notes": notes,
         }
 
         const interviewDO = new Interview();
@@ -1343,7 +1349,7 @@ express()
 
 async function postInterviewDashboard(interview, req, res, pool, context) {
 
-  let dashboardBlock = await slackTool.getInterviewDashboardResponse(interview, pool, context);
+  let dashboardBlock = await slackTool.getInterviewDashboardResponse(interview, pool, context, team);
 
   let msg = {
     "channel": `${interview.slack_channel_id}`,

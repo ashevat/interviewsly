@@ -665,19 +665,6 @@ module.exports = {
             },
             {
               "type": "input",
-              "block_id": "linkedin_url",
-              "element": {
-                "type": "plain_text_input",
-                "action_id": "linkedin_url_value",
-              },
-              "label": {
-                "type": "plain_text",
-                "text": "Candidate LinkedIn",
-                "emoji": true
-              }
-            },
-            {
-              "type": "input",
               "block_id": "role",
               "element": {
                 "type": "static_select",
@@ -721,7 +708,20 @@ module.exports = {
                 "emoji": true
               }
             },
-
+            {
+              "type": "input",
+              "optional": true,
+              "block_id": "linkedin_url",
+              "element": {
+                "type": "plain_text_input",
+                "action_id": "linkedin_url_value",
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Candidate LinkedIn",
+                "emoji": true
+              }
+            },
             {
               "type": "input",
               "optional": true,
@@ -744,10 +744,10 @@ module.exports = {
     try {
       const client = await pool.connect()
       let result = await client.query('SELECT * FROM roles');
-      populateDropdown(response_view1.view.blocks[3].element.options, result.rows);
+      populateDropdown(response_view1.view.blocks[2].element.options, result.rows);
 
       let result2 = await client.query('SELECT * FROM levels');
-      populateDropdown(response_view1.view.blocks[4].element.options, result2.rows);
+      populateDropdown(response_view1.view.blocks[3].element.options, result2.rows);
 
       client.release();
     } catch (err) {
@@ -800,14 +800,12 @@ module.exports = {
     return response;
 
   },
-  getInterviewDashboardResponse: async function (interview, pool, context) {
+  getInterviewDashboardResponse: async function (interview, pool, context , team) {
     //console.log("datboard for interview" + JSON.stringify(interview));
 
     let roleName = await interview.getCachedRoleName(pool);
     let roleLevelName = await interview.getCachedRoleLevelName(pool);
     let ownerName = await interview.getCachedOwnerName(pool);
-
-
     let response_message = [
       {
         "type": "section",
@@ -862,7 +860,10 @@ module.exports = {
       const Template = require("../data-objects/template");
       const templateDO = new Template(pool);
       //todo fix team to interview.team_id
-      let template = await templateDO.getTemplate(interview.role_id, interview.role_level_id, -1);
+      let template = await templateDO.getTemplate(interview.role_id, interview.role_level_id, team.id);
+      if(!template){
+        template = await  templateDO.getPublicTemplateByRoleAndLevel(interview.role_id, interview.role_level_id);
+      }
       let interviewTypes = await template.getInterviewTypes()
       let assessmentCollected = 0;
       let onsiteCount = 0;
@@ -1482,7 +1483,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:white_check_mark: Thank you! You have sucessfully submitted your interview assessment! Results will show up <${linkToDashboard}|here> when all interviews are finished.`
+            "text": `:white_check_mark: Thank you! You have sucessfully submitted your interview assessment! Results will show up <${interview.link_to_dashboard}|here> when all interviews are finished.`
           }
         };
         response_message.push(done);
@@ -1577,7 +1578,7 @@ module.exports = {
   },
 
 
-  getSetupResponse: async function (req, res, pool, context, currentTemplate, templates) {
+  getSetupResponse: async function (req, res, pool, context, currentTemplate, publicTemplate) {
 
     let response_message = {
       "response_type": "in_channel",
@@ -1598,8 +1599,12 @@ module.exports = {
 
     try {
       const client = await pool.connect()
+      let readonly = false;
       //console.log("current template: "+ currentTemplate.description);
-
+      if(!currentTemplate && publicTemplate){
+        readonly = true;
+        currentTemplate = publicTemplate;
+      }
       if (currentTemplate) {
         let roleName = await currentTemplate.getRoleName();
         let levelName = await currentTemplate.getLevelName();
@@ -1634,8 +1639,10 @@ module.exports = {
               "text": {
                 "type": "mrkdwn",
                 "text": `*${index + 1}. Onsite interview - * ${element.name}`
-              },
-              "accessory": {
+              }
+            };
+            if(!readonly){
+              onsitePrompt.accessory = {
                 "type": "overflow",
                 "action_id": "onsite_interview_actions",
                 "options": [
@@ -1666,7 +1673,7 @@ module.exports = {
                   }
                 ]
               }
-            };
+            }
 
             response_message.blocks.push(onsitePrompt);
             // add competencies
@@ -1679,8 +1686,11 @@ module.exports = {
                 "text": {
                   "type": "mrkdwn",
                   "text": `:muscle: _ Competency:  ${element2.competency}_`
-                },
-                "accessory": {
+                }
+              };
+
+              if(!readonly){
+                competencyPrompt.accessory= {
                   "type": "overflow",
                   "action_id": "competency_actions",
                   "options": [
@@ -1702,8 +1712,8 @@ module.exports = {
                       "value": `remove|${element2.id}`
                     }
                   ]
-                }
-              };
+                };
+              }
               let questions = await currentTemplate.getQuestions(element2.id);
               for (let index3 = 0; index3 < questions.length; index3++) {
                 const element3 = questions[index3];
@@ -1714,24 +1724,66 @@ module.exports = {
 
           }
         }
-        let addInterviewTypeAction = {
-          "type": "actions",
-          "block_id": `${this.encodeBlockID(context)}`,
-          "elements": [
-            {
-              "type": "button",
-              "action_id": "add_onsite_interview_type",
-              "text": {
-                "type": "plain_text",
-                "emoji": true,
-                "text": "Add onsite interview"
-              },
-              "style": "primary",
-              "value": `${currentTemplate.id}`
-            }
-          ]
+        if(!readonly){
+          let addInterviewTypeAction = {
+            "type": "actions",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "elements": [
+              {
+                "type": "button",
+                "action_id": "add_onsite_interview_type",
+                "text": {
+                  "type": "plain_text",
+                  "emoji": true,
+                  "text": "Add onsite interview"
+                },
+                "style": "primary",
+                "value": `${currentTemplate.id}`
+              }
+            ]
+          }
+          response_message.blocks.push(addInterviewTypeAction);
+        }else{
+          let actions1 = {
+            "type": "actions",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "elements": [
+              {
+                "type": "button",
+                "action_id": "clone_template",
+                "text": {
+                  "type": "plain_text",
+                  "emoji": true,
+                  "text": "Modify this template"
+                },
+                "style": "primary",
+                "value": "create_new"
+              }
+            ]
+          }
+          response_message.blocks.push(actions1);
+
+          let actions2 = {
+            "type": "actions",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "elements": [
+              {
+                "type": "button",
+                "action_id": "create_new",
+                "text": {
+                  "type": "plain_text",
+                  "emoji": true,
+                  "text": "Create my own template"
+                },
+                "style": "primary",
+                "value": "create_new"
+              }
+            ]
+          }
+          response_message.blocks.push(actions2);
+
         }
-        response_message.blocks.push(addInterviewTypeAction);
+        
 
 
         let div = {
@@ -1820,7 +1872,7 @@ module.exports = {
         // show results if needed 
         if (context.role > 0 && context.level > 0) {
           let templatePrompt = {};
-          if (templates && templates.length > 0) {
+          if (publicTemplate) {
 
             templatePrompt = {
               "type": "section",
@@ -1832,6 +1884,7 @@ module.exports = {
             }
 
           } else {
+            // we should not get here, but just in case. This means we found no public template for this role/level
             templatePrompt = {
               "type": "section",
               "text": {

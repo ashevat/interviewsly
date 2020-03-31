@@ -11,19 +11,24 @@ class Template {
     }
 
 
-    async getPublicTemplates(role_id, level_id) {
+    async getPublicTemplateByRoleAndLevel(role_id, level_id) {
         const client = await this.pool.connect();
         const query = 'SELECT * FROM templates WHERE role_id=$1 AND level_id=$2 AND is_public=$3 AND active=$4';
         const values = [role_id, level_id,1,1 ];
         let result = await client.query(query,values );
         client.release();
-        let templates = [];
+
+        let template = new Template(this.pool);
+        template = template.populateTemplate(template, result.rows[0]);
+
+       /* let templates = [];
         for (let index = 0; index < result.rows.length; index++) {
             let template = new Template(this.pool);
             template = this.populateTemplate(template, result.rows[index]);
             templates.push(template)
         }
-        return templates;
+        */
+        return template;
     }
 
     async copyPublicTemplate(role_id, role_level_id, team_id) {
@@ -79,16 +84,19 @@ class Template {
         return template;
     }
 
-    // todo: think about defaulting to public templates
     async getTemplate(role_id, level_id, team_id) {
         const client = await this.pool.connect();
         const query = 'SELECT * FROM templates WHERE role_id=$1 AND level_id=$2 AND team_id=$3 AND active=$4';
         const values = [role_id,level_id,team_id, 1 ];
         let result = await client.query(query, values);
         client.release();
-        let template = new Template(this.pool);
-        template = this.populateTemplate(template, result.rows[0]);
-        return template;
+        if(result.rows[0]){
+            let template = new Template(this.pool);
+            template = this.populateTemplate(template, result.rows[0]);
+            return template;
+        }else{
+            return null;
+        }
     }
 
     async getTemplateById(id) {
