@@ -1,0 +1,216 @@
+{% extends "layouts/default.njk" %}
+{% set title = "App" %}
+{% block content %}
+    <main id="main">
+
+        <!-- Hero -->
+        <section class="container">
+            <div class="row justify-content-lg-between align-items-lg-center py-5">
+                <div class="col-lg-6 mb-4 text-center text-lg-left">
+                    <h1 class="display-4 mb-4">Create a landing for your mobile app</h1>
+                    <p class="lead">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    <a class="btn btn-primary btn-block rounded-pill d-md-inline-block w-auto mx-1 ml-sm-0 my-3" href="#" role="button">
+                        <i class="fab fa-apple fa-lg mr-1" aria-hidden="true"></i>
+                        <span>App Store</span>
+                    </a>
+                    <a class="btn btn-primary btn-block rounded-pill d-md-inline-block w-auto mx-1 ml-sm-0 my-3" href="#" role="button">
+                        <i class="fab fa-google-play fa-lg mr-1" aria-hidden="true"></i>
+                        <span>Play Store</span>
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <img src="assets/img/holding-phone.svg" class="d-none d-lg-block img-fluid" alt="">
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-skew bg-skew-light">
+
+            <!-- Icon blocks -->
+            <section class="container">
+                <h2 class="sr-only">Features</h2>
+                <div class="row align-items-center py-5">
+                    <div class="col-lg-4">
+                        <div class="iphone-x mb-5 mx-auto">
+                            <img src="assets/img/screenshot.png" alt="" class="screen">
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-sm-6 mb-4">
+                                <div class="media">
+                                    <span class="icon icon-primary mr-3">
+                                        <i class="icon-inner fab fa-accessible-icon" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="media-body">
+                                        <h3 class="h5 mb-2">Accessible</h3>
+                                        <p>Built with accessibility in mind and following best practices.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="media">
+                                    <span class="icon icon-warning mr-3">
+                                        <i class="icon-inner fas fa-mobile-alt" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="media-body">
+                                        <h3 class="h5 mb-2">Mobile First</h3>
+                                        <p>Mobile-first flexbox grid to build layouts of all shapes and sizes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="media">
+                                    <span class="icon icon-info mr-3">
+                                        <i class="icon-inner fab fa-font-awesome-flag" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="media-body">
+                                        <h3 class="h5 mb-2">Font Awesome</h3>
+                                        <p>More than 1200 vector icons from the web's most popular icon set.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="media">
+                                    <span class="icon icon-dark mr-3">
+                                        <i class="icon-inner fas fa-code" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="media-body">
+                                        <h3 class="h5 mb-2">Valid Code</h3>
+                                        <p>W3C valid code to ensure the site works properly on all major browsers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="media">
+                                    <span class="icon icon-danger mr-3">
+                                        <i class="icon-inner fab fa-sass" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="media-body">
+                                        <h3 class="h5 mb-2">Sass Files</h3>
+                                        <p>Easily customize your site modifying the source scss files.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="media">
+                                    <span class="icon icon-success mr-3">
+                                        <i class="icon-inner fab fa-gulp" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="media-body">
+                                        <h3 class="h5 mb-2">Gulp</h3>
+                                        <p>Automated workflow for your development tasks.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonials -->
+            <section class="container">
+                <h2 class="h3 mt-5 mb-4 text-center">What people are saying…</h2>
+                <div class="row py-5">
+                    <div class="col-md">
+                        <blockquote class="bg-white rounded shadow mb-4 p-4 p-lg-5 text-center">
+                            <img class="avatar avatar-md mb-4" src="assets/img/leo-gill.jpg" alt="Leo Gill">
+                            <p class="text-secondary">Boost theme is awesome! We've seen amazing results already.</p>
+                            <cite class="small text-uppercase">Leo Gill</cite>
+                        </blockquote>
+                    </div>
+                    <div class="col-md">
+                        <blockquote class="bg-white rounded shadow mb-4 p-4 p-lg-5 text-center">
+                            <img class="avatar avatar-md mb-4" src="assets/img/renee-sims.jpg" alt="Renee Sims">
+                            <p class="text-secondary">It really saves me time and effort. Boost theme is exactly what our business has been lacking.</p>
+                            <cite class="small text-uppercase">Renee Sims</cite>
+                        </blockquote>
+                    </div>
+                    <div class="col-md">
+                        <blockquote class="bg-white rounded shadow mb-4 p-4 p-lg-5 text-center">
+                            <img class="avatar avatar-md mb-4" src="assets/img/dallas-kwok.jpg" alt="Dallas Kwok">
+                            <p class="text-secondary">Boost theme impressed me on multiple levels.</p>
+                            <cite class="small text-uppercase">Dallas Kwok</cite>
+                        </blockquote>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pricing cards -->
+            <section class="container">
+                <h2 class="text-center mt-5 mb-4">Choose the plan that suits your needs</h2>
+                <div class="row py-5">
+                    <div class="col-lg-4">
+                        <div class="card card-price shadow-lg mb-4">
+                            <div class="card-header">
+                                <h3 class="h4 font-weight-normal">Basic</h3>
+                                <span class="d-block h1 my-2"><span class="h2">$</span>0</span>
+                                <span class="d-block text-muted">forever</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-4">
+                                    <li class="py-2 text-secondary">5 downloads / month</li>
+                                    <li class="py-2 text-secondary">Email support</li>
+                                    <li class="py-2 text-secondary">No credit card required</li>
+                                    <li class="py-2 text-secondary">Easy cancellation</li>
+                                </ul>
+                                <a class="btn btn-outline-primary rounded-pill mb-3" href="#">Get started</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-price card-featured shadow-lg mb-4">
+                            <div class="card-header">
+                                <h3 class="h4 font-weight-normal">Standard</h3>
+                                <span class="d-block h1 my-2"><span class="h2">$</span>5</span>
+                                <span class="d-block text-muted">per month</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-4">
+                                    <li class="py-2 text-secondary">15 downloads / month</li>
+                                    <li class="py-2 text-secondary">Email support</li>
+                                    <li class="py-2 text-secondary">No credit card required</li>
+                                    <li class="py-2 text-secondary">Easy cancellation</li>
+                                </ul>
+                                <a class="btn btn-primary rounded-pill mb-3" href="#">Get started</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-price shadow-lg mb-4">
+                            <div class="card-header">
+                                <h3 class="h4 font-weight-normal">Unlimited</h3>
+                                <span class="d-block h1 my-2"><span class="h2">$</span>10</span>
+                                <span class="d-block text-muted">per month</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-4">
+                                    <li class="py-2 text-secondary">Unlimited downloads</li>
+                                    <li class="py-2 text-secondary">Online support</li>
+                                    <li class="py-2 text-secondary">Easy payment</li>
+                                    <li class="py-2 text-secondary">Easy cancellation</li>
+                                </ul>
+                                <a class="btn btn-outline-primary rounded-pill mb-3" href="#">Get started</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- end bg-skew -->
+
+        <hr class="sep border-primary" role="presentation">
+
+        <!-- Call to action -->
+        <div class="container py-5">
+            <div class="text-center">
+                <h2 class="mb-4">Have questions? Get in touch.
+                </h2>
+                <div class="mb-4">
+                    <a class="btn btn-primary rounded-pill" href="contact.html" role="button">Contact us</a>
+                </div>
+            </div>
+        </div>
+
+    </main>
+{% endblock %}

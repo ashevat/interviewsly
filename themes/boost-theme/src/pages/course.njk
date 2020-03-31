@@ -1,0 +1,203 @@
+{% extends "layouts/default.njk" %}
+{% set title = "Course" %}
+{% block content %}
+    <main id="main">
+
+        <!-- Hero -->
+        <section class="d-flex align-items-center min-vh-70 bg-skew bg-skew-primary overflow-hidden text-white">
+            <div class="container mb-xl-5 py-5">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-10">
+                        <h1 class="display-3 mb-4">Introduction to Visual Design</h1>
+                        <p class="lead px-sm-5">Learn the fundamentals of typography, color, interface design, and user experience</p>
+                        <a class="btn btn-light btn-lg rounded-pill" href="#">Join now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container pt-5">
+            <div class="row">
+                <div class="col-lg-9 col-xl-8 mb-4">
+                    <h2>About this Course</h2>
+                    <p class="lead">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                </div>
+                <div class="col-lg-3 col-xl-3 offset-xl-1">
+                    <aside class="bg-white shadow rounded mt-xl-n6 text-center">
+                        <dl class="mb-0">
+                            <dt class="font-weight-light text-uppercase mb-2 pt-4">Start</dt>
+                            <dd class="h4 border-bottom mb-0 pb-4">Mar 9, 2020</dd>
+                            <dt class="font-weight-light text-uppercase mb-2 pt-4">Time</dt>
+                            <dd class="h4 border-bottom mb-0 pb-4">40 hrs</dd>
+                            <dt class="font-weight-light text-uppercase mb-2 pt-4">Prerequisites</dt>
+                            <dd class="h4 mb-0 pb-4">None</dd>
+                        </dl>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <hr class="sep border-primary my-5" role="presentation">
+
+        <!-- Accordion -->
+        <section class="container pb-5">
+            <h2 class="my-5 text-center">What You Will Learn</h2>
+            <div class="row justify-content-lg-center">
+                <div class="col-lg-9">
+                    <div class="accordion" id="accordionQuestions">
+
+                        <div class="card mb-2 shadow">
+                            <div class="card-header" id="headingOne">
+                                <h3 class="card-title">
+                                    <a class="collapsed" role="button" href="#collapseTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Lesson 1 - Intro to Visual Design <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingOne" data-parent="#accordionQuestions">
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Duis aute irure dolor</li>
+                                        <li>Voluptate velit esse cillum</li>
+                                        <li>Excepteur sint occaecat</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 shadow">
+                            <div class="card-header" id="headingTwo">
+                                <h3 class="card-title">
+                                    <a class="collapsed" role="button" href="#collapseOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                        Lesson 2 - Typography <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionQuestions">
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Duis aute irure dolor</li>
+                                        <li>Voluptate velit esse cillum</li>
+                                        <li>Excepteur sint occaecat</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 shadow">
+                            <div class="card-header" id="headingThree">
+                                <h3 class="card-title">
+                                    <a class="collapsed" role="button" href="#collapseThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Lesson 3 - Color Theory <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionQuestions">
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Duis aute irure dolor</li>
+                                        <li>Voluptate velit esse cillum</li>
+                                        <li>Excepteur sint occaecat</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 shadow">
+                            <div class="card-header" id="headingFour">
+                                <h3 class="card-title">
+                                    <a class="collapsed" role="button" href="#collapseFour" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        Lesson 4 - UI Design <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionQuestions">
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Duis aute irure dolor</li>
+                                        <li>Voluptate velit esse cillum</li>
+                                        <li>Excepteur sint occaecat</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-2 shadow">
+                            <div class="card-header" id="headingFive">
+                                <h3 class="card-title">
+                                    <a class="collapsed" role="button" href="#collapseFive" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                        Lesson 5 - User Experience <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionQuestions">
+                                <div class="card-body">
+                                    <ul>
+                                        <li>Duis aute irure dolor</li>
+                                        <li>Voluptate velit esse cillum</li>
+                                        <li>Excepteur sint occaecat</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-skew bg-skew-light">
+
+        <section class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-center">
+                    <img src="assets/img/instructor.jpg" class="img-thumbnail mb-4 mb-lg-0" alt="Jack Finnigan">
+                </div>
+                <div class="col-lg-6 text-center text-lg-left">
+                    <h2>About the Instructor</h2>
+                    <p class="lead">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <a class="link-cta" href="#">Read more</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="container">
+            <h2 class="h3 mt-5 mb-4 text-center">What people are saying…</h2>
+            <div class="row py-5">
+                <div class="col-md">
+                    <blockquote class="bg-white rounded shadow mb-4 p-4 p-lg-5 text-center">
+                        <img class="avatar avatar-md mb-4" src="assets/img/renee-sims.jpg" alt="Renee Sims">
+                        <p class="text-secondary">It really saves me time and effort. This course is exactly what our business has been lacking.</p>
+                        <cite class="small text-uppercase">Renee Sims</cite>
+                    </blockquote>
+                </div>
+                <div class="col-md">
+                    <blockquote class="bg-white rounded shadow mb-4 p-4 p-lg-5 text-center">
+                        <img class="avatar avatar-md mb-4" src="assets/img/leo-gill.jpg" alt="Leo Gill">
+                        <p class="text-secondary">I’ve learned so much from this course! It gave me a good grounding in the basics</p>
+                        <cite class="small text-uppercase">Leo Gill</cite>
+                    </blockquote>
+                </div>
+                <div class="col-md">
+                    <blockquote class="bg-white rounded shadow mb-4 p-4 p-lg-5 text-center">
+                        <img class="avatar avatar-md mb-4" src="assets/img/dallas-kwok.jpg" alt="Dallas Kwok">
+                        <p class="text-secondary">The course covered a lot of information, delivered in concise chunks that were easy to absorb.</p>
+                        <cite class="small text-uppercase">Dallas Kwok</cite>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <hr class="sep border-primary" role="presentation">
+
+        <!-- Call to action -->
+        <div class="container py-5">
+            <div class="text-center">
+                <h2 class="font-weight-normal mb-4">Start learning today</h2>
+                <a class="btn btn-primary rounded-pill" href="#" role="button">Join now</a>
+            </div>
+        </div>
+
+    </div>
+
+    </main>
+{% endblock %}

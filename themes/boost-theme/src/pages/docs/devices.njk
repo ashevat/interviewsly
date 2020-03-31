@@ -1,0 +1,22 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "devices" %}
+{% set title = "Devices" %}
+{% block content %}
+    <h1>Devices</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0 mb-4">
+    <p class="lead">Showcase your screenshots in a minimalist iPhone X created with CSS.</p>
+
+    <div class="iphone-x mb-4">
+        <img src="../assets/img/screenshot.png" alt="" class="screen">
+    </div>
+
+    <p>Use an image of 500 x 1060 pixels or of the same ratio.</p>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;div class="iphone-x"&gt;
+                &lt;img src="assets/img/screenshot.png" alt="" class="screen"&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+{% endblock %}

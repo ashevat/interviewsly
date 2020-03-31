@@ -1,0 +1,101 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "accordion" %}
+{% set title = "Accordion" %}
+{% block content %}
+    <h1>Accordion</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Show and hide content using the collapse component.</p>
+
+    <h2 class="sr-only">Example</h2>
+    <div class="accordion mb-4" id="accordionQuestions">
+        <div class="card shadow mb-2">
+            <div class="card-header" id="headingOne">
+                <h3 class="card-title">
+                    <a class="collapsed" href="#collapseOne" role="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">Question #1 <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionQuestions">
+                <div class="card-body">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow mb-2">
+            <div class="card-header" id="headingTwo">
+                <h3 class="card-title">
+                    <a class="collapsed" role="button" href="#collapseTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Question #2 <i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionQuestions">
+                <div class="card-body">
+                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow mb-2">
+            <div class="card-header" id="headingThree">
+                <h3 class="card-title">
+                    <a class="collapsed" role="button" href="#collapseThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Question #3<i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"></i>
+                    </a>
+                </h3>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionQuestions">
+                <div class="card-body">
+                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;div class="accordion" id="accordionQuestions"&gt;
+                &lt;div class="card shadow mb-2"&gt;
+                    &lt;div class="card-header" id="headingOne"&gt;
+                        &lt;h3 class="card-title"&gt;
+                            &lt;a class="collapsed" href="#collapseOne" role="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"&gt;Question #1 &lt;i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"&gt;&lt;/i&gt;
+                            &lt;/a&gt;
+                        &lt;/h3&gt;
+                    &lt;/div&gt;
+                    &lt;div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionQuestions"&gt;
+                        &lt;div class="card-body"&gt;
+                            &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class="card shadow mb-2"&gt;
+                    &lt;div class="card-header" id="headingTwo"&gt;
+                        &lt;h3 class="card-title"&gt;
+                            &lt;a class="collapsed" role="button" href="#collapseTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"&gt;Question #2 &lt;i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"&gt;&lt;/i&gt;
+                            &lt;/a&gt;
+                        &lt;/h3&gt;
+                    &lt;/div&gt;
+                    &lt;div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionQuestions"&gt;
+                        &lt;div class="card-body"&gt;
+                            &lt;p&gt;Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class="card shadow mb-2"&gt;
+                    &lt;div class="card-header" id="headingThree"&gt;
+                        &lt;h3 class="card-title"&gt;
+                            &lt;a class="collapsed" role="button" href="#collapseThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"&gt;Question #3&lt;i class="fas fa-angle-down float-right rotate-icon" aria-hidden="true"&gt;&lt;/i&gt;
+                            &lt;/a&gt;
+                        &lt;/h3&gt;
+                    &lt;/div&gt;
+                    &lt;div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionQuestions"&gt;
+                        &lt;div class="card-body"&gt;
+                            &lt;p&gt;Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.&lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/components/collapse/" target="_blank" rel="noopener">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

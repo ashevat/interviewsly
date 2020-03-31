@@ -1,0 +1,145 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "cards" %}
+{% set title = "Cards" %}
+{% block content %}
+    <h1>Cards</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Bootstrap’s cards provide a flexible and extensible content container with multiple variants and options.</p>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card mb-4">
+                <img class="card-img-top" src="../assets/img/cactus.jpg" alt="A succulent in a white ceramic pot against a blue wall">
+                <div class="card-body">
+                    <h2 class="h4 card-title">Card default</h2>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary btn-sm rounded-pill">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-hover mb-4">
+                <img class="card-img-top" src="../assets/img/beach.jpg" alt="Sand beach shoreline underneath the blue sky">
+                <div class="card-body">
+                    <h2 class="h4 card-title">Card rising</h2>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary btn-sm rounded-pill">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Add <code>.card-hover</code> to animate a card on hover.</p>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;div class="card shadow"&gt;
+                &lt;img class="card-img-top" src="assets/img/cactus.jpg" alt="A succulent in a white ceramic pot against a blue wall"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;h2 class="h4 card-title"&gt;Card default&lt;/h2&gt;
+                    &lt;p class="card-text"&gt;Some quick example text to build on the card title and make up the bulk of the card's content.&lt;/p&gt;
+                    &lt;a href="#" class="btn btn-primary btn-sm rounded-pill"&gt;Go somewhere&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="card card-hover"&gt;
+                &lt;img class="card-img-top" src="assets/img/beach.jpg" alt="Sand beach shoreline underneath the blue sky"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;h2 class="h4 card-title"&gt;Card rising&lt;/h2&gt;
+                    &lt;p class="card-text"&gt;Some quick example text to build on the card title and make up the bulk of the card's content.&lt;/p&gt;
+                    &lt;a href="#" class="btn btn-primary btn-sm rounded-pill"&gt;Go somewhere&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+
+    <h2 class="my-4">Pricing cards</h2>
+    <p>Show prices and options available using pricing cards.</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-price shadow-lg mb-4">
+                <div class="card-header">
+                    <h3 class="h4 font-weight-normal">Basic</h3>
+                    <div class="d-flex justify-content-center">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">0</span>
+                    </div>
+                    <span class="text-muted">forever</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled text-secondary mb-4">
+                        <li class="py-2 ">5 downloads / month</li>
+                        <li class="py-2">Email support</li>
+                        <li class="py-2">No credit card required</li>
+                        <li class="py-2">Easy cancellation</li>
+                    </ul>
+                    <a class="btn btn-outline-primary rounded-pill mb-3" href="#">Get started</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-price card-featured shadow-lg mb-4">
+                <div class="card-header">
+                    <h3 class="h4 font-weight-normal">Unlimited</h3>
+                    <div class="d-flex justify-content-center">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">5</span>
+                    </div>
+                    <span class="text-muted">per month</span>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled text-secondary mb-4">
+                        <li class="py-2">Unlimited downloads</li>
+                        <li class="py-2">Online support</li>
+                        <li class="py-2">Easy payment</li>
+                        <li class="py-2">Easy cancellation</li>
+                    </ul>
+                    <a class="btn btn-primary rounded-pill mb-3" href="#">Get started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Add <code>.card-featured</code> to highlight a card price.</p>
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;div class="card card-price shadow-lg mb-4"&gt;
+                &lt;div class="card-header"&gt;
+                    &lt;h3 class="h4 font-weight-normal"&gt;Basic&lt;/h3&gt;
+                    &lt;div class="d-flex justify-content-center"&gt;
+                        &lt;span class="h4 font-weight-normal mt-1"&gt;$&lt;/span&gt;
+                        &lt;span class="display-4 font-weight-bold"&gt;0&lt;/span&gt;
+                    &lt;/div&gt;
+                    &lt;span class="text-muted"&gt;forever&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;ul class="list-unstyled text-secondary mb-4"&gt;
+                    &lt;li class="py-2"&gt;5 downloads / month&lt;/li&gt;
+                    &lt;li class="py-2"&gt;Email support&lt;/li&gt;
+                    &lt;li class="py-2"&gt;No credit card required&lt;/li&gt;
+                    &lt;li class="py-2"&gt;Easy cancellation&lt;/li&gt;
+                    &lt;/ul&gt;
+                &lt;a class="btn btn-outline-primary rounded-pill mb-3" href="#"&gt;Get started&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="card card-price card-featured shadow mb-4"&gt;
+                &lt;div class="card-header"&gt;
+                    &lt;h3 class="h4 font-weight-normal"&gt;Unlimited&lt;/h3&gt;
+                    &lt;div class="d-flex justify-content-center"&gt;
+                        &lt;span class="h4 font-weight-normal mt-1"&gt;$&lt;/span&gt;&lt;span class="display-4 font-weight-bold"&gt;5&lt;/span&gt;
+                    &lt;/div&gt;
+                    &lt;span class="text-muted"&gt;per month&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;ul class="list-unstyled text-secondary mb-4"&gt;
+                        &lt;li class="py-2"&gt;Unlimited downloads&lt;/li&gt;
+                        &lt;li class="py-2"&gt;Online support&lt;/li&gt;
+                        &lt;li class="py-2"&gt;Easy payment&lt;/li&gt;
+                        &lt;li class="py-2"&gt;Easy cancellation&lt;/li&gt;
+                    &lt;/ul&gt;
+                    &lt;a class="btn btn-primary rounded-pill mb-3" href="#"&gt;Get started&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/components/card/" target="_blank" rel="noopener">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

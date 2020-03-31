@@ -1,0 +1,83 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "buttons" %}
+{% set title = "Buttons" %}
+{% block content %}
+    <h1>Buttons</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Use Bootstrap’s custom button styles for actions in forms, dialogs, and more with support for multiple sizes and states.</p>
+
+    <p>Add <code>.rounded-pill</code> to any button to make them more rounded.</p>
+
+    <div class="my-4">
+        <button type="button" class="btn btn-primary rounded-pill mb-2">Primary</button>
+        <button type="button" class="btn btn-secondary rounded-pill mb-2">Secondary</button>
+        <button type="button" class="btn btn-success rounded-pill mb-2">Success</button>
+        <button type="button" class="btn btn-danger rounded-pill mb-2">Danger</button>
+        <button type="button" class="btn btn-warning rounded-pill mb-2">Warning</button>
+        <button type="button" class="btn btn-info rounded-pill mb-2">Info</button>
+        <button type="button" class="btn btn-light rounded-pill mb-2">Light</button>
+        <button type="button" class="btn btn-dark rounded-pill mb-2">Dark</button>
+    </div>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;button type="button" class="btn btn-primary rounded-pill">Primary&lt;/button&gt;
+            &lt;button type="button" class="btn btn-secondary rounded-pill"&gt;Secondary&lt;/button&gt;
+            &lt;button type="button" class="btn btn-success rounded-pill"&gt;Success&lt;/button&gt;
+            &lt;button type="button" class="btn btn-danger rounded-pill">Danger&lt;/button&gt;
+            &lt;button type="button" class="btn btn-warning rounded-pill"&gt;Warning&lt;/button&gt;
+            &lt;button type="button" class="btn btn-info rounded-pill"&gt;Info&lt;/button&gt;
+            &lt;button type="button" class="btn btn-light rounded-pill"&gt;Light&lt;/button&gt;
+            &lt;button type="button" class="btn btn-dark rounded-pill"&gt;Dark&lt;/button&gt;
+        </code>
+    </pre>
+
+    <h2>Outline buttons</h2>
+    <p>Replace the default modifier classes with the .btn-outline-* ones to remove all background images and colors on any button.</p>
+
+    <div class="my-4">
+        <button type="button" class="btn btn-outline-primary rounded-pill mb-2">Primary</button>
+        <button type="button" class="btn btn-outline-secondary rounded-pill mb-2">Secondary</button>
+        <button type="button" class="btn btn-outline-success rounded-pill mb-2">Success</button>
+        <button type="button" class="btn btn-outline-danger rounded-pill mb-2">Danger</button>
+        <button type="button" class="btn btn-outline-warning rounded-pill mb-2">Warning</button>
+        <button type="button" class="btn btn-outline-info rounded-pill mb-2">Info</button>
+        <button type="button" class="btn btn-outline-dark rounded-pill mb-2">Dark</button>
+    </div>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;button type="button" class="btn btn-outline-primary rounded-pill">Primary&lt;/button&gt;
+            &lt;button type="button" class="btn btn-outline-secondary rounded-pill"&gt;Secondary&lt;/button&gt;
+            &lt;button type="button" class="btn btn-outline-success rounded-pill"&gt;Success&lt;/button&gt;
+            &lt;button type="button" class="btn btn-outline-danger rounded-pill">Danger&lt;/button&gt;
+            &lt;button type="button" class="btn btn-outline-warning rounded-pill"&gt;Warning&lt;/button&gt;
+            &lt;button type="button" class="btn btn-outline-info rounded-pill"&gt;Info&lt;/button&gt;
+            &lt;button type="button" class="btn btn-outline-dark rounded-pill"&gt;Dark&lt;/button&gt;
+        </code>
+    </pre>
+
+    <h2>Sizes</h2>
+    <p>Fancy larger or smaller buttons? Add <code>.btn-lg</code> or <code>.btn-sm</code> for additional sizes.</p>
+
+    <button type="button" class="btn btn-primary btn-lg rounded-pill mb-3">Large button</button>
+    <button type="button" class="btn btn-secondary btn-lg rounded-pill mb-3">Large button</button>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;button type="button" class="btn btn-primary btn-lg rounded-pill"&gt;Large button&lt;/button&gt;
+            &lt;button type="button" class="btn btn-secondary btn-lg rounded-pill"&gt;Large button&lt;/button&gt;
+        </code>
+    </pre>
+
+    <button type="button" class="btn btn-primary btn-sm rounded-pill mb-3">Small button</button>
+    <button type="button" class="btn btn-secondary btn-sm rounded-pill mb-3">Small button</button>
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;button type="button" class="btn btn-primary btn-sm rounded-pill"&gt;Small button&lt;/button&gt;
+            &lt;button type="button" class="btn btn-secondary btn-sm rounded-pill"&gt;Small button&lt;/button&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/components/buttons/" target="_blank" rel="noopener">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

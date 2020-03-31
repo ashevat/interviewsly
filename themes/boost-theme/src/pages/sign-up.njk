@@ -1,0 +1,38 @@
+{% extends "layouts/default.njk" %}
+{% set title = "Sign Up" %}
+{% block content %}
+    <main id="main">
+        <div class="bg-skew bg-skew-light pb-3 min-vh-80">
+
+            <div class="container my-6 my-lg-7">
+                <div class="row justify-content-center">
+                    <div class="col-md-9 col-lg-6">
+                        <h1 class="h2 text-center my-3">Sign Up</h1>
+                        <form class="py-4">
+                            <div class="form-group">
+                                <label for="email" class="small text-uppercase">Email Address</label>
+                                <input type="email" id="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="small text-uppercase">Password</label>
+                                <small id="password-hint" class="d-block text-muted mb-2">Must be at least 8 characters</small>
+                                <input type="password" id="password" class="form-control" aria-describedby="password-hint" required>
+                            </div>
+                            <div class="form-group form-check mb-4">
+                                <input type="checkbox" id="terms" class="form-check-input">
+                                <label for="terms" class="form-check-label small">I agree with the <a href="#">terms and conditions</a></label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block rounded-pill">Create account</button>
+                        </form>
+                        <hr role="presentation">
+                        <div class="text-secondary text-center">
+                            <small>Already have an account? <a href="#">Log In</a></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end bg-skew -->
+
+    </main>
+{% endblock %}

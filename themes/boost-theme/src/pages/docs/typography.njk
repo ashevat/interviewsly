@@ -1,0 +1,108 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "typography" %}
+{% set title = "Typography" %}
+{% block content %}
+    <h1>Typography</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Documentation and examples for Boost typography, including headings, body text, blockquotes, and more.</p>
+
+    <h2>Headings</h2>
+    <p>All HTML headings, <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>, are available.</p>
+    <div class="bd-example">
+        <p class="h1">Heading level 1</p>
+        <p class="h2">Heading level 2</p>
+        <p class="h3">Heading level 3</p>
+        <p class="h4">Heading level 4</p>
+        <p class="h5">Heading level 5</p>
+        <p class="h6 mb-4">Heading level 6</p>
+    </div>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;h1&gt;Heading level 1&lt;/h1&gt;
+            &lt;h2&gt;Heading level 2&lt;/h2&gt;
+            &lt;h3&gt;Heading level 3&lt;/h3&gt;
+            &lt;h4&gt;Heading level 4&lt;/h4&gt;
+            &lt;h5&gt;Heading level 5&lt;/h5&gt;
+            &lt;h6&gt;Heading level 6&lt;/h6&gt;
+        </code>
+    </pre>
+
+    <h2>Lead</h2>
+    <p>Make a paragraph stand out by adding <code>.lead</code>.</p>
+
+    <p class="lead">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;p class="lead"&gt;Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.&lt;/p&gt;
+        </code>
+    </pre>
+
+    <h2>Divider</h2>
+    <p>Add a <code>.sep</code> class to the <code>hr</code> element to convert it to a short, 2 pixels width separator. Then you can change its color and alignment using utility classes.</p>
+
+    <p class="h3">Example</p>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p>Excepteur sint occaecat cupidatat non proident.</p>
+
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;p class="h3">Example&lt;/p&gt;
+            &lt;hr role="presentation" class="border-primary sep text-left ml-0"&gt;
+            &lt;p&gt;Excepteur sint occaecat cupidatat non proident.&lt;/p&gt;
+        </code>
+    </pre>
+
+    <p class="mb-5"><strong>Important:</strong> Include the <code>role="presentation"</code> attribute to indicate to screen readers that is a decorative element.</p>
+
+    <h2>Blockquotes</h2>
+    <p>Add <code>.blockquote</code> for quoting blocks of content from another source.</p>
+    <blockquote class="blockquote mb-4">
+        <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+        <footer class="blockquote-footer">Someone famous</footer>
+    </blockquote>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;blockquote class="blockquote"&gt;
+                &lt;p class="mb-2"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.&lt;/p&gt;
+                &lt;footer class="blockquote-footer"&gt;Someone famous&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        </code>
+    </pre>
+
+    <blockquote class="blockquote text-center">
+        <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+        <footer class="blockquote-footer">Someone famous</footer>
+    </blockquote>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;blockquote class="blockquote text-center"&gt;
+                &lt;p class="mb-2"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.&lt;/p&gt;
+                &lt;footer class="blockquote-footer"&gt;Someone famous&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        </code>
+    </pre>
+
+    <h2>Font family</h2>
+    <p>Quickly change the font family (serif/sans-serif) of text using <code>.font-serif</code> and <code>.font-sans-serif</code>.</p>
+    <p class="h6 font-sans-serif">Font Sans Serif</p>
+    <p class="font-serif mb-4">Font Serif</p>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;h6 class="font-sans-serif"&gt;Font Sans Serif&lt;/h6&gt;
+            &lt;p class="font-serif">Font Serif&lt;/p&gt;
+        </code>
+    </pre>
+
+    <h2>Responsive font sizes</h2>
+    <p>The theme has the enable <a href="https://getbootstrap.com/docs/4.4/content/typography/#responsive-font-sizes" target="_blank">responsive font size</a> option turned on, allowing text to scale more naturally across device and viewport sizes.</p>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/content/typography/" target="_blank">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

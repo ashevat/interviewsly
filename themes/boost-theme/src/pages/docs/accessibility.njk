@@ -1,0 +1,59 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "accessibility" %}
+{% set title = "Accessibility" %}
+{% block content %}
+    <h1>Accessibility</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+
+    <p class="lead">Bootstrap provides an easy-to-use framework allowing developers to create accessible websites and applications out of the box.</p>
+
+    <p>However, the overall accessibility of any project built with Bootstrap depends in large part on the author’s markup, additional styling, and scripting they’ve included.</p>
+
+    <p>Boost theme is built with accessibility in mind and includes the following best practices:</p>
+    <ul class="mb-4">
+        <li><strong>Color contrast</strong>
+            <ul class="mb-2">
+                <li>Color contrast between text and background are within the level AA contrast ratio (4.5:1) specified in the Web Content Accessibility Guidelines (WCAG).</li>
+            </ul>
+        </li>
+        <li><strong>Content links</strong>
+            <ul class="mb-2">
+                <li>Links inside paragraphs are underlined.</li>
+            </ul>
+        </li>
+        <li><strong>Headings structure</strong>
+            <ul class="mb-2">
+                <li>All sections have a heading element (sometimes visually hidden).</li>
+                <li>Headings do not skip levels when descending.</li>
+            </ul>
+        </li>
+        <li><strong>Images</strong>
+            <ul class="mb-2">
+                <li>All images incorporate an alt attribute.</li>
+            </ul>
+        </li>
+        <li><strong>Forms</strong>
+            <ul class="mb-2">
+                <li>Forms have field labels associated with the form controls.</li>
+            </ul>
+        </li>
+        <li><strong>Keyboard navigation</strong>
+            <ul class="mb-2">
+                <li>The page has a logical tab order.</li>
+                <li>Interactive controls and links are reachable using the keyboard.</li>
+                <li>The pages include a 'Skip to main content' link at the beginning.</li>
+            </ul>
+        </li>
+        <li><strong>Landmarks</strong>
+            <ul class="mb-2">
+                <li>HTML5 landmark elements are used to improve navigation (<code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, etc.)</li>
+            </ul>
+        </li>
+        <li><strong>Valid W3C code</strong> </li>
+    </ul>
+
+    <p>
+        Read more about <a href="https://getbootstrap.com/docs/4.4/getting-started/accessibility/" target="_blank" rel="noopener">Bootstrap accessibility features <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

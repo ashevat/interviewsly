@@ -1,0 +1,23 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "avatars" %}
+{% set title = "Avatars" %}
+{% block content %}
+    <h1>Avatars</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0 mb-4">
+    <p class="lead">Create an avatar of different sizes.</p>
+
+    <div class="mb-4">
+        <img class="avatar avatar-sm mr-3" src="../assets/img/leo-gill.jpg" alt="Leo Gill">
+        <img class="avatar avatar-md mr-3" src="../assets/img/leo-gill.jpg" alt="Leo Gill">
+        <img class="avatar avatar-lg" src="../assets/img/leo-gill.jpg" alt="Leo Gill">
+    </div>
+    <p>To get a rounded avatar add <code>.avatar</code> and then choose between three different sizes: <code>.avatar-sm</code>, <code>.avatar-md</code> and <code>.avatar-lg</code>.</p>
+    <pre>
+        <code class="lang-html py-3">
+            &lt;img class="avatar avatar-sm" src="assets/img/leo-gill.jpg" alt="Leo Gill"&gt;
+            &lt;img class="avatar avatar-md" src="assets/img/leo-gill.jpg" alt="Leo Gill"&gt;
+            &lt;img class="avatar avatar-lg" src="assets/img/leo-gill.jpg" alt="Leo Gill"&gt;
+        </code>
+    </pre>
+{% endblock %}

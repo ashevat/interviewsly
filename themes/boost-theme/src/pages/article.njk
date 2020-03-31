@@ -1,0 +1,119 @@
+{% extends "layouts/default.njk" %}
+{% set title = "Article" %}
+{% block content %}
+    <main id="main">
+        <div class="container">
+            <div class="row justify-content-center text-center my-5">
+                <div class="col-lg-10">
+                    <img src="assets/img/coffee.jpg" class="img-fluid img-thumbnail" alt="Brown ceramic teacup">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-skew bg-skew-light">
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <article class="pb-2">
+                            <h1 class="text-center">Why clean design creates better experiences</h1>
+                            <p class="small mb-5 text-center"><span class="text-secondary">published on </span><span class="text-uppercase">Jan 21, 2020</span></p>
+                            <p class="lead">This is a sample intro paragraph and can be used to introduce readers to your article. Proin sodales quam nec ante sollicitudin lacinia. Ut egestas bibendum tempor.</p>
+                            <p>Quisque ligulas ipsum, euismod atras vulputate iltricies etri elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla nunc dui, tristique in semper vel, congue sed ligula.</p>
+
+                            <p>Vestibulum sodales ante a purus volutpat euismod. Proin sodales quam nec ante sollicitudin lacinia. Ut egestas bibendum tempor. Morbi non nibh sit amet ligula blandit ullamcorper in nec risus. Pellentesque fringilla diam faucibus tortor bibendum vulputate. Etiam turpis urna, rhoncus et mattis ut, dapibus eu nunc.</p>
+
+                            <figure class="figure mt-2">
+                                <img src="assets/img/laptop.jpg" class="img-fluid shadow" alt="Person using laptop">
+                                <figcaption class="figure-caption p-2 text-center">This is a caption</figcaption>
+                            </figure>
+
+                            <p>Pellentesque fringilla diam faucibus tortor bibendum vulputate. Etiam turpis urna, rhoncus et mattis ut, dapibus eu nunc. Nunc sed aliquet nisi.</p>
+
+                            <h2 class="h3 mt-4">This is a heading</h2>
+                            <p>Quisque ligulas ipsum, euismod atras vulputate iltricies etri elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+
+                            <p>Vestibulum sodales ante a purus volutpat euismod. Proin sodales quam nec ante sollicitudin lacinia. Ut egestas bibendum tempor. Morbi non nibh sit amet ligula blandit ullamcorper in nec risus.</p>
+                            <p class="small mt-5 text-center"><span class=" text-secondary">Tagged: </span><a href="#" class="text-dark">Design</a></p>
+
+                            <!-- Article author -->
+                            <div class="media my-5">
+                                <img class="avatar avatar-lg mr-3" src="assets/img/leo-gill.jpg" alt="Post author">
+                                <div class="media-body">
+                                    <h3 class="h5 mt-0">Author name</h3>
+                                    <p class="mb-0 text-secondary">Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes. lorem</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <hr class="sep border-primary" role="presentation">
+
+                        <!-- Comments area -->
+                        <div class="py-5">
+                            <h2 class="h5 mb-4">3 Comments</h2>
+                            <div class="mb-4">
+                                <div class="media mb-2">
+                                    <img class="avatar avatar-md mr-3 mb-3" src="assets/img/renee-sims.jpg" alt="Author avatar">
+                                    <div class="media-body">
+                                        <span class="d-block font-weight-bold">Author name</span>
+                                        <time class="d-block mb-2 small text-muted text-uppercase" datetime="2020-01-21T00:00:00+00:00">Jan 21, 2020</time>
+                                        <p class="font-weight-light">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-outline-dark btn-sm rounded-pill">Reply</a>
+                                        </div>
+                                        <div class="media mt-4">
+                                            <img class="avatar avatar-md mr-3 mb-3" src="assets/img/leo-gill.jpg" alt="Author avatar">
+                                            <div class="media-body">
+                                                <span class="d-block font-weight-bold">Author name</span>
+                                                <time class="d-block mb-2 small text-muted text-uppercase" datetime="2020-01-21T00:00:00+00:00">Jan 21, 2020</time>
+                                                <div class="font-weight-light">
+                                                    <p>Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <a href="#" class="btn btn-outline-dark btn-sm rounded-pill">Reply</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="media mb-2">
+                                    <img class="avatar avatar-md mr-3 mb-3" src="assets/img/dallas-kwok.jpg" alt="Author avatar">
+                                    <div class="media-body">
+                                        <span class="d-block font-weight-bold">Author name</span>
+                                        <time class="d-block mb-2 small text-muted text-uppercase" datetime="2020-01-21T00:00:00+00:00">Jan 21, 2020</time>
+                                        <div class="font-weight-light">
+                                            <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-outline-dark btn-sm rounded-pill">Reply</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 class="h5 mb-4">Post a comment</h2>
+                            <form>
+                                <div class="form-group">
+                                    <label for="comment" class="small text-uppercase">Comment</label>
+                                    <textarea id="comment" class="form-control" rows="4" required></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="name" class="small text-uppercase">Name</label>
+                                        <input type="text" id="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="email" class="small text-uppercase">Email</label>
+                                        <input type="email" id="email" class="form-control" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary rounded-pill">Post comment</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end bg-skew -->
+    </main>
+{% endblock %}

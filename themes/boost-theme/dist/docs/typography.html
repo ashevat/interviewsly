@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Typography - Boost Theme</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Goole fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700%7CMerriweather+Sans:300,400,700" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/theme.css">
+    <!-- Prism (only for docs) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism-coy.min.css">
+    
+
+    <!-- JS -->
+    <script src="../assets/js/jquery.slim.min.js" defer></script>
+    <script src="../assets/js/popper.min.js" defer></script>
+    <script src="../assets/js/bootstrap.min.js" defer></script>
+    <!-- Prism (only for docs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js" defer></script>
+    
+</head>
+
+<body>
+    <header class="site-header">
+        <a href="#main" class="sr-only sr-only-focusable">Skip to main content</a>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light py-3" aria-label="Main navigation">
+                <a class="navbar-brand text-dark" href="../index.html">
+                    <img src="../assets/img/logo-boost.svg" alt="Boost Theme">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav align-items-lg-center text-uppercase pt-3 pt-lg-0 ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../pages.html">Pages</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="../docs/index.html">Documentation</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <nav class="nav-docs navbar navbar-expand-lg navbar-ligh sticky-top mt-1 mb-3" aria-label="Docs navigation">
+                <a class="collapsed btn-block d-lg-none btn btn-outline-dark mb-3 p-3 text-center" href="#collapseOne" data-toggle="collapse" data-target="#navbarDocs" aria-expanded="false" aria-controls="navbarDocs" aria-label="Toggle navigation">Navigation</a>
+
+                <div class="collapse navbar-collapse" id="navbarDocs">
+
+                    <dl class="navbar-nav flex-column">
+                        <dt class="text-uppercase mb-2">Getting Started</dt>
+                        <dd>
+                            <a href="index.html" >Introduction</a>
+                        </dd>
+                        <dd>
+                            <a href="accessibility.html" >Accessibility</a>
+                        </dd>
+                        <dd>
+                            <a href="template.html" >Basic template</a>
+                        </dd>
+                        <dd>
+                            <a href="changelog.html" >Changelog</a>
+                        </dd>
+
+                        <dt class="text-uppercase mt-3 mb-2">Style</dt>
+                        <dd>
+                            <a href="colors.html" >Colors</a>
+                        </dd>
+                        <dd>
+                            <a href="typography.html" class=active>Typography</a>
+                        </dd>
+
+                        <dt class="text-uppercase mt-3 mb-2">Components</dt>
+                        <dd>
+                            <a href="accordion.html" >Accordion</a>
+                        </dd>
+                        <dd>
+                            <a href="alerts.html" >Alerts</a>
+                        </dd>
+                        <dd>
+                            <a href="avatars.html" >Avatars</a>
+                        </dd>
+                        <dd>
+                            <a href="backgrounds.html" >Backgrounds</a>
+                        </dd>
+                        <dd>
+                            <a href="buttons.html" >Buttons</a>
+                        </dd>
+                        <dd>
+                            <a href="cards.html" >Cards</a>
+                        </dd>
+                        <dd>
+                            <a href="devices.html" >Devices</a>
+                        </dd>
+                        <dd>
+                            <a href="forms.html" >Forms</a>
+                        </dd>
+                        <dd>
+                            <a href="icons.html" >Icons</a>
+                        </dd>
+                        <dd>
+                            <a href="links.html" >Links</a>
+                        </dd>
+                        <dd>
+                            <a href="navbar.html" >Navbar</a>
+                        </dd>
+                        <dd>
+                            <a href="pagination.html" >Pagination</a>
+                        </dd>
+                        <dd>
+                            <a href="tables.html" >Tables</a>
+                        </dd>
+                    </dl>
+                </div>
+            </nav>
+        </div>
+        <div class="col-lg-9">
+            <main id="main">
+                
+    <h1>Typography</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Documentation and examples for Boost typography, including headings, body text, blockquotes, and more.</p>
+
+    <h2>Headings</h2>
+    <p>All HTML headings, <code>&lt;h1&gt;</code> through <code>&lt;h6&gt;</code>, are available.</p>
+    <div class="bd-example">
+        <p class="h1">Heading level 1</p>
+        <p class="h2">Heading level 2</p>
+        <p class="h3">Heading level 3</p>
+        <p class="h4">Heading level 4</p>
+        <p class="h5">Heading level 5</p>
+        <p class="h6 mb-4">Heading level 6</p>
+    </div>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;h1&gt;Heading level 1&lt;/h1&gt;
+            &lt;h2&gt;Heading level 2&lt;/h2&gt;
+            &lt;h3&gt;Heading level 3&lt;/h3&gt;
+            &lt;h4&gt;Heading level 4&lt;/h4&gt;
+            &lt;h5&gt;Heading level 5&lt;/h5&gt;
+            &lt;h6&gt;Heading level 6&lt;/h6&gt;
+        </code>
+    </pre>
+
+    <h2>Lead</h2>
+    <p>Make a paragraph stand out by adding <code>.lead</code>.</p>
+
+    <p class="lead">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;p class="lead"&gt;Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.&lt;/p&gt;
+        </code>
+    </pre>
+
+    <h2>Divider</h2>
+    <p>Add a <code>.sep</code> class to the <code>hr</code> element to convert it to a short, 2 pixels width separator. Then you can change its color and alignment using utility classes.</p>
+
+    <p class="h3">Example</p>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p>Excepteur sint occaecat cupidatat non proident.</p>
+
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;p class="h3">Example&lt;/p&gt;
+            &lt;hr role="presentation" class="border-primary sep text-left ml-0"&gt;
+            &lt;p&gt;Excepteur sint occaecat cupidatat non proident.&lt;/p&gt;
+        </code>
+    </pre>
+
+    <p class="mb-5"><strong>Important:</strong> Include the <code>role="presentation"</code> attribute to indicate to screen readers that is a decorative element.</p>
+
+    <h2>Blockquotes</h2>
+    <p>Add <code>.blockquote</code> for quoting blocks of content from another source.</p>
+    <blockquote class="blockquote mb-4">
+        <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+        <footer class="blockquote-footer">Someone famous</footer>
+    </blockquote>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;blockquote class="blockquote"&gt;
+                &lt;p class="mb-2"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.&lt;/p&gt;
+                &lt;footer class="blockquote-footer"&gt;Someone famous&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        </code>
+    </pre>
+
+    <blockquote class="blockquote text-center">
+        <p class="mb-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+        <footer class="blockquote-footer">Someone famous</footer>
+    </blockquote>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;blockquote class="blockquote text-center"&gt;
+                &lt;p class="mb-2"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.&lt;/p&gt;
+                &lt;footer class="blockquote-footer"&gt;Someone famous&lt;/footer&gt;
+            &lt;/blockquote&gt;
+        </code>
+    </pre>
+
+    <h2>Font family</h2>
+    <p>Quickly change the font family (serif/sans-serif) of text using <code>.font-serif</code> and <code>.font-sans-serif</code>.</p>
+    <p class="h6 font-sans-serif">Font Sans Serif</p>
+    <p class="font-serif mb-4">Font Serif</p>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;h6 class="font-sans-serif"&gt;Font Sans Serif&lt;/h6&gt;
+            &lt;p class="font-serif">Font Serif&lt;/p&gt;
+        </code>
+    </pre>
+
+    <h2>Responsive font sizes</h2>
+    <p>The theme has the enable <a href="https://getbootstrap.com/docs/4.4/content/typography/#responsive-font-sizes" target="_blank">responsive font size</a> option turned on, allowing text to scale more naturally across device and viewport sizes.</p>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/content/typography/" target="_blank">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+</main>
+        </div>
+    </div>
+</div>
+</body>
+</html>

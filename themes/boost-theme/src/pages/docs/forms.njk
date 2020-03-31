@@ -1,0 +1,55 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "forms" %}
+{% set title = "Forms" %}
+{% block content %}
+    <h1>Forms</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Examples of form control styles.</p>
+
+    <form class="mb-4">
+        <div class="form-group">
+            <label for="email" class="small text-uppercase">Email address</label>
+            <input type="email" class="form-control" id="email">
+        </div>
+        <div class="form-group">
+            <label for="password" class="small text-uppercase">Password</label>
+            <input type="password" class="form-control" id="password">
+        </div>
+        <button type="submit" class="btn btn-primary rounded-pill">Submit</button>
+    </form>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;form&gt;
+                &lt;div class="form-group"&gt;
+                    &lt;label for="email" class="small text-uppercase"&gt;Email address&lt;/label&gt;
+                    &lt;input type="email" class="form-control" id="email"&gt;
+                &lt;/div&gt;
+                &lt;div class="form-group"&gt;
+                    &lt;label for="password" class="small text-uppercase"&gt;Password&lt;/label&gt;
+                    &lt;input type="password" class="form-control" id="password"&gt;
+                &lt;/div&gt;
+                &lt;button type="submit" class="btn btn-primary rounded-pill"&gt;Submit&lt;/button&gt;
+            &lt;/form&gt;
+        </code>
+    </pre>
+
+    <h2>Sizing</h2>
+    <p>Set heights using classes like <code>.form-control-lg</code> and <code>.form-control-sm</code>.</p>
+
+    <input class="form-control form-control-lg mb-3" type="text" placeholder=".form-control-lg">
+    <input class="form-control mb-3" type="text" placeholder="Default input">
+    <input class="form-control form-control-sm mb-4" type="text" placeholder=".form-control-sm">
+
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;input class="form-control form-control-lg" type="text" placeholder=".form-control-lg"&gt;
+            &lt;input class="form-control" type="text" placeholder="Default input"&gt;
+            &lt;input class="form-control form-control-sm" type="text" placeholder=".form-control-sm"&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/components/forms/" target="_blank" rel="noopener">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}

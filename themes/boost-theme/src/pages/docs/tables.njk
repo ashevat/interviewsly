@@ -1,0 +1,240 @@
+{% extends "layouts/docs.njk" %}
+{% set folder = "docs" %}
+{% set page = "tables" %}
+{% set title = "Tables" %}
+{% block content %}
+    <h1>Tables</h1>
+    <hr role="presentation" class="border-primary sep text-left ml-0">
+    <p class="lead">Documentation and examples for opt-in styling of tables.</p>
+
+    <h2>Default style</h2>
+    <table class="table mb-4">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th class="text-uppercase" scope="col">First</th>
+                <th class="text-uppercase" scope="col">Last</th>
+                <th class="text-uppercase" scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;table class="table"&gt;
+                &lt;thead class="thead-light"&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="col"&gt;#&lt;/th&gt;
+                        &lt;th class="text-uppercase" scope="col"&gt;First&lt;/th&gt;
+                        &lt;th class="text-uppercase" scope="col"&gt;Last&lt;/th&gt;
+                        &lt;th class="text-uppercase" scope="col"&gt;Handle&lt;/th&gt;
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="row"&gt;1&lt;/th&gt;
+                        &lt;td&gt;Mark&lt;/td&gt;
+                        &lt;td&gt;Otto&lt;/td&gt;
+                        &lt;td&gt;@mdo&lt;/td&gt;
+                    &lt;/tr&gt;
+                    ...
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        </code>
+    </pre>
+
+    <h2>Color table</h2>
+    <p>Change the color of the table using <code>.table-{color}</code>.</p>
+
+    <table class="table table-primary mb-4">
+        <thead class="table-active">
+            <tr>
+                <th scope="col">#</th>
+                <th class="text-uppercase" scope="col">First</th>
+                <th class="text-uppercase" scope="col">Last</th>
+                <th class="text-uppercase" scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+        </tbody>
+    </table>
+    <pre class="mb-5">
+        <code class="lang-html py-3">
+            &lt;table class="table table-primary"&gt;
+                &lt;thead class="table-active"&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="col"&gt;#&lt;/th&gt;
+                        &lt;th class="text-uppercase" scope="col"&gt;First&lt;/th&gt;
+                        &lt;th class="text-uppercase" scope="col"&gt;Last&lt;/th&gt;
+                        &lt;th class="text-uppercase" scope="col"&gt;Handle&lt;/th&gt;
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="row"&gt;1&lt;/th&gt;
+                        &lt;td&gt;Mark&lt;/td&gt;
+                        &lt;td&gt;Otto&lt;/td&gt;
+                        &lt;td&gt;@mdo&lt;/td&gt;
+                    &lt;/tr&gt;
+                    ...
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        </code>
+    </pre>
+
+    <h2>Pricing table</h2>
+    <p>Create a pricing table easily with the help of the <code>.pricing-table</code> class.</p>
+
+    <table class="table shadow pricing-table table-responsive-md mb-4">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">
+                    <span class="h4 font-weight-normal">Basic</span>
+                    <div class="d-flex">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">0</span>
+                    </div>
+                    <small class="d-block text-muted">forever</small>
+                    <a class="btn btn-sm btn-outline-primary rounded-pill mt-4" href="#">Get started</a>
+                </th>
+                <th scope="col">
+                    <span class="h4 font-weight-normal">Standard</span>
+                    <div class="d-flex">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">5</span>
+                    </div>
+                    <small class="d-block text-muted">per month</small>
+                    <a class="btn btn-sm btn-primary rounded-pill mt-4" href="#">Get started</a>
+                </th>
+                <th scope="col">
+                    <span class="h4 font-weight-normal">Unlimited</span>
+                    <div class="d-flex">
+                        <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">10</span>
+                    </div>
+                    <small class="d-block text-muted">per month</small>
+                    <a class="btn btn-sm btn-outline-primary rounded-pill mt-4" href="#">Get started</a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Downloads<br><small class="text-secondary">per month</small></th>
+                <td>5</td>
+                <td>15</td>
+                <td>Unlimited</td>
+            </tr>
+            <tr>
+                <th scope="row">Email support<br><small class="text-secondary">24/7 support</small></th>
+                <td>
+                    <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                    <span class="sr-only">Yes</span>
+                </td>
+                <td>
+                    <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                    <span class="sr-only">Yes</span>
+                </td>
+                <td>
+                    <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                    <span class="sr-only">Yes</span>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">White Labeling<br><small class="text-secondary">use your branding</small></th>
+                <td>-</td>
+                <td>
+                    <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                    <span class="sr-only">Yes</span>
+                </td>
+                <td>
+                    <i class="far fa-check-circle fa-lg text-success" aria-hidden="true"></i>
+                    <span class="sr-only">Yes</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <pre class="mb-4">
+        <code class="lang-html py-3">
+            &lt;table class="table shadow pricing-table table-responsive-md"&gt;
+                &lt;thead&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="col"&gt;&lt;/th&gt;
+                        &lt;th scope="col"&gt;
+                            &lt;span class="h4 font-weight-normal"&gt;Basic&lt;/span&gt;
+                            &lt;div class="d-flex"&gt;
+                                &lt;span class="h4 font-weight-normal mt-1"&gt;$&lt;/span&gt;&lt;span class="display-4 font-weight-bold"&gt;0&lt;/span&gt;
+                            &lt;/div&gt;
+                            &lt;small class="d-block text-muted"&gt;forever&lt;/small&gt;
+                            &lt;a class="btn btn-sm btn-outline-primary rounded-pill mt-4" href="#"&gt;Get started&lt;/a&gt;
+                        &lt;/th&gt;
+                        ...
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="row"&gt;Downloads&lt;br&gt;&lt;small class="text-secondary"&gt;per month&lt;/small&gt;&lt;/th&gt;
+                        &lt;td&gt;5&lt;/td&gt;
+                        &lt;td&gt;15&lt;/td&gt;
+                        &lt;td&gt;Unlimited&lt;/td&gt;
+                    &lt;/tr&gt;
+                    &lt;tr&gt;
+                        &lt;th scope="row"&gt;Email support&lt;br&gt;&lt;small class="text-secondary"&gt;24/7 support&lt;/small&gt;&lt;/th&gt;
+                        &lt;td&gt;
+                            &lt;i class="far fa-check-circle fa-lg text-success" aria-hidden="true"&gt;&lt;/i&gt;
+                            &lt;span class="sr-only"&gt;Yes&lt;/span&gt;
+                        &lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;i class="far fa-check-circle fa-lg text-success" aria-hidden="true"&gt;&lt;/i&gt;
+                            &lt;span class="sr-only"&gt;Yes&lt;/span&gt;
+                        &lt;/td&gt;
+                        &lt;td&gt;
+                            &lt;i class="far fa-check-circle fa-lg text-success" aria-hidden="true"&gt;&lt;/i&gt;
+                            &lt;span class="sr-only"&gt;Yes&lt;/span&gt;
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                    ...
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        </code>
+    </pre>
+
+    <p>
+        <a href="https://getbootstrap.com/docs/4.4/content/tables/" target="_blank">Bootstrap Documentation <i class="fas fa-external-link-alt fa-sm"></i></a>
+    </p>
+{% endblock %}
