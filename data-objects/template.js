@@ -13,7 +13,9 @@ class Template {
 
     async getPublicTemplates(role_id, level_id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM templates WHERE role_id='${role_id}' AND level_id='${level_id}' AND is_public='1' AND active='1'`);
+        const query = 'SELECT * FROM templates WHERE role_id=$1 AND level_id=$2 AND is_public=$3 AND active=$4';
+        const values = [role_id, level_id,1,1 ];
+        let result = await client.query(query,values );
         client.release();
         let templates = [];
         for (let index = 0; index < result.rows.length; index++) {
@@ -37,7 +39,9 @@ class Template {
         template.user_id = user_id;
         template.active = 1;
         const client = await this.pool.connect();
-        let res1 = await client.query(`INSERT INTO templates(id, role_id, level_id, team_id, description, user_id, active, is_public )VALUES(DEFAULT, '${template.role_id}', '${template.level_id}', '${template.team_id}'  , '${template.description}', '${template.user_id}', '1', '0' ) RETURNING id`);
+        const query = 'INSERT INTO templates( role_id, level_id, team_id, description, user_id, active, is_public )VALUES( $1, $2, $3, $4, $5, $6, $7) RETURNING id';
+        const values = [template.role_id, template.level_id, template.team_id, template.description, template.user_id,1,0];
+        let res1 = await client.query(query, values);
         template.id = res1.rows[0].id;
         client.release();
         return template;
@@ -46,7 +50,9 @@ class Template {
 
     async getRoleName(){
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT name FROM roles WHERE id='${this.role_id}'`);
+        const query = 'SELECT name FROM roles WHERE id=$1';
+        const values = [this.role_id];
+        let result = await client.query(query, values);
         client.release();
         return result.rows[0].name;
 
@@ -54,7 +60,9 @@ class Template {
 
     async getLevelName(){
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT name FROM levels WHERE id='${this.level_id}'`);
+        const query = 'SELECT name FROM levels WHERE id=$1';
+        const values = [this.level_id];
+        let result = await client.query(query, values);
         client.release();
         return result.rows[0].name;
 
@@ -62,7 +70,9 @@ class Template {
 
     async getPublicTemplate(template_id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM templates WHERE id='${template_id}'`);
+        const query = 'SELECT * FROM templates WHERE id=$1 AND is_public=$2';
+        const values = [template_id, 1];
+        let result = await client.query(query, values);
         client.release();
         let template = new Template(this.pool);
         template = this.populateTemplate(template, result.rows[0]);
@@ -72,7 +82,9 @@ class Template {
     // todo: think about defaulting to public templates
     async getTemplate(role_id, level_id, team_id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM templates WHERE role_id='${role_id}' AND level_id='${level_id}' AND team_id='${team_id}' AND active='1' `);
+        const query = 'SELECT * FROM templates WHERE role_id=$1 AND level_id=$2 AND team_id=$3 AND active=$4';
+        const values = [role_id,level_id,team_id, 1 ];
+        let result = await client.query(query, values);
         client.release();
         let template = new Template(this.pool);
         template = this.populateTemplate(template, result.rows[0]);
@@ -81,7 +93,9 @@ class Template {
 
     async getTemplateById(id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM templates WHERE id='${id}'`);
+        const query = 'SELECT * FROM templates WHERE id=$1';
+        const values = [id];
+        let result = await client.query(query,values );
         client.release();
         let template = new Template(this.pool);
         template = this.populateTemplate(template, result.rows[0]);
@@ -90,7 +104,9 @@ class Template {
 
     async getInterviewTypes() {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM template_interview_types WHERE template_id='${this.id}' AND active='1'`);
+        const query = 'SELECT * FROM template_interview_types WHERE template_id=$1 AND active=$2';
+        const values = [this.id, 1];
+        let result = await client.query(query,values );
         client.release();
        
         return result.rows;
@@ -98,7 +114,9 @@ class Template {
 
     async getInterviewTypeById(id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM template_interview_types WHERE id='${id}'`);
+        const query = 'SELECT * FROM template_interview_types WHERE id=$1';
+        const values = [id];
+        let result = await client.query(query, values);
         client.release();
         
         return result.rows[0];
@@ -108,7 +126,9 @@ class Template {
     async addInterviewType(name) {
         
         const client = await this.pool.connect();
-        let res1 = await client.query(`INSERT INTO template_interview_types(id, template_id, name, active )VALUES(DEFAULT, '${this.id}', '${name}', '1' ) RETURNING id`);
+        const query = 'INSERT INTO template_interview_types(template_id, name, active )VALUES($1, $2, $3 ) RETURNING id';
+        const values = [this.id, name, 1 ];
+        let res1 = await client.query(query,values );
         
         client.release();
         return  res1.rows[0].id;
@@ -118,7 +138,9 @@ class Template {
     async editInterviewType(interview_type_id ,name) {
         
         const client = await this.pool.connect();
-        let res1 = await client.query(`UPDATE template_interview_types SET name='${name}' WHERE id='${interview_type_id}' `);
+        const query = 'UPDATE template_interview_types SET name=$1 WHERE id=$2';
+        const values = [name, interview_type_id ];
+        let res1 = await client.query(query, values);
         console.log()
         client.release();
         return this;
@@ -128,14 +150,18 @@ class Template {
     async removeInterviewType(interview_type_id) {
         
         const client = await this.pool.connect();
-        let res1 = await client.query(`UPDATE template_interview_types SET active='0' WHERE id= '${interview_type_id}'`);
+        const query = 'UPDATE template_interview_types SET active=$1 WHERE id= $2';
+        const values = [0, interview_type_id ];
+        let res1 = await client.query(query, values);
         client.release();
         return  this;
     }
 
     async getCompetencies(interview_type_id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM template_interview_type_competencies WHERE template_id='${this.id}' AND interview_type_id='${interview_type_id}' AND active='1'`);
+        const query = 'SELECT * FROM template_interview_type_competencies WHERE template_id=$1 AND interview_type_id=$2 AND active=$3';
+        const values = [this.id, interview_type_id, 1 ];
+        let result = await client.query(query, values);
         client.release();
        
         return result.rows;
@@ -143,7 +169,9 @@ class Template {
     
     async editCompetency(competency_id, competency) {
         const client = await this.pool.connect();
-        let result = await client.query(`UPDATE template_interview_type_competencies SET competency='${competency}'  WHERE id='${competency_id}' `);
+        const query = 'UPDATE template_interview_type_competencies SET competency=$1  WHERE id=$2';
+        const values = [competency, competency_id ];
+        let result = await client.query(query, values );
         client.release();
        
         return result.rows;
@@ -152,7 +180,9 @@ class Template {
 
     async removeQuestions(competency_id) {
         const client = await this.pool.connect();
-        let result = await client.query(`UPDATE template_competency_questions SET active='0'  WHERE competency_id='${competency_id}' `);
+        const query = 'UPDATE template_competency_questions SET active=$1  WHERE competency_id=$2';
+        const values = [0, competency_id ];
+        let result = await client.query(query, values);
         client.release();
        
         return result.rows;
@@ -160,7 +190,9 @@ class Template {
 
     async getCompetency(id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM template_interview_type_competencies WHERE id='${id}' AND active='1'`);
+        const query = 'SELECT * FROM template_interview_type_competencies WHERE id=$1 AND active=$2';
+        const values = [id, 1 ];
+        let result = await client.query(query, values);
         client.release();
        
         return result.rows[0];
@@ -168,7 +200,9 @@ class Template {
     // returns ID
     async addCompetency(interview_type_id, competency_name) {
         const client = await this.pool.connect();
-        let res1 = await client.query(`INSERT INTO template_interview_type_competencies(id, template_id, interview_type_id, competency, active )VALUES(DEFAULT, '${this.id}', '${interview_type_id}', '${competency_name}', '1' ) RETURNING id`);
+        const query = 'INSERT INTO template_interview_type_competencies( template_id, interview_type_id, competency, active )VALUES( $1, $2, $3, $4 ) RETURNING id';
+        const values = [this.id, interview_type_id,competency_name, 1 ];
+        let res1 = await client.query(query, values );
         
         client.release();
         return  res1.rows[0].id;
@@ -176,15 +210,18 @@ class Template {
 
     async removeCompetency(competency_id) {
         const client = await this.pool.connect();
-        let res1 = await client.query(`UPDATE template_interview_type_competencies SET active='0' WHERE id= '${competency_id}'`);
+        const query = 'UPDATE template_interview_type_competencies SET active=$1 WHERE id= $2';
+        const values = [0, competency_id];
+        let res1 = await client.query(query, values);
         client.release();
         return  this;
     }
 
     async getQuestions(competency_id) {
         const client = await this.pool.connect();
-        let result = await client.query(`SELECT * FROM template_competency_questions WHERE template_id='${this.id}' AND competency_id='${competency_id}' AND active='1'`);
-        //console.log(`SELECT * FROM template_competency_questions WHERE template_id='${this.id}' AND competency_id='${competency_id}' AND active='1'`);
+        const query = 'SELECT * FROM template_competency_questions WHERE template_id=$1 AND competency_id=$2 AND active=$3';
+        const values = [this.id, competency_id, 1];
+        let result = await client.query(query, values);
         client.release();
        
         return result.rows;
@@ -192,7 +229,9 @@ class Template {
 
     async addQuestion(competency_id, question_text, author_id) {
         const client = await this.pool.connect();
-        let res1 = await client.query(`INSERT INTO template_competency_questions(id, template_id, competency_id, question, author_id, active )VALUES(DEFAULT, '${this.id}', '${competency_id}', '${question_text}', '${author_id}', '1' ) RETURNING id`);
+        const query = 'INSERT INTO template_competency_questions(template_id, competency_id, question, author_id, active )VALUES( $1, $2, $3, $4, $5 ) RETURNING id'
+        const values = [ this.id, competency_id, question_text, author_id, 1 ];
+        let res1 = await client.query(query, values);
         
         client.release();
         return  res1.rows[0].id;
@@ -200,7 +239,9 @@ class Template {
 
     async removeQuestion(question_id) {
         const client = await this.pool.connect();
-        let res1 = await client.query(`DELETE FROM template_competency_questions WHERE id= '${question_id}'`);
+        const query = 'DELETE FROM template_competency_questions WHERE id= $1 ';
+        const values = [question_id];
+        let res1 = await client.query(query, values );
         client.release();
         return  this;
     }

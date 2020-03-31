@@ -1108,9 +1108,9 @@ express()
         //todo: check if we can pull the user ID
         template.addQuestion(competency_id, question1, template.user_id);
         let question2 = values.example_question2.example_question2_value.value;
-        if (question2) template.addQuestion(competency_id, question2, template.user_id);
+        if (question2) await template.addQuestion(competency_id, question2, template.user_id);
         let question3 = values.example_question3.example_question3_value.value;
-        if (question3) template.addQuestion(competency_id, question3, template.user_id);
+        if (question3) await template.addQuestion(competency_id, question3, template.user_id);
 
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
@@ -1150,11 +1150,11 @@ express()
         let question1 = values.example_question1.example_question1_value.value;
         console.log(`Adding question = ${interview_type_id}, ${competency_id} , ${question1} `);
         //todo: check if we can pull the user ID
-        template.addQuestion(competency_id, question1, template.user_id);
+        await template.addQuestion(competency_id, question1, template.user_id);
         let question2 = values.example_question2.example_question2_value.value;
-        if (question2) template.addQuestion(competency_id, question2, template.user_id);
+        if (question2) await template.addQuestion(competency_id, question2, template.user_id);
         let question3 = values.example_question3.example_question3_value.value;
-        if (question3) template.addQuestion(competency_id, question3, template.user_id);
+        if (question3) await template.addQuestion(competency_id, question3, template.user_id);
 
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
