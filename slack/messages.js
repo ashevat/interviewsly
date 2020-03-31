@@ -1743,6 +1743,25 @@ module.exports = {
             ]
           }
           response_message.blocks.push(addInterviewTypeAction);
+
+          let revertAction = {
+            "type": "actions",
+            "block_id": `${this.encodeBlockID(context)}`,
+            "elements": [
+              {
+                "type": "button",
+                "action_id": "revert_template",
+                "text": {
+                  "type": "plain_text",
+                  "emoji": true,
+                  "text": ":no_entry_sign:Delete custom template"
+                },
+                "style": "danger",
+                "value": `${currentTemplate.id}`
+              }
+            ]
+          }
+          response_message.blocks.push(revertAction);
         }else{
           let actions1 = {
             "type": "actions",

@@ -31,8 +31,26 @@ class Template {
         return template;
     }
 
-    async copyPublicTemplate(role_id, role_level_id, team_id) {
-
+    async clonePublicTemplate(role_id, level_id, team_id, user_id) {
+        let publicTemplate = await this.getPublicTemplateByRoleAndLevel(role_id, level_id);
+        let newTemplate = await this.createTemplate(role_id, level_id, team_id, "Custome copy of "+publicTemplate.description, user_id);
+        let interviewTypes = await publicTemplate.getInterviewTypes();
+        for (let index = 0; index < interviewTypes.length; index++) {
+            const interviewType = interviewTypes[index];
+            let interviewTypeId = await newTemplate.addInterviewType(interviewType.name);
+            let competencies = await publicTemplate.getCompetencies(interviewType.id);
+            for (let index2 = 0; index2 < competencies.length; index2++) {
+                const competency = competencies[index2];
+                let competencyId = await newTemplate.addCompetency(interviewTypeId, competency.competency);
+                let questions = await publicTemplate.getQuestions(competency.id);
+                for (let index3 = 0; index3 < questions.length; index3++) {
+                    const question = questions[index3];
+                    await newTemplate.addQuestion(competencyId, question.question, user_id);
+                }
+            }
+            
+        }
+        return newTemplate;
     }
 
     async createTemplate(role_id, level_id, team_id, description, user_id) {
@@ -108,6 +126,15 @@ class Template {
         let template = new Template(this.pool);
         template = this.populateTemplate(template, result.rows[0]);
         return template;
+    }
+
+    async removeTemplate(template_id) {
+        
+        const client = await this.pool.connect();
+        const query = 'UPDATE templates SET active=$1 WHERE id= $2';
+        const values = [0, template_id ];
+        let res1 = await client.query(query, values);
+        client.release();
     }
 
     async getInterviewTypes() {

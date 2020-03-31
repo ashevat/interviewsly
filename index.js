@@ -483,11 +483,17 @@ express()
           context.role = parseInt(value.selected_option.value);
         } else if (value.action_id === "filter_by_level") {
           context.level = parseInt(value.selected_option.value);
-        } else if (value.action_id === "create_new") {
-          //todo: figure team id
-          //todo: get role and level name
-          console.log("got user" + user);
-          let newTemplate = await templateDO.createTemplate(context.role, context.level, -1, "Custom Template", user.id);
+        } else if (value.action_id  === "clone_template"){
+          let newTemplate = await templateDO.clonePublicTemplate(context.role, context.level, team.id, user.id);
+          context.template_id = newTemplate.id;
+        }else if (value.action_id  === "revert_template"){
+          await templateDO.removeTemplate(context.template_id);
+          delete context.template_id;
+          context.template_id = null;
+        }
+        else if (value.action_id === "create_new") {
+          //console.log("got user" + user);
+          let newTemplate = await templateDO.createTemplate(context.role, context.level, team.id, "Custom Template", user.id);
           context.template_id = newTemplate.id;
         } else if (value.action_id === "done_template_setup") {
           let imParams = {
@@ -594,13 +600,14 @@ express()
           }
 
         }
-        let templates = null;
         let currentTemplate = null;
+        let publicTemplate = null;
         if (context.template_id) {
           currentTemplate = await templateDO.getTemplateById(context.template_id);
         } else if (context.role > 0 && context.level > 0 && !context.current_template_id) {
           currentTemplate = await templateDO.getTemplate(context.role, context.level, team.id);
           //console.log("found template: "+currentTemplate.description);
+          
           if (currentTemplate) {
             context.template_id = currentTemplate.id;
           } else {
@@ -608,7 +615,6 @@ express()
             publicTemplate = await templateDO.getPublicTemplateByRoleAndLevel(context.role, context.level);
           }
 
-          //console.log("Found templates"+templates);
         }
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, currentTemplate, publicTemplate);
