@@ -119,6 +119,9 @@ express()
 
     res.render('pages/pre-active', results);
   }).post('/events', express.json(), async (request, response) => {
+    console.log("got event"+ JSON.stringify(request.body));
+    response.send("ok");
+    
     let team_id = request.body.team_id;
     let teamDO = new Team();
     team = await teamDO.getTeamBySlackID(team_id, pool);
@@ -138,8 +141,7 @@ express()
       await updateAppHome();
     }
 
-    console.log("got event"+ JSON.stringify(request.body));
-    response.send("ok");
+
     //console.log(request.body);
     //response.send(request.body.challenge); 
   
