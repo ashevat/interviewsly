@@ -462,6 +462,12 @@ express()
     res.status(200).send('');
     const response = JSON.parse(req.body.payload);
     await setTeamAndUser(response.user.id, response.team.id);
+    //console.log("got interactive event:"+  JSON.stringify(response) );
+    if (response.type === "shortcut") {
+      // mimic click on "Start an Interview Panel"
+      response.type = "block_actions";
+      response.actions = [{"action_id":"new_interview","block_id":"6666|src=app_home&action=6"}];
+    }
 
     if (response.type === "block_actions") {
       let response_url = response.response_url;
