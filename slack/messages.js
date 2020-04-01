@@ -576,6 +576,108 @@ module.exports = {
     return response_view;
   },
 
+  getAppHomeResponse: async function (user, context, pool) {
+    let response_blocks = [];
+    
+    let greet = {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": `:wave: Welcome ${user.name}!`
+			}
+    };
+    let greet2 = {
+      "type": "actions",
+      "block_id": `${this.encodeBlockID(context)}`,
+      "elements": [
+        {
+          "type": "button",
+          "action_id": "new_interview",
+          "text": {
+            "type": "plain_text",
+            "text": ":white_check_mark: Start an Interview Panel",
+            "emoji": true
+          },
+          "style": "primary",
+          "value": "click_me_123"
+        },
+        {
+          "type": "button",
+          "action_id": "setup",
+          "text": {
+            "type": "plain_text",
+            "text": ":gear: Configuration",
+            "emoji": true
+          },
+          "value": "click_me_123"
+        }
+      ]
+    }
+    let greet3 = {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": `_Here are your active interviews:_`
+			}
+    };
+    
+    response_blocks.push(greet);
+    response_blocks.push(greet2);
+    response_blocks.push(greet3);
+    // add Interviews the user owns
+    const Interview = require("../data-objects/interview");
+    let interviewDO = new Interview();
+    let ownedInterviews = await interviewDO.getInterviewsByOwnerId(user.id, pool)
+    if(ownedInterviews && ownedInterviews.length>0){
+      for (let index = 0; index < ownedInterviews.length; index++) {
+        const interviewDate = ownedInterviews[index];
+        let interview = {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": `:blue_book: Candidate <${interviewDate.link_to_dashboard}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *owner* of this panel - see <${interviewDate.link_to_dashboard}|dashboard>`
+          }
+        };
+        response_blocks.push(interview);
+      }
+    }else{
+      let msg = {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `:zero: You do not currently have any interviews you are owning.`
+        }
+      };
+      response_blocks.push(msg);
+
+    }
+
+    let assignedInterviews = await interviewDO.getInterviewsByPanelistId(user.id, pool)
+    if(assignedInterviews && assignedInterviews.length>0){
+      for (let index = 0; index < assignedInterviews.length; index++) {
+        const interviewDate = assignedInterviews[index];
+        let interview = {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": `:green_book: Candidate <${interviewDate.link_to_questions}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *interviewer* of this panel - see your <${interviewDate.link_to_questions}|*briefing and questions*>, and <${interviewDate.link_to_dashboard}|dashboard>`
+          }
+        };
+        response_blocks.push(interview);
+      }
+    }else{
+      let msg = {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `:zero: You do not currently have any interviews you are assigned to as an interviewer.`
+        }
+      };
+      response_blocks.push(msg);
+
+    }
+    return response_blocks;
+  },
 
   getAddOnsiteInterviewTypeResponse: async function (trigger_id, context) {
     let response_view = {

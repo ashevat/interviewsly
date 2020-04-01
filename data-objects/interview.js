@@ -64,6 +64,20 @@ class Interview {
         return result.rows;
     }
 
+    async getInterviewsByOwnerId(user_id, pool){
+        const client = await pool.connect();
+        let result = await client.query(`SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id WHERE interviews.status='1' AND interviews.owner_id='${user_id}'`);
+        client.release();
+        return result.rows;
+    }
+
+    async getInterviewsByPanelistId(user_id, pool){
+        const client = await pool.connect();
+        let result = await client.query(`SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id INNER JOIN interview_panelists ON interviews.id = interview_panelists.interview_id WHERE interviews.status='1' AND interview_panelists.panelist_id='${user_id}'`);
+        client.release();
+        return result.rows;
+    }
+
     async getTemplate(pool) {
         const Template = require('./template');
         const templateDO = new Template(pool);

@@ -132,6 +132,33 @@ express()
       let interviewDO = new Interview();
       let interview = await interviewDO.getInterviewByChannel(channelId, pool);
       if(interview) interview.updateStatus(1,pool); 
+    }else if(eventType == "app_home_opened"){
+      //console.log("got home event:" + JSON.stringify(request.body));
+      await setTeamAndUser(request.body.event.user, request.body.team_id);
+      let context = {"src":"app_home", "action": startHandler.ACTION_START};
+      let appHomeBlocks = await slackTool.getAppHomeResponse(user, context,  pool);
+      //console.log("App home res:" + JSON.stringify(appHomeBlocks));
+      let imParams = {
+        "user_id": user.slack_user_id,
+
+        "view":{
+          "type": "home",
+          "blocks": appHomeBlocks
+        }
+       
+      }
+      const fetch2 = require('node-fetch');
+      let http_response = fetch2("https://slack.com/api/views.publish", {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+          'Authorization': `Bearer ${team.token}`
+        },
+        body: `${JSON.stringify(imParams)}`
+      });      
+
+
+      
     }
 
     console.log("got event"+ JSON.stringify(request.body));
