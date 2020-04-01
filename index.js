@@ -121,7 +121,7 @@ express()
   }).post('/events', express.json(), async (request, response) => {
     console.log("got event"+ JSON.stringify(request.body));
     response.send("ok");
-    
+
     let team_id = request.body.team_id;
     let teamDO = new Team();
     team = await teamDO.getTeamBySlackID(team_id, pool);
@@ -130,11 +130,19 @@ express()
     if(eventType == "group_archive"){
       let interviewDO = new Interview();
       let interview = await interviewDO.getInterviewByChannel(channelId, pool);
-      if(interview) interview.updateStatus(0,pool); 
+      if(interview){
+        await interview.updateStatus(0,pool);
+        await setTeamAndUser(request.body.event.user, request.body.team_id);
+        await updateAppHome(); 
+      } 
     }else if(eventType == "group_unarchive"){
       let interviewDO = new Interview();
       let interview = await interviewDO.getInterviewByChannel(channelId, pool);
-      if(interview) interview.updateStatus(1,pool); 
+      if(interview){
+        await interview.updateStatus(1,pool); 
+        await setTeamAndUser(request.body.event.user, request.body.team_id);
+        await updateAppHome();
+      } 
     }else if(eventType == "app_home_opened"){
       //console.log("got home event:" + JSON.stringify(request.body));
       await setTeamAndUser(request.body.event.user, request.body.team_id);     
