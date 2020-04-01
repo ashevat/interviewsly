@@ -132,7 +132,7 @@ express()
       let interview = await interviewDO.getInterviewByChannel(channelId, pool);
       if(interview){
         await interview.updateStatus(0,pool);
-        await setTeamAndUser(request.body.event.user, request.body.team_id);
+        await setTeamAndUser(request.body.event.actor_id, request.body.team_id);
         await updateAppHome(); 
       } 
     }else if(eventType == "group_unarchive"){
@@ -140,7 +140,7 @@ express()
       let interview = await interviewDO.getInterviewByChannel(channelId, pool);
       if(interview){
         await interview.updateStatus(1,pool); 
-        await setTeamAndUser(request.body.event.user, request.body.team_id);
+        await setTeamAndUser(request.body.event.actor_id, request.body.team_id);
         await updateAppHome();
       } 
     }else if(eventType == "app_home_opened"){
