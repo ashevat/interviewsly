@@ -1301,7 +1301,7 @@ express()
         // create a channel for the interview
         let seed = Math.floor((Math.random() * 10000) + 1);
         let channelName = `Interview_${interview.candidate_name}_${seed}`;
-        channelName = channelName.replace(" ", "_")
+        channelName = channelName.replace(/ /g, "_")
         channelName = channelName.toLowerCase();
         let options = {
           "name": channelName,
