@@ -1315,6 +1315,23 @@ module.exports = {
                 "text": "Interview time",
                 "emoji": true
               }
+            }, 
+            {
+              "type": "input",
+              "block_id": `interview_location`,
+              "element": {
+                "type": "plain_text_input",
+                "action_id": "interview_location_value",
+                "placeholder": {
+                  "type": "plain_text",
+                  "text": "+650-274-5429, https://zoom.us/j/444165",
+                },
+              },
+              "label": {
+                "type": "plain_text",
+                "text": "Location: Zoom/Hangout link, Room name, phone number",
+                "emoji": true
+              }
             }
           ]
       }
@@ -1520,7 +1537,7 @@ module.exports = {
         link += '&dates=' + encodeURIComponent( gdate +  '/' + gdate );
         link += '&text=' + encodeURIComponent(`${InterviewTypeData.name} interview with ${interview.candidate_name}`);
         link += '&location=' + encodeURIComponent( "" );
-        link += '&details=' + encodeURIComponent( `Candidate Dashboard: ${interview.link_to_dashboard} `);
+        link += '&details=' + encodeURIComponent( `Interview questions and assessments: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
         //console.log("got date for this interview onsite:" + `${date} ${time}`);
         let dateTime = {
           "type": "mrkdwn",
