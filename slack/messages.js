@@ -44,7 +44,7 @@ module.exports = {
             "action_id": "new_interview",
             "text": {
               "type": "plain_text",
-              "text": ":white_check_mark: Start an Interview Panel",
+              "text": ":white_check_mark: Start an Interview Loop",
               "emoji": true
             },
             "style": "primary",
@@ -95,7 +95,7 @@ module.exports = {
             "action_id": "new_interview",
             "text": {
               "type": "plain_text",
-              "text": ":white_check_mark: Start an Interview Panel",
+              "text": ":white_check_mark: Start an Interview Loop",
               "emoji": true
             },
             "style": "primary",
@@ -595,7 +595,7 @@ module.exports = {
           "action_id": "new_interview",
           "text": {
             "type": "plain_text",
-            "text": ":white_check_mark: Start an Interview Panel",
+            "text": ":white_check_mark: Start an Interview Loop",
             "emoji": true
           },
           "style": "primary",
@@ -635,7 +635,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:blue_book: Candidate <${interviewDate.link_to_dashboard}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *owner* of this panel - see <${interviewDate.link_to_dashboard}|dashboard>`
+            "text": `:blue_book: Candidate <${interviewDate.link_to_dashboard}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *owner* of this interview loop - see <${interviewDate.link_to_dashboard}|dashboard>`
           }
         };
         response_blocks.push(interview);
@@ -660,7 +660,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:green_book: Candidate <${interviewDate.link_to_questions}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *interviewer* of this panel - see your <${interviewDate.link_to_questions}|*briefing and questions*>, and <${interviewDate.link_to_dashboard}|dashboard>`
+            "text": `:green_book: Candidate <${interviewDate.link_to_questions}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *interviewer* of this interview loop - see your <${interviewDate.link_to_questions}|*briefing and questions*>, and <${interviewDate.link_to_dashboard}|dashboard>`
           }
         };
         response_blocks.push(interview);
@@ -951,7 +951,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Onsite Interviews and Panelists:*"
+          "text": "*Interviews and Interviewers:*"
         }
       }
     ];
@@ -1481,7 +1481,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `:tada: You have been invited to participate in an interview panel:`
+          "text": `:tada: You’ve been assigned to an interview loop:`
         }
       },
       {
