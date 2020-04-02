@@ -7,11 +7,11 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "plain_text",
-          "text": "Thank you for installing interviewsly! You are awesome and here is an image, we have picked for you, to show our gratitude:",
+          "text": "Congrats! You've successfully installed Interviewsly.",
           "emoji": true
         }
       },
-      {
+      /*{
         "type": "image",
         "title": {
           "type": "plain_text",
@@ -20,19 +20,19 @@ module.exports = {
         },
         "image_url": "https://www.kindspring.org/my/pics/mem/101310/up_5b576d1140ffb5.26064668_lg.jpg",
         "alt_text": "Thank you!"
-      },
+      },*/
       {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Let's get started:* \n\n :bulb:  You can always access interviewsly by typing `/interviewsly` in Slack. \n\n :checkered_flag:  Here is our control pannel, use it to start a new interview pannel process, or configure Interviewsly process to fit your company's processes."
+          "text": "*Let's get started:* \n\n You can always access Interviewsly by typing `/interviewsly` in Slack. \n\n This leads to your control panel. Here, you can configure your company's interview templates or start a new interview process."
         }
       },
       {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": ":control_knobs: Your interviewsly control panel:"
+          "text": ":control_knobs: Your Interviewsly control panel:"
         }
       },
       {
@@ -83,7 +83,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": ":control_knobs: Your interviewsly control panel:"
+          "text": ":control_knobs: Your Interviewsly control panel:"
         }
       },
       {
@@ -148,7 +148,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "Please fill all the data bellow:\n\n"
+                "text": "Please fill all the data below:\n\n"
               }
             },
             {
@@ -268,7 +268,7 @@ module.exports = {
               },
               "label": {
                 "type": "plain_text",
-                "text": "Question addtional details",
+                "text": "Question additional details",
                 "emoji": true
               }
             }
@@ -341,7 +341,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "What type of competency would you like the interviewer to explore:\n\n"
+                "text": "Which competency would you like the interviewer to evaluate?:\n\n"
               }
             },
             {
@@ -450,7 +450,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "What type of competency would you like the interviewer to explore:\n\n"
+                "text": "Which competency would you like the interviewer to evaluate?:\n\n"
               }
             },
             {
@@ -645,7 +645,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `:zero: You do not currently have any interviews you are owning.`
+          "text": `:zero: You are not the owner of any interview loops.`
         }
       };
       response_blocks.push(msg);
@@ -670,7 +670,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `:zero: You do not currently have any interviews you are assigned to as an interviewer.`
+          "text": `:zero: You are not assigned to any interviews.`
         }
       };
       response_blocks.push(msg);
@@ -701,7 +701,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "What type of interview would you like to add:\n\n"
+                "text": "What type of interview would you like to add?\n\n"
               }
             },
             {
@@ -736,7 +736,7 @@ module.exports = {
         "callback_id": "create-interview",
         "title": {
           "type": "plain_text",
-          "text": "Setup an interview"
+          "text": "Set up an interview"
         },
         "submit": {
           "type": "plain_text",
@@ -749,7 +749,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "Please fill  the data bellow - once done we will create a channel and continue the interview planning process there.\n\n"
+                "text": "Enter in candidate details to create a dedicated channel. \n\n"
               }
             },
             {
@@ -806,7 +806,7 @@ module.exports = {
               },
               "label": {
                 "type": "plain_text",
-                "text": "Level or seniority",
+                "text": "Level or Seniority",
                 "emoji": true
               }
             },
@@ -835,7 +835,7 @@ module.exports = {
               },
               "label": {
                 "type": "plain_text",
-                "text": "Addtional notes",
+                "text": "Additional notes",
                 "emoji": true
               }
             }
@@ -864,7 +864,7 @@ module.exports = {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": `:champagne: Panel Results (published by the request of ${user.name}):`
+        "text": `:champagne: Interview Feedback (published by the request of ${user.name}):`
       }
     }];
     let result = await interview.getInterviewAssessments(pool);
@@ -913,7 +913,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `:couple: @${ownerName} started an interview process:`
+          "text": `:couple: @${ownerName} created an interview loop:`
         }
       },
       {
@@ -1076,14 +1076,14 @@ module.exports = {
             "block_id": `${this.encodeBlockID(context)}`,
             "text": {
               "type": "mrkdwn",
-              "text": "Assign a panelist (interviewer) for this onsite:"
+              "text": "Assign an interviewer for this onsite:"
             },
             "accessory": {
               "type": "users_select",
               "action_id": `select_panelist|${onsite.id}`,
               "placeholder": {
                 "type": "plain_text",
-                "text": "Select an panelist",
+                "text": "Select an interviewer",
                 "emoji": true
               }
             }
@@ -1108,7 +1108,7 @@ module.exports = {
                 "action_id": `publish_result|${interview.id}`,
                 "text": {
                   "type": "plain_text",
-                  "text": ":no_entry_sign: Publish results (not rec.)",
+                  "text": ":no_entry_sign: Publish feedback (not rec.)",
                   "emoji": true
                 },
                 "value": "click_me_123"
@@ -1126,7 +1126,7 @@ module.exports = {
                 "action_id": `publish_result|${interview.id}`,
                 "text": {
                   "type": "plain_text",
-                  "text": ":white_check_mark: Publish results",
+                  "text": ":white_check_mark: Publish feedback",
                   "emoji": true
                 },
                 "style": "primary",
@@ -1172,7 +1172,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "Please fill your candidate assessment:"
+                "text": "Please complete candidate assessment:"
               }
             },
             {
@@ -1214,7 +1214,7 @@ module.exports = {
                   {
                     "text": {
                       "type": "plain_text",
-                      "text": ":scream: Strong no",
+                      "text": ":thumbsdown::thumbsdown: Strong no",
                       "emoji": true
                     },
                     "value": "1"
@@ -1270,7 +1270,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "We will notify the interviewer of the interview schedule\n\n *Please set a date and time for this interview:*"
+                "text": "Please set a date and time for this interview:"
               }
             },
             {
@@ -1602,7 +1602,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:white_check_mark: Thank you! You have sucessfully submitted your interview assessment! Results will show up <${interview.link_to_dashboard}|here> when all interviews are finished.`
+            "text": `:white_check_mark: Thank you! You have successfully submitted your interview assessment. Results will be visible <${interview.link_to_dashboard}|here> once all feedback is submitted.`
           }
         };
         response_message.push(done);
@@ -1706,7 +1706,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": ":hammer_and_pick: *Setup interview process with Interviewsly* :hammer_and_pick:\n  "
+            "text": ":hammer_and_pick: *Set up interview loop with Interviewsly* :hammer_and_pick:\n  "
           }
         },
         {
@@ -1744,7 +1744,7 @@ module.exports = {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "First, lets add onsite interviews for this role, click on the *Add onsite interview* to do so:"
+              "text": "First, specify the interview types for this role. Click on the *Add onsite interview* to do so:"
             }
           };
           response_message.blocks.push(templatePrompt);
@@ -2078,7 +2078,7 @@ module.exports = {
           "text": {
             "type": "plain_text",
             "emoji": true,
-            "text": "Here is a list of interview questions, use the filters to find the right question:"
+            "text": "Here is a list of interview questions. Use the filters to find the right question:"
           }
         },
         {
@@ -2134,7 +2134,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "*Questions founds:*"
+            "text": "*Questions found:*"
           }
         },
 
@@ -2313,7 +2313,7 @@ function populatePannelists(blocklist, pannellists, context) {
       "block_id": `${encd(context)}`,
       "text": {
         "type": "mrkdwn",
-        "text": `:writing_hand: *${pannelist.username}* will observe *${pannelist.name}* attributes `
+        "text": `:writing_hand: *${pannelist.username}* will evaluate *${pannelist.name}* `
       },
       "accessory": {
         "type": "button",
