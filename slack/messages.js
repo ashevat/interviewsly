@@ -1318,6 +1318,7 @@ module.exports = {
             }, 
             {
               "type": "input",
+              "optional": true,
               "block_id": `interview_location`,
               "element": {
                 "type": "plain_text_input",
@@ -1532,17 +1533,29 @@ module.exports = {
 
         let gdate = moment(moment(interviewData.date).format("YYYY[-]MM[-]DD ")+interviewData.time).format('YYYYMMDD[T]HHmm[00]'); //Ymd\\THi00\\Z
         let link;
-
+        let dateTime = null;
         link = 'http://www.google.com/calendar/event?action=TEMPLATE';
         link += '&dates=' + encodeURIComponent( gdate +  '/' + gdate );
         link += '&text=' + encodeURIComponent(`${InterviewTypeData.name} interview with ${interview.candidate_name}`);
-        link += '&location=' + encodeURIComponent( "" );
-        link += '&details=' + encodeURIComponent( `Interview questions and assessments: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
-        //console.log("got date for this interview onsite:" + `${date} ${time}`);
-        let dateTime = {
-          "type": "mrkdwn",
-          "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time} \n <${link}|Add to Calendar>` //  
+        if(interviewData.location){
+          link += '&location=' + encodeURIComponent(interviewData.location);
+          link += '&details=' + encodeURIComponent( `Interview questions and assessments: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
+          dateTime = {
+            "type": "mrkdwn",
+            "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time}\n [${interviewData.location}]  \n <${link}|Add to Calendar>` //  
+          }
+        }else{
+          link += '&location=' + encodeURIComponent( "" );
+          link += '&details=' + encodeURIComponent( `Interview questions and assessments: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
+          dateTime = {
+            "type": "mrkdwn",
+            "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time} \n <${link}|Add to Calendar>` //  
+          }
         }
+        
+        //console.log("got date for this interview onsite:" + `${date} ${time}`);
+        
+        
         response_message[1].fields.push(dateTime);
 
       }

@@ -237,10 +237,10 @@ class Interview {
         }
     }
 
-    async setInterviewTypeTimeAndDate(interviewType, panelistId, date, time, pool){
+    async setInterviewTypeTimeDateAndLocation(interviewType, panelistId, date, time, location,  pool){
         const client = await pool.connect();
-        const query = 'UPDATE interview_panelists SET date=$1, time=$2 WHERE interview_id=$3 AND questions_type=$4 and panelist_id=$5 AND active=$6';
-        const values = [date, time, this.id, interviewType , panelistId, 1];
+        const query = 'UPDATE interview_panelists SET date=$1, time=$2, location=$3 WHERE interview_id=$4 AND questions_type=$5 and panelist_id=$6 AND active=$7';
+        const values = [date, time, location, this.id, interviewType , panelistId, 1];
         await client.query(query,values );
         client.release();
     }

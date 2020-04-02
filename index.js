@@ -953,13 +953,14 @@ express()
         let context = slackTool.decodeBlockID(metadata);
         let date = values.interview_date.interview_date_value.selected_date;
         let time =  values.interview_time.interview_time_value.selected_option.value;
+        let location = values.interview_location.interview_location_value.value
         //console.log(`context: ${JSON.stringify(context)}`);
         let interviewId = context.interview_id;
         let interviewType = context.questionsType;
         let panelistId = context.panelistId;
         const interviewDO = new Interview();
         let interview = await interviewDO.getInterviewById(interviewId, pool);
-        await interview.setInterviewTypeTimeAndDate(interviewType, panelistId, date, time, pool );
+        await interview.setInterviewTypeTimeDateAndLocation(interviewType, panelistId, date, time, location,  pool );
 
         // update the panelist interview panel
         
