@@ -645,7 +645,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `:zero: You are not the owner of any interview loops.`
+          "text": `:zero: You don't own any interview loops.`
         }
       };
       response_blocks.push(msg);
