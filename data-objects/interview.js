@@ -84,7 +84,7 @@ class Interview {
         const query = 'SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id INNER JOIN interview_panelists ON interviews.id = interview_panelists.interview_id WHERE interviews.status=$1 AND interview_panelists.panelist_id=$2';
         const values = [1, user_id];
         let result = await client.query(query, values);
-        client.release();
+        client.release()
         return result.rows;
     }
 

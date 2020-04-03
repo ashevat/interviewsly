@@ -7,6 +7,11 @@ const path = require('path')
 const bodyParser = require('body-parser');
 
 
+const getRawBody = require("raw-body");
+const crypto = require("crypto");
+const timingSafeCompare = require("tsscmp");
+
+
 // handlers
 const SetupHandler = require('./handlers/setup_handler');
 const setupHandler = new SetupHandler();
@@ -33,6 +38,7 @@ const stripeStandardPlan = process.env.STRIPE_STANDARD_PLAN;
 const stripeActivateWebhookSigning  = process.env.STRIPE_WEBHOOK_SIGNING;
 const stripeDeactivateWebhookSigning  = process.env.STRIPE_DEACTIVATE_WEBHOOK_SIGNING;
 const cronSecret = process.env.CRON_SECRET;
+const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
 const PUBLIC_TEAM_ID = -1;
 const { Pool } = require('pg');
@@ -72,7 +78,9 @@ session = require("express-session");
 express()
   .use(express.static(path.join(__dirname, 'public')))
   .use(session({ secret: "cats" }))
-  .use(require('body-parser').urlencoded({ extended: true }))
+  .use(require('body-parser').urlencoded({ extended: true , verify: (req, res, buf) => {
+    req.rawBody = buf;
+  } }))
   .use(passport.initialize())
   .use(passport.session())
   .set('views', path.join(__dirname, 'views'))
@@ -118,9 +126,16 @@ express()
     //console.log("Resutls"+ JSON.stringify(results));
 
     res.render('pages/pre-active', results);
-  }).post('/events', express.json(), async (request, response) => {
-    console.log("got event"+ JSON.stringify(request.body));
+  }).post('/events', express.json({verify: (req, res, buf) => {req.rawBody = buf;}}), async (request, response) => {
+    //console.log("got event"+ JSON.stringify(request.body));
     response.send("ok");
+    //verify the request
+    let parseRawBody  = request.rawBody;
+    //console.log("body"+parseRawBody);
+    let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
+    if(!goodCall){
+      console.log("bad call");
+    }
 
     let team_id = request.body.team_id;
     let teamDO = new Team();
@@ -149,6 +164,7 @@ express()
       await updateAppHome();
     }
 
+    
 
     //console.log(request.body);
     //response.send(request.body.challenge); 
@@ -193,8 +209,8 @@ express()
     // Return a response to acknowledge receipt of the event
     response.json({received: true});
   }).get('/cron', async (req, res) => {
-    let cronSecret = req.query.code;
-    if(!cronSecret || cronSecret != cronSecret){
+    let curCronSecret = req.query.code;
+    if(!curCronSecret || CurCronSecret != cronSecret){
       res.status(500).send("unauthorized");
       return;
     }
@@ -457,9 +473,16 @@ express()
 
   })
 
-  .post('/interactive_callback', express.urlencoded(), async (req, res) => {
+  .post('/interactive_callback', async (req, res) => {
 
     res.status(200).send('');
+    //verify the request
+    let parseRawBody  = req.rawBody;
+    let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
+    if(!goodCall){
+      console.log("bad call");
+    }
+
     const response = JSON.parse(req.body.payload);
     await setTeamAndUser(response.user.id, response.team.id);
     //console.log("got interactive event:"+  JSON.stringify(response) );
@@ -1479,3 +1502,41 @@ async function updateAppHome() {
       }); 
   
 }
+
+  /**
+   * Method to verify signature of requests
+   *
+   * @param signingSecret - Signing secret used to verify request signature
+   * @param requestHeaders - The signing headers. If `req` is an incoming request, then this should be `req.headers`.
+   * @param body - Raw body string
+   * @returns Indicates if request is verified
+   */
+  function verifyRequestSignature(signingSecret,requestHeaders,body){
+
+    //console.log(`debuging verify: '${signingSecret}', '${requestHeaders}', '${body}' `)
+    // Request signature
+    const signature = requestHeaders['x-slack-signature'];
+    // Request timestamp
+    const ts = parseInt(requestHeaders['x-slack-request-timestamp'], 10);
+
+    // Divide current date to match Slack ts format
+    // Subtract 5 minutes from current time
+    const fiveMinutesAgo = Math.floor(Date.now() / 1000) - (60 * 5);
+
+    if (ts < fiveMinutesAgo) {
+      console.log('request is older than 5 minutes');
+      return false;
+    }
+
+    const hmac = crypto.createHmac('sha256', signingSecret);
+    const [version, hash] = signature.split('=');
+    hmac.update(`${version}:${ts}:${body}`);
+
+    if (!timingSafeCompare(hash, hmac.digest('hex'))) {
+      console.log('request signature is not valid');
+      return false;
+    }
+
+    console.log('request signing verification success');
+    return true;
+  }

@@ -635,7 +635,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:blue_book: Candidate <${interviewDate.link_to_dashboard}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *owner* of this interview loop - see <${interviewDate.link_to_dashboard}|dashboard>`
+            "text": `:blue_book: You are the *owner* of an interview loop: <${interviewDate.link_to_dashboard}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} - see <${interviewDate.link_to_dashboard}|dashboard>`
           }
         };
         response_blocks.push(interview);
@@ -656,13 +656,28 @@ module.exports = {
     if(assignedInterviews && assignedInterviews.length>0){
       for (let index = 0; index < assignedInterviews.length; index++) {
         const interviewDate = assignedInterviews[index];
-        let interview = {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": `:green_book: Candidate <${interviewDate.link_to_questions}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name} -  You are the *interviewer* of this interview loop - see your <${interviewDate.link_to_questions}|*briefing and questions*>, and <${interviewDate.link_to_dashboard}|dashboard>`
-          }
-        };
+        let interview = null;
+        if(interviewDate.date){
+          var moment = require('moment');
+          var date =  moment(interviewDate.date).format("dddd, MMMM Do YYYY");
+          var time =  moment("2013-02-08 "+interviewDate.time).format("h:mm a");
+          interview = {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `:green_book: *${date} at ${time}*: You are *interviewing* <${interviewDate.link_to_questions}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name}  - see <${interviewDate.link_to_questions}|*briefing and questions*>, and <${interviewDate.link_to_dashboard}|dashboard>`
+            }
+          };
+        }else{
+          interview = {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": `:green_book: You are *interviewing* <${interviewDate.link_to_questions}|*${interviewDate.candidate_name}*> for a role of ${interviewDate.name}  - see your <${interviewDate.link_to_questions}|*briefing and questions*>, and <${interviewDate.link_to_dashboard}|dashboard>`
+            }
+          };
+        }
+        
         response_blocks.push(interview);
       }
     }else{
