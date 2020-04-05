@@ -919,7 +919,7 @@ module.exports = {
             "block_id": `${this.encodeBlockID(context)}`,
             "text": {
               "type": "mrkdwn",
-              "text": "Assign an interviewer for this onsite:"
+              "text": " "
             },
             "accessory": {
               "type": "users_select",
