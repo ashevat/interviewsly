@@ -930,7 +930,7 @@ module.exports = {
 
         }
 
-        response_message.push(dividerBlock);
+        //response_message.push(dividerBlock);
       }
 
       if (assessmentCollected) {
