@@ -205,7 +205,7 @@ class Interview {
 
     async removePanelist(panelistId, questionsType, pool) {
         const client = await pool.connect();
-        const query = 'UPDATE interview_panelists SET active=$1 WHERE interview_id=$2 AND panelist_id=$3 AND questions_type=$4 AND active=$5 RETURNING message_id, channel_id 3';
+        const query = 'UPDATE interview_panelists SET active=$1 WHERE interview_id=$2 AND panelist_id=$3 AND questions_type=$4 AND active=$5 RETURNING message_id, channel_id';
         const values = [0 ,this.id, panelistId, questionsType, 1];
         const result1 = await client.query(query,values);
 
