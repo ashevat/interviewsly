@@ -579,11 +579,11 @@ module.exports = {
         "callback_id": "create-interview",
         "title": {
           "type": "plain_text",
-          "text": "Set up an interview"
+          "text": "New loop"
         },
         "submit": {
           "type": "plain_text",
-          "text": "Create an interview",
+          "text": "Create interview loop",
           "emoji": true
         },
         "blocks":
@@ -733,7 +733,7 @@ module.exports = {
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": `Competency -  _${competency.competency}_ \n\n Assessment:  ${panelistDetailsAssessment.assessment} `
+              "text": `Competency -  _${competency.competency}_ \n\n Feedback:  ${panelistDetailsAssessment.assessment} `
             }
           }
           response.push(detailedAssessmentResults);
@@ -828,7 +828,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": `:white_check_mark: Assessment for *_${onsite.name}_ interview* submitted by @${pannelist.name}`
+                "text": `:white_check_mark: Feedback for *_${onsite.name}_ interview* submitted by @${pannelist.name}`
 
               }
             };
@@ -1002,11 +1002,11 @@ module.exports = {
         "private_metadata": `${this.encodeBlockID(context)}`,
         "title": {
           "type": "plain_text",
-          "text": "Interview Assessment"
+          "text": "Interview Feedback"
         },
         "submit": {
           "type": "plain_text",
-          "text": "Submit assessment",
+          "text": "Submit feedback",
           "emoji": true
         },
         "blocks":
@@ -1015,7 +1015,7 @@ module.exports = {
               "type": "section",
               "text": {
                 "type": "mrkdwn",
-                "text": "Please complete candidate assessment:"
+                "text": "Please complete candidate feedback:"
               }
             },
             {
@@ -1220,11 +1220,11 @@ module.exports = {
         "private_metadata": `${this.encodeBlockID(context)}`,
         "title": {
           "type": "plain_text",
-          "text": "Assessment intake"
+          "text": "Feedback intake"
         },
         "submit": {
           "type": "plain_text",
-          "text": "Save assessment",
+          "text": "Save feedback",
           "emoji": true
         },
         "blocks":
@@ -1277,7 +1277,7 @@ module.exports = {
       },
       "label": {
         "type": "plain_text",
-        "text": "What was the candidate's answer? What is your assessment?",
+        "text": "What was the candidate's answer? What is your feedback?",
         "emoji": true
       }
     };
@@ -1382,14 +1382,14 @@ module.exports = {
         link += '&text=' + encodeURIComponent(`${InterviewTypeData.name} interview with ${interview.candidate_name}`);
         if(interviewData.location){
           link += '&location=' + encodeURIComponent(interviewData.location);
-          link += '&details=' + encodeURIComponent( `Interview questions and assessments: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
+          link += '&details=' + encodeURIComponent( `Interview questions and feedback: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
           dateTime = {
             "type": "mrkdwn",
             "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time}\n [${interviewData.location}]  \n <${link}|Add to Calendar>` //  
           }
         }else{
           link += '&location=' + encodeURIComponent( "" );
-          link += '&details=' + encodeURIComponent( `Interview questions and assessments: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
+          link += '&details=' + encodeURIComponent( `Interview questions and feedback: ${interviewData.link_to_questions}  Candidate Dashboard: ${interview.link_to_dashboard} `);
           dateTime = {
             "type": "mrkdwn",
             "text": `*:calendar: Date and time for the interview:*\n ${date}at ${time} \n <${link}|Add to Calendar>` //  
@@ -1419,7 +1419,7 @@ module.exports = {
             "style": "primary",
             "text": {
               "type": "plain_text",
-              "text": "Start assesment :pencil2:",
+              "text": "Write feedback :pencil2:",
               "emoji": true
             },
             "value": `${element2.id}`
@@ -1438,7 +1438,7 @@ module.exports = {
             "action_id": `edit_assessment|${element2.id}`,
             "text": {
               "type": "plain_text",
-              "text": ":white_check_mark: Edit my assessment",
+              "text": ":white_check_mark: Edit my feedback",
               "emoji": true
             },
             "value": `${element2.id}`
@@ -1458,7 +1458,7 @@ module.exports = {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": `:white_check_mark: Thank you! You have successfully submitted your interview assessment. Results will be visible <${interview.link_to_dashboard}|here> once all feedback is submitted.`
+            "text": `:white_check_mark: Thank you! You have successfully submitted your interview feedback. Results will be visible <${interview.link_to_dashboard}|here> once all feedback is submitted.`
           }
         };
         response_message.push(done);
@@ -1473,7 +1473,7 @@ module.exports = {
               "style": "primary",
               "text": {
                 "type": "plain_text",
-                "text": "Submit final assessment :thumbsup::thumbsdown: ",
+                "text": "Submit final feedback :thumbsup::thumbsdown: ",
                 "emoji": true
               },
               "value": `submit`
