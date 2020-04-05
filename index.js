@@ -532,7 +532,6 @@ express()
         }else if (value.action_id  === "revert_template"){
           await templateDO.removeTemplate(context.template_id);
           delete context.template_id;
-          context.template_id = null;
         }
         else if (value.action_id === "create_new") {
           //console.log("got user" + user);
@@ -645,7 +644,7 @@ express()
         let currentTemplate = null;
         let publicTemplate = null;
         console.debug("template ID:"+context.template_id);
-        if (context.template_id) {
+        if (context.template_id && context.template_id !=null){
           console.log("got inside A");
           currentTemplate = await templateDO.getTemplateById(context.template_id);
         } else if (context.role > 0 && context.level > 0 && !context.current_template_id) {
