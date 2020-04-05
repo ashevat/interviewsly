@@ -975,7 +975,11 @@ express()
         let context = slackTool.decodeBlockID(metadata);
         let date = values.interview_date.interview_date_value.selected_date;
         let time =  values.interview_time.interview_time_value.selected_option.value;
-        let location = values.interview_location.interview_location_value.value
+
+        let location = null;
+        if(values.interview_location && values.interview_location.interview_location_value){
+          location = values.interview_location.interview_location_value.value;
+        }
         //console.log(`context: ${JSON.stringify(context)}`);
         let interviewId = context.interview_id;
         let interviewType = context.questionsType;
@@ -1101,10 +1105,14 @@ express()
         let metadata = response.view.private_metadata;
         let context = slackTool.decodeBlockID(metadata);
         let assessment = values.onsite_interview.onsite_interview_value.value;
-        let notes = values.interview_notes.interview_notes_value.value;
+
+        let notes = "N/A";
+        if(values.interview_notes && values.interview_notes.interview_notes_value){
+          notes = values.interview_notes.interview_notes_value.value;
+        }
         const interviewDO = new Interview();
         let interview = await interviewDO.getInterviewById(context.interview_id, pool);
-        if (!notes) notes = "N/A";
+        
         let prevAssessment = await interview.getAssessment(context.panelist_id, context.competency_id, pool);
         if (!prevAssessment) {
           let result = await interview.addAssessment(context.panelist_id, context.competency_id, assessment, notes, pool);
@@ -1155,11 +1163,15 @@ express()
         let question1 = values.example_question1.example_question1_value.value;
         //todo: check if we can pull the user ID
         template.addQuestion(competency_id, question1, template.user_id);
-        let question2 = values.example_question2.example_question2_value.value;
-        if (question2) await template.addQuestion(competency_id, question2, template.user_id);
-        let question3 = values.example_question3.example_question3_value.value;
-        if (question3) await template.addQuestion(competency_id, question3, template.user_id);
-
+        
+        if(values.example_question2 && values.example_question2.example_question2_value ){
+          let question2 = values.example_question2.example_question2_value.value;
+          if (question2) await template.addQuestion(competency_id, question2, template.user_id);
+        }
+        if(values.example_question3 && values.example_question3.example_question3_value){
+          let question3 = values.example_question3.example_question3_value.value;
+          if (question3) await template.addQuestion(competency_id, question3, template.user_id);
+        }
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
@@ -1199,10 +1211,16 @@ express()
         console.log(`Adding question = ${interview_type_id}, ${competency_id} , ${question1} `);
         //todo: check if we can pull the user ID
         await template.addQuestion(competency_id, question1, template.user_id);
-        let question2 = values.example_question2.example_question2_value.value;
-        if (question2) await template.addQuestion(competency_id, question2, template.user_id);
-        let question3 = values.example_question3.example_question3_value.value;
-        if (question3) await template.addQuestion(competency_id, question3, template.user_id);
+        if(values.example_question2 && values.example_question2.example_question2_value ){
+          let question2 = values.example_question2.example_question2_value.value;
+          if (question2) await template.addQuestion(competency_id, question2, template.user_id);
+        }
+        
+        if(values.example_question3 && values.example_question3.example_question3_value ){
+          let question3 = values.example_question3.example_question3_value.value;
+          if (question3) await template.addQuestion(competency_id, question3, template.user_id);
+        }
+        
 
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
@@ -1297,13 +1315,15 @@ express()
 
         const userDO = new User();
         let currentUser = await userDO.getUserBySlackID(response.user.id, pool);
-        let linkedIn = values.linkedin_url.linkedin_url_value.value;
-        if(!linkedIn){
-          linkedIn = "N/A";
+        let linkedIn = "N/A";
+        
+        if(values.linkedin_url && values.linkedin_url.linkedin_url_value){
+          linkedIn = values.linkedin_url.linkedin_url_value.value;
         }
-        let notes = values.notes.notes_value.value;
-        if(!notes){
-          notes = "N/A";
+
+        let notes ="N/A";
+        if(values.notes && values.notes.notes_value){
+          notes = values.notes.notes_value.value;
         }
         let param = {
           "candidate_name": values.candidate_name.candidate_name_value.value,
