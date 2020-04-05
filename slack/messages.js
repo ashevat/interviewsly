@@ -2089,6 +2089,7 @@ module.exports = {
       client.release();
     } catch (err) {
       console.error(err);
+      client.release();
       //res.send("Error " + err);
     }
 

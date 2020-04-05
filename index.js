@@ -561,8 +561,9 @@ express()
           // prompt user to add Competency
           context.org_msg_ts = response.container.message_ts;
           context.org_channel = response.channel.id;
-
+          console.debug("before");
           let msg = await slackTool.getAddOnsiteInterviewTypeResponse(response.trigger_id, context);
+          console.debug("after");
           //console.log("****view msg"+ JSON.stringify(msg) );
           const fetch = require('node-fetch');
           let debug = await fetch("https://slack.com/api/views.open", {
