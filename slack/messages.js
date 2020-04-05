@@ -864,7 +864,7 @@ module.exports = {
                 "block_id": `${this.encodeBlockID(context)}`,
                 "text": {
                   "type": "mrkdwn",
-                  "text": `:pencil: *${onsite.name}* interview will be done by ${pannelist.name}`
+                  "text": `:pencil: *${onsite.name}*: ${pannelist.name}`
                 },
                 "accessory": {
                   "type": "button",
