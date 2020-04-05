@@ -794,7 +794,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Interviews and Interviewers:*"
+          "text": "*Interviewers:*"
         }
       }
     ];
