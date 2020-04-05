@@ -91,7 +91,8 @@ class Interview {
     async getTemplate(pool) {
         const Template = require('./template');
         const templateDO = new Template(pool);
-        let thisInterviewTemplate = await templateDO.getTemplate(this.role_id, this.role_level_id, this.team_id);
+        let 
+         = await templateDO.getTemplate(this.role_id, this.role_level_id, this.team_id);
         if(!thisInterviewTemplate){
             thisInterviewTemplate = await templateDO.getPublicTemplateByRoleAndLevel(this.role_id, this.role_level_id);
         }
