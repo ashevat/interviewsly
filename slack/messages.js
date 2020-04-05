@@ -907,19 +907,13 @@ module.exports = {
 
 
         } else {
-          let onsiteBlock = {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": `:pencil: _${onsite.name}_ interview`
-            }
-          };
+          
           let selectPanalistBlock = {
             "type": "section",
             "block_id": `${this.encodeBlockID(context)}`,
             "text": {
               "type": "mrkdwn",
-              "text": " "
+              "text": `:pencil: _${onsite.name}_ interview`
             },
             "accessory": {
               "type": "users_select",
@@ -932,7 +926,6 @@ module.exports = {
             }
           };
 
-          response_message.push(onsiteBlock);
           response_message.push(selectPanalistBlock);
 
         }
