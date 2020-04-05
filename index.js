@@ -132,10 +132,10 @@ express()
     //verify the request
     let parseRawBody  = request.rawBody;
     //console.log("body"+parseRawBody);
-    let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
-    if(!goodCall){
-      console.log("bad call");
-    }
+    //let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
+    //if(!goodCall){
+    //  console.log("bad call");
+    //}
 
     let team_id = request.body.team_id;
     let teamDO = new Team();
@@ -478,10 +478,10 @@ express()
     res.status(200).send('');
     //verify the request
     let parseRawBody  = req.rawBody;
-    let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
-    if(!goodCall){
-      console.log("bad call");
-    }
+    //let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
+    //if(!goodCall){
+    //  console.log("bad call");
+    //}
 
     const response = JSON.parse(req.body.payload);
     await setTeamAndUser(response.user.id, response.team.id);
