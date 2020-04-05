@@ -646,8 +646,10 @@ express()
         let publicTemplate = null;
         console.debug("template ID:"+context.template_id);
         if (context.template_id) {
+          console.log("got inside A");
           currentTemplate = await templateDO.getTemplateById(context.template_id);
         } else if (context.role > 0 && context.level > 0 && !context.current_template_id) {
+          console.log("got inside B");
           currentTemplate = await templateDO.getTemplate(context.role, context.level, team.id);
           //console.log("found template: "+currentTemplate.description);
           
