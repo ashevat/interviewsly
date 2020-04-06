@@ -81,8 +81,8 @@ class Interview {
 
     async getInterviewsByPanelistId(user_id, pool){
         const client = await pool.connect();
-        const query = 'SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id INNER JOIN interview_panelists ON interviews.id = interview_panelists.interview_id WHERE interviews.status=$1 AND interview_panelists.panelist_id=$2';
-        const values = [1, user_id];
+        const query = 'SELECT * FROM interviews INNER JOIN roles ON interviews.role_id = roles.id INNER JOIN interview_panelists ON interviews.id = interview_panelists.interview_id WHERE interviews.status=$1 AND interview_panelists.panelist_id=$2 AND interview_panelists.active=$3';
+        const values = [1, user_id, 1];
         let result = await client.query(query, values);
         client.release()
         return result.rows;
