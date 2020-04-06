@@ -579,22 +579,15 @@ module.exports = {
         "callback_id": "create-interview",
         "title": {
           "type": "plain_text",
-          "text": "New loop"
+          "text": "New interview loop"
         },
         "submit": {
           "type": "plain_text",
-          "text": "Create interview loop",
+          "text": "Submit",
           "emoji": true
         },
         "blocks":
           [
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "Enter in candidate details to create a dedicated channel. \n\n"
-              }
-            },
             {
               "type": "input",
               "block_id": "candidate_name",
@@ -689,10 +682,10 @@ module.exports = {
     try {
       const client = await pool.connect()
       let result = await client.query('SELECT * FROM roles');
-      populateDropdown(response_view1.view.blocks[2].element.options, result.rows);
+      populateDropdown(response_view1.view.blocks[1].element.options, result.rows);
 
       let result2 = await client.query('SELECT * FROM levels');
-      populateDropdown(response_view1.view.blocks[3].element.options, result2.rows);
+      populateDropdown(response_view1.view.blocks[2].element.options, result2.rows);
 
       client.release();
     } catch (err) {
@@ -752,13 +745,6 @@ module.exports = {
     let roleLevelName = await interview.getCachedRoleLevelName(pool);
     let ownerName = await interview.getCachedOwnerName(pool);
     let response_message = [
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `:couple: @${ownerName} created an interview loop:`
-        }
-      },
       {
         "type": "section",
         "fields": [
@@ -984,7 +970,16 @@ module.exports = {
       console.error(err);
       //res.send("Error " + err);
     }
-
+    let endNote = {
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": `:information_source: This interview loop was created by @${ownerName}`
+				}
+			]
+    };
+    response_message.push(endNote);
     return response_message;
 
   },
