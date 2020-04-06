@@ -977,7 +977,7 @@ express()
         let time =  values.interview_time.interview_time_value.selected_option.value;
 
         let location = null;
-        if(values.interview_location && values.interview_location.interview_location_value){
+        if(values.interview_location && values.interview_location.interview_location_value && values.interview_location.interview_location_value.value){
           location = values.interview_location.interview_location_value.value;
         }
         //console.log(`context: ${JSON.stringify(context)}`);
@@ -1107,7 +1107,7 @@ express()
         let assessment = values.onsite_interview.onsite_interview_value.value;
 
         let notes = "N/A";
-        if(values.interview_notes && values.interview_notes.interview_notes_value){
+        if(values.interview_notes && values.interview_notes.interview_notes_value && values.interview_notes.interview_notes_value.value){
           notes = values.interview_notes.interview_notes_value.value;
         }
         const interviewDO = new Interview();
@@ -1317,12 +1317,12 @@ express()
         let currentUser = await userDO.getUserBySlackID(response.user.id, pool);
         let linkedIn = "N/A";
         
-        if(values.linkedin_url && values.linkedin_url.linkedin_url_value){
+        if(values.linkedin_url && values.linkedin_url.linkedin_url_value && values.linkedin_url.linkedin_url_value.value){
           linkedIn = values.linkedin_url.linkedin_url_value.value;
         }
 
         let notes ="N/A";
-        if(values.notes && values.notes.notes_value){
+        if(values.notes && values.notes.notes_value && values.notes.notes_value.value){
           notes = values.notes.notes_value.value;
         }
         let param = {
