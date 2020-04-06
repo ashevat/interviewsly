@@ -835,6 +835,14 @@ module.exports = {
             response_message.push(assesment_submitted);
           } else {
             let onsiteBlock = {}
+
+            let actionSection = {
+              "type": "actions",
+              "block_id": `${this.encodeBlockID(context)}`,
+              "elements": [
+                
+              ]
+            }
             if(pannelist.date){
               var moment = require('moment');
               var date =  moment(pannelist.date).format("dddd, MMMM Do YYYY ");
@@ -845,18 +853,21 @@ module.exports = {
                 "text": {
                   "type": "mrkdwn",
                   "text": `:pencil: *${onsite.name}*: *${pannelist.name}* on ${date}at ${time}.`
-                },
-                "accessory": {
-                  "type": "button",
-                  "action_id": "schedule",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Reschedule",
-                    "emoji": true
-                  },
-                  "value": `${pannelist.id}|${onsite.id}`
                 }
               };
+
+              scheduleAction = {
+                "type": "button",
+                "action_id": "schedule",
+                "style": "primary",
+                "text": {
+                  "type": "plain_text",
+                  "text": ":calendar:Reschedule",
+                  "emoji": true
+                },
+                "value": `${pannelist.id}|${onsite.id}`
+              };
+              actionSection.elements.push(scheduleAction);
 
             }else{
               onsiteBlock = {
@@ -865,44 +876,37 @@ module.exports = {
                 "text": {
                   "type": "mrkdwn",
                   "text": `:pencil: *${onsite.name}*: ${pannelist.name}`
-                },
-                "accessory": {
-                  "type": "button",
-                  "action_id": "schedule",
-                  "style": "primary",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Schedule",
-                    "emoji": true
-                  },
-                  "value": `${pannelist.id}|${onsite.id}`
                 }
               };
-
+              scheduleAction = {
+                "type": "button",
+                "action_id": "schedule",
+                "style": "primary",
+                "text": {
+                  "type": "plain_text",
+                  "text": ":calendar:Schedule",
+                  "emoji": true
+                },
+                "value": `${pannelist.id}|${onsite.id}`
+              };
+              actionSection.elements.push(scheduleAction);
             }
 
             
-            let selectPanalistBlock = {
-              "type": "section",
-              "block_id": `${this.encodeBlockID(context)}`,
+            let reselectPanalistBlock = {
+              "type": "button",
+              "action_id": "remove_panelist",
               "text": {
-                "type": "mrkdwn",
-                "text": " "
+                "type": "plain_text",
+                "text": "Reassign",
+                "emoji": true
               },
-              "accessory": {
-                "type": "button",
-                "action_id": "remove_panelist",
-                "text": {
-                  "type": "plain_text",
-                  "text": "Reassign",
-                  "emoji": true
-                },
-                "value": `${pannelist.slack_user_id}|${onsite.id}`
-              }
+              "value": `${pannelist.slack_user_id}|${onsite.id}`
             };
+            actionSection.elements.push(reselectPanalistBlock);
 
             response_message.push(onsiteBlock);
-            response_message.push(selectPanalistBlock);
+            response_message.push(actionSection);
           }
 
 
@@ -925,7 +929,6 @@ module.exports = {
               }
             }
           };
-
           response_message.push(selectPanalistBlock);
 
         }
