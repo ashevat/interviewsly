@@ -862,7 +862,7 @@ module.exports = {
                 "style": "primary",
                 "text": {
                   "type": "plain_text",
-                  "text": ":calendar:Reschedule",
+                  "text": ":calendar: Reschedule",
                   "emoji": true
                 },
                 "value": `${pannelist.id}|${onsite.id}`
@@ -884,7 +884,7 @@ module.exports = {
                 "style": "primary",
                 "text": {
                   "type": "plain_text",
-                  "text": ":calendar:Schedule",
+                  "text": ":calendar: Schedule",
                   "emoji": true
                 },
                 "value": `${pannelist.id}|${onsite.id}`
