@@ -886,7 +886,7 @@ express()
               "type": "section",
               "text": {
                 "type": "plain_text",
-                "text": "This request has been deprecated :hourglass_flowing_sand: .",
+                "text": "CANCELLED: you’ve been removed from this interview.",
                 "emoji": true
               }
             }]
@@ -915,7 +915,7 @@ express()
             console.log("!!!bye bye!!!");
             //todo: kick user
             let imParams = {
-              "text": `you have been removed from ${interview.candidate_name}'s interview pannel`,
+              "text": `Your interview with ${interview.candidate_name} was cancelled.`,
               "channel": `${panelistId}`
             }
 
@@ -970,6 +970,7 @@ express()
 
     } else if (response.type === "view_submission") {
       if (response.view.callback_id == "schedule-interview"){
+        console.log("schedule output"+JSON.stringify(response.view.state.values));
         const values = response.view.state.values;
         let metadata = response.view.private_metadata;
         let context = slackTool.decodeBlockID(metadata);
