@@ -667,30 +667,6 @@ express()
         let dblog = await debug.json();
         console.log(dblog);
 
-      } else if (context.action == ACTION_GET_QUESTION) {
-        if (value.action_id === "get_next_questions") {
-          context.result_index = parseInt(context.result_index) + 3;
-
-        } else if (value.action_id === "get_prev_questions") {
-          context.result_index = parseInt(context.result_index) - 3;
-
-        } else if (value.action_id === "filter_by_role") {
-          context.role = parseInt(value.selected_option.value);
-        } else if (value.action_id === "filter_by_level") {
-          context.level = parseInt(value.selected_option.value);
-        } else if (value.action_id === "filter_by_type") {
-          context.type = parseInt(value.selected_option.value);
-        }
-        let response_message = await slackTool.getQuestionResponse(req, res, pool, context);
-        const fetch = require('node-fetch');
-        fetch(response_url, {
-          method: 'post',
-          body: `${JSON.stringify(response_message)}`
-        }).then((response) => {
-          console.log("got respond");
-        });
-
-
       } else if (context.action == ACTION_ASSESSMENT) {
         let interviewDO = new Interview();
         let interview = await interviewDO.getInterviewById(context.interview_id, pool);

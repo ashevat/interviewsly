@@ -680,14 +680,16 @@ module.exports = {
     };
 
     try {
-      const client = await pool.connect()
-      let result = await client.query('SELECT * FROM roles');
+      //const client = await pool.connect()
+      const query = 'SELECT * FROM roles';
+      let result = await pool.query(query);
       populateDropdown(response_view1.view.blocks[1].element.options, result.rows);
 
-      let result2 = await client.query('SELECT * FROM levels');
+      const query2 = 'SELECT * FROM levels';
+      let result2 = await pool.query(query2);
       populateDropdown(response_view1.view.blocks[2].element.options, result2.rows);
 
-      client.release();
+      //client.release();
     } catch (err) {
       console.error(err);
     }
@@ -1495,66 +1497,6 @@ module.exports = {
         response_message.push(actions);
       }
 
-
-      // pupulate questions
-
-      /*
-    let offset = context.result_index;
-    let limit = 3;
-    let innerJoinStatment = "";
-    let where = "";
-
-  
-    innerJoinStatment = " INNER JOIN question_roles ON questions.id = question_roles.question_id INNER JOIN question_levels ON questions.id = question_levels.question_id  ";
-    where = ` WHERE question_roles.role_id='${interview.role_id}' AND question_levels.level_id='${interview.role_level_id}' AND questions.question_type='${questionsType}' `;
-
-
-    console.log("Statment =" + `SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
-    const questions = await client.query(`SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
-    populateQuestions(response_message, questions.rows);
-
-    const nextQuestions = await client.query(`SELECT questions.id FROM questions ${innerJoinStatment} ${where} OFFSET ${offset + limit} LIMIT 1`);
-    if (offset > 0) {
-      response_message.push({
-        "type": "actions",
-        "block_id": `${this.encodeBlockID(context)}`,
-        "elements": [
-          {
-            "type": "button",
-            "action_id": "get_prev_questions",
-            "text": {
-              "type": "plain_text",
-              "emoji": true,
-              "text": "Prev Results"
-            },
-            "value": "get_prev_questions"
-          }
-        ]
-      }
-      );
-    }
-    if (nextQuestions.rows.length > 0) {
-      response_message.push({
-        "type": "actions",
-        "block_id": `${this.encodeBlockID(context)}`,
-        "elements": [
-          {
-            "type": "button",
-            "action_id": "get_next_questions",
-            "text": {
-              "type": "plain_text",
-              "emoji": true,
-              "text": "Next Results"
-            },
-            "value": "get_next_questions"
-          }
-        ]
-      }
-      );
-    }
-
-*/
-
     } catch (err) {
       console.error(err);
       //res.send("Error " + err);
@@ -1585,7 +1527,7 @@ module.exports = {
 
 
     try {
-      const client = await pool.connect()
+      //const client = await pool.connect()
       let readonly = false;
       //console.log("current template: "+ currentTemplate.description);
       if(!currentTemplate && publicTemplate){
@@ -1857,13 +1799,13 @@ module.exports = {
             }
           ]
         }
-        let result = await client.query('SELECT * FROM roles');
+        let result = await pool.query('SELECT * FROM roles');
         let selected = populateDropdown(filter.elements[0].options, result.rows, context.role);
         if (selected) {
           filter.elements[0].initial_option = selected;
         }
 
-        let result2 = await client.query('SELECT * FROM levels');
+        let result2 = await pool.query('SELECT * FROM levels');
         selected = populateDropdown(filter.elements[1].options, result2.rows, context.level);
         if (selected) {
           filter.elements[1].initial_option = selected;
@@ -1926,10 +1868,10 @@ module.exports = {
 
 
 
-      client.release();
+      //.release();
     } catch (err) {
       console.error(err);
-      client.release();
+      //client.release();
       //res.send("Error " + err);
     }
 
@@ -1937,175 +1879,6 @@ module.exports = {
     return response_message;
   },
 
-  getQuestionResponse: async function (req, res, pool, context) {
-
-    let response_message = {
-      "response_type": "in_channel",
-      "blocks": [
-        {
-          "type": "section",
-          "text": {
-            "type": "plain_text",
-            "emoji": true,
-            "text": "Here is a list of interview questions. Use the filters to find the right question:"
-          }
-        },
-        {
-          "type": "divider"
-        },
-
-        {
-          "type": "actions",
-          "block_id": `${this.encodeBlockID(context)}`,
-          "elements": [
-            {
-              "action_id": "filter_by_role",
-              "type": "static_select",
-              "placeholder": {
-                "type": "plain_text",
-                "text": "Candidate role",
-                "emoji": true
-              },
-              "options": [
-
-              ]
-            },
-            {
-              "action_id": "filter_by_level",
-              "type": "static_select",
-              "placeholder": {
-                "type": "plain_text",
-                "text": "Candidate level",
-                "emoji": true
-              },
-              "options": [
-
-              ],
-            },
-            {
-              "action_id": "filter_by_type",
-              "type": "static_select",
-              "placeholder": {
-                "type": "plain_text",
-                "text": "Question type",
-                "emoji": true
-              },
-              "options": [
-
-              ]
-            }
-          ]
-        },
-        {
-          "type": "divider"
-        },
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "*Questions found:*"
-          }
-        },
-
-
-      ]
-    };
-
-
-    try {
-      const client = await pool.connect()
-      let result = await client.query('SELECT * FROM roles');
-      let selected = populateDropdown(response_message.blocks[2].elements[0].options, result.rows, context.role);
-      if (selected) {
-        response_message.blocks[2].elements[0].initial_option = selected;
-      }
-
-      let result2 = await client.query('SELECT * FROM levels');
-      selected = populateDropdown(response_message.blocks[2].elements[1].options, result2.rows, context.level);
-      if (selected) {
-        response_message.blocks[2].elements[1].initial_option = selected;
-      }
-
-      const result3 = await client.query('SELECT * FROM question_type');
-      selected = populateDropdown(response_message.blocks[2].elements[2].options, result3.rows, context.type);
-      if (selected) {
-        response_message.blocks[2].elements[2].initial_option = selected;
-      }
-      //const result4 = await client.query('SELECT * FROM tags');
-      //populateDropdown(response_message.blocks[2].elements[3].options, result4.rows);
-
-      // pupulate questions
-      let offset = context.result_index;
-      let limit = 3;
-      let innerJoinStatment = "";
-      let where = "";
-      if (context.role > 0) {
-        innerJoinStatment = " INNER JOIN question_roles ON questions.id = question_roles.question_id ";
-        where = ` WHERE question_roles.role_id='${context.role}' `;
-        if (context.level > 0) {
-          innerJoinStatment += " INNER JOIN question_levels ON questions.id = question_levels.question_id ";
-          where += ` AND question_levels.level_id='${context.level}' `;
-        }
-      } else if (context.level > 0) {
-        innerJoinStatment = " INNER JOIN question_levels ON questions.id = question_levels.question_id ";
-        where = `WHERE question_levels.level_id='${context.level}' `;
-      }
-
-      console.log("Statment =" + `SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
-      const questions = await client.query(`SELECT question FROM questions ${innerJoinStatment} ${where}  OFFSET ${offset} LIMIT ${limit}`);
-      populateQuestions(response_message.blocks, questions.rows);
-
-      const nextQuestions = await client.query(`SELECT questions.id FROM questions ${innerJoinStatment} ${where} OFFSET ${offset + limit} LIMIT 1`);
-      if (offset > 0) {
-        response_message.blocks.push({
-          "type": "actions",
-          "block_id": `${this.encodeBlockID(context)}`,
-          "elements": [
-            {
-              "type": "button",
-              "action_id": "get_prev_questions",
-              "text": {
-                "type": "plain_text",
-                "emoji": true,
-                "text": "Prev Results"
-              },
-              "value": "get_prev_questions"
-            }
-          ]
-        }
-        );
-      }
-      if (nextQuestions.rows.length > 0) {
-        response_message.blocks.push({
-          "type": "actions",
-          "block_id": `${this.encodeBlockID(context)}`,
-          "elements": [
-            {
-              "type": "button",
-              "action_id": "get_next_questions",
-              "text": {
-                "type": "plain_text",
-                "emoji": true,
-                "text": "Next Results"
-              },
-              "value": "get_next_questions"
-            }
-          ]
-        }
-        );
-      }
-
-
-
-      client.release();
-    } catch (err) {
-      console.error(err);
-      //res.send("Error " + err);
-    }
-
-
-    return response_message;
-  },
 
   encodeBlockID: function (context) {
     let seed = Math.floor((Math.random() * 10000) + 1);
