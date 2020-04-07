@@ -1107,7 +1107,7 @@ express()
         let assessment = values.onsite_interview.onsite_interview_value.value;
 
         let notes = "N/A";
-        if(values.interview_notes && values.interview_notes.interview_notes_value && values.interview_notes.interview_notes_value.value){
+        if(values.interview_notes && values.interview_notes.interview_notes_value && values.interview_notes.interview_notes_value.value ){
           notes = values.interview_notes.interview_notes_value.value;
         }
         const interviewDO = new Interview();

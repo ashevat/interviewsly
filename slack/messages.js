@@ -700,11 +700,32 @@ module.exports = {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": `:champagne: Interview Feedback (published by the request of ${user.name}):`
+        "text": `:champagne: Interview Feedback (published by the request of ${user.name}):\n *Feedback summary:*`
       }
     }];
     let result = await interview.getInterviewAssessments(pool);
     let score = ["NA", "Strong don't hire", "Don't hire", "Hire", "Strong hire"];
+    // added exec summary
+    for (let index = 0; index < result.length; index++) {
+      const element = result[index];
+      console.log("element " + JSON.stringify(element));
+      let assessmentResults = {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `:writing_hand: @${element.username} _(${element.name} interview)_: *${score[element.score]}* `
+        }
+      }
+      response.push(assessmentResults)
+    }
+    let header = {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": `*Detailed feedback:*`
+      }
+    }
+    response.push(header)
     for (let index = 0; index < result.length; index++) {
       const element = result[index];
       console.log("element " + JSON.stringify(element));
@@ -1464,7 +1485,7 @@ module.exports = {
               "style": "primary",
               "text": {
                 "type": "plain_text",
-                "text": "Submit final feedback :thumbsup::thumbsdown: ",
+                "text": "Submit rating :thumbsup::thumbsdown: ",
                 "emoji": true
               },
               "value": `submit`
