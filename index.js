@@ -445,7 +445,7 @@ express()
   .post('/setup', express.urlencoded({ extended: true }), async (req, res) => {
     await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.status(200).send(':writing_hand: Preping setup...:writing_hand: ');
-    setupHandler.handleSetupSlashCommand(req, res, pool, slackTool, team, user);
+    setupHandler.handleSetup(req, res, pool, slackTool, team, user);
 
   }).post('/interview', express.urlencoded(), async (req, res) => {
     await setTeamAndUser(req.body.user_id, req.body.team_id);
@@ -517,7 +517,24 @@ express()
             body: `${JSON.stringify(msg)}`
           });
         } else if (value.action_id === "setup") {
-          setupHandler.handleSetupSlashCommand(req, res, pool, slackTool, team, user);
+          if(context.src && context.src === "app_home"){
+            
+            let context = {
+              action: 4,
+              role: -1,
+              level: -1,
+              type: -1,
+              result_index: 0,
+              src:"app_home"
+            };
+            let setupBlocks = await slackTool.getSetupResponse(req, res, pool, context);
+            
+            await updateAppHome(setupBlocks);
+
+          }else{
+            setupHandler.handleSetup(req, res, pool, slackTool, team, user);
+          }
+          
         }
 
       } else if (context.action == setupHandler.ACTION_SETUP) {
@@ -538,28 +555,34 @@ express()
           let newTemplate = await templateDO.createTemplate(context.role, context.level, team.id, "Custom Template", user.id);
           context.template_id = newTemplate.id;
         } else if (value.action_id === "done_template_setup") {
-          let imParams = {
-            "text": `Thank you for installing Interviewsly!`,
-            "blocks": [{
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "Setup done!\n _Pro tip: You can always re-access interviewsly setup by typing `/interviewsly` in Slack._"
-              }
-
-            }]
+          if(context.src && context.src ==="app_home"){
+            updateAppHome()
+            return;
+          }else{
+            let imParams = {
+              "text": `Thank you for installing Interviewsly!`,
+              "blocks": [{
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Setup done!\n _Pro tip: You can always re-access interviewsly setup by typing `/interviewsly` in Slack._"
+                }
+  
+              }]
+            }
+            const fetch = require('node-fetch');
+            let debug = await fetch(response_url, {
+              method: 'post',
+              body: `${JSON.stringify(imParams)}`
+            })
+            return;
           }
-          const fetch = require('node-fetch');
-          let debug = await fetch(response_url, {
-            method: 'post',
-            body: `${JSON.stringify(imParams)}`
-          })
-          return;
+          
 
         } else if (value.action_id === "add_onsite_interview_type") {
           // prompt user to add Competency
           context.org_msg_ts = response.container.message_ts;
-          context.org_channel = response.channel.id;
+          if(response.channel) context.org_channel = response.channel.id;
           let msg = await slackTool.getAddOnsiteInterviewTypeResponse(response.trigger_id, context);
           //console.log("****view msg"+ JSON.stringify(msg) );
           const fetch = require('node-fetch');
@@ -582,7 +605,7 @@ express()
             //let result = await template.removeInterviewType(onsiteInterview);
           } else if (subAction == "edit") {
             context.org_msg_ts = response.container.message_ts;
-            context.org_channel = response.channel.id;
+            if(response.channel) context.org_channel = response.channel.id;
             context.competency_id = competencyId;
             let template = await templateDO.getTemplateById(context.template_id);
             let questions = await template.getQuestions(competencyId);
@@ -606,7 +629,7 @@ express()
 
           if (subAction == "add") {
             context.org_msg_ts = response.container.message_ts;
-            context.org_channel = response.channel.id;
+            if(response.channel) context.org_channel = response.channel.id;
             context.onsite_interview_type_id = onsiteInterview;
             let msg = await slackTool.getAddCompetencyResponse(response.trigger_id, context);
             const fetch = require('node-fetch');
@@ -623,7 +646,7 @@ express()
             let result = await template.removeInterviewType(onsiteInterview);
           } else if (subAction == "edit") {
             context.org_msg_ts = response.container.message_ts;
-            context.org_channel = response.channel.id;
+            if (response.channel) context.org_channel = response.channel.id;
             context.onsite_interview_type_id = onsiteInterview;
             let template = await templateDO.getTemplateById(context.template_id);
             let onsite = await template.getInterviewTypeById(onsiteInterview);
@@ -657,15 +680,21 @@ express()
           }
 
         }
-
+        // todo potentialy route to app home
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, currentTemplate, publicTemplate);
+        if(context.src && context.src === "app_home"){
+          await updateAppHome(response_message);
+        }else{
         const fetch = require('node-fetch');
         let debug = await fetch(response_url, {
           method: 'post',
           body: `${JSON.stringify(response_message)}`
         })
         let dblog = await debug.json();
-        console.log(dblog);
+
+        }
+        
+        //console.log(dblog);
 
       } else if (context.action == ACTION_ASSESSMENT) {
         let interviewDO = new Interview();
@@ -1152,25 +1181,29 @@ express()
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
+        if(context.src && context.src == "app_home"){
+          await updateAppHome(response_message);
+        }else{
+          let imParams = {
+            "text": `added`,
+            "channel": `${context.org_channel}`,
+            "ts": `${context.org_msg_ts}`,
+            "blocks": response_message.blocks
+          }
+  
+          const fetch = require('node-fetch');
+          let http_response = await fetch("https://slack.com/api/chat.update", {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+              'Authorization': `Bearer ${team.token}`
+            },
+            body: `${JSON.stringify(imParams)}`
+          });
+          let debug = await http_response.json()
 
-        let imParams = {
-          "text": `added`,
-          "channel": `${context.org_channel}`,
-          "ts": `${context.org_msg_ts}`,
-          "blocks": response_message.blocks
         }
-
-        const fetch = require('node-fetch');
-        let http_response = await fetch("https://slack.com/api/chat.update", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `${JSON.stringify(imParams)}`
-        });
-
-        let debug = await http_response.json()
+        
 
       } else if (response.view.callback_id == "add-competency") {
 
@@ -1202,25 +1235,30 @@ express()
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
-
-        let imParams = {
-          "text": `added`,
-          "channel": `${context.org_channel}`,
-          "ts": `${context.org_msg_ts}`,
-          "blocks": response_message.blocks
+        if(context.src && context.src == "app_home"){
+          await updateAppHome(response_message);
+        }else{
+          let imParams = {
+            "text": `added`,
+            "channel": `${context.org_channel}`,
+            "ts": `${context.org_msg_ts}`,
+            "blocks": response_message.blocks
+          }
+  
+          const fetch = require('node-fetch');
+          let http_response = await fetch("https://slack.com/api/chat.update", {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+              'Authorization': `Bearer ${team.token}`
+            },
+            body: `${JSON.stringify(imParams)}`
+          });
+          let debug = await http_response.json()
         }
+        
 
-        const fetch = require('node-fetch');
-        let http_response = await fetch("https://slack.com/api/chat.update", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `${JSON.stringify(imParams)}`
-        });
-
-        let debug = await http_response.json()
+        
 
       } else if (response.view.callback_id == "edit-onsite-interview-type") {
         const values = response.view.state.values;
@@ -1233,26 +1271,31 @@ express()
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
+        if(context.src && context.src == "app_home"){
+          await updateAppHome(response_message);
+        }else{
+          let imParams = {
+            "text": `added`,
+            "channel": `${context.org_channel}`,
+            "ts": `${context.org_msg_ts}`,
+            "blocks": response_message.blocks
+          }
+  
+          const fetch = require('node-fetch');
+          let http_response = await fetch("https://slack.com/api/chat.update", {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+              'Authorization': `Bearer ${team.token}`
+            },
+            body: `${JSON.stringify(imParams)}`
+          });
+  
+          let debug = await http_response.json();
 
-        let imParams = {
-          "text": `added`,
-          "channel": `${context.org_channel}`,
-          "ts": `${context.org_msg_ts}`,
-          "blocks": response_message.blocks
         }
 
-        const fetch = require('node-fetch');
-        let http_response = await fetch("https://slack.com/api/chat.update", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `${JSON.stringify(imParams)}`
-        });
-
-        let debug = await http_response.json()
-
+        
       } else if (response.view.callback_id == "add-onsite-interview-type") {
         const values = response.view.state.values;
         let metadata = response.view.private_metadata;
@@ -1264,25 +1307,29 @@ express()
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
-
-        let imParams = {
-          "text": `added`,
-          "channel": `${context.org_channel}`,
-          "ts": `${context.org_msg_ts}`,
-          "blocks": response_message.blocks
+        if(context.src && context.src == "app_home"){
+          await updateAppHome(response_message);
+        }else{
+          let imParams = {
+            "text": `added`,
+            "channel": `${context.org_channel}`,
+            "ts": `${context.org_msg_ts}`,
+            "blocks": response_message.blocks
+          }
+  
+          const fetch = require('node-fetch');
+          let http_response = await fetch("https://slack.com/api/chat.update", {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+              'Authorization': `Bearer ${team.token}`
+            },
+            body: `${JSON.stringify(imParams)}`
+          });
+  
+          let debug = await http_response.json()
         }
-
-        const fetch = require('node-fetch');
-        let http_response = await fetch("https://slack.com/api/chat.update", {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-            'Authorization': `Bearer ${team.token}`
-          },
-          body: `${JSON.stringify(imParams)}`
-        });
-
-        let debug = await http_response.json()
+        
 
 
       } else if (response.view.callback_id == "create-interview") {
@@ -1474,9 +1521,10 @@ async function getMessageLink(slack_channel_id, slack_message_id, team ) {
   
 }
 
-async function updateAppHome() {
+async function updateAppHome(setupBlocks) {
+  
   let context = {"src":"app_home", "action": startHandler.ACTION_START};
-      let appHomeBlocks = await slackTool.getAppHomeResponse(user, context,  pool);
+      let appHomeBlocks = await slackTool.getAppHomeResponse(user, context,  pool, setupBlocks);
       //console.log("App home res:" + JSON.stringify(appHomeBlocks));
       let imParams = {
         "user_id": user.slack_user_id,

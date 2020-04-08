@@ -404,7 +404,7 @@ module.exports = {
     return response_view;
   },
 
-  getAppHomeResponse: async function (user, context, pool) {
+  getAppHomeResponse: async function (user, context, pool, setupBlocks) {
     let response_blocks = [];
     
     let greet = {
@@ -441,6 +441,7 @@ module.exports = {
         }
       ]
     }
+
     let greet3 = {
 			"type": "section",
 			"text": {
@@ -451,6 +452,11 @@ module.exports = {
     
     response_blocks.push(greet);
     response_blocks.push(greet2);
+    if(setupBlocks){
+      console.log("adding blocks :" + JSON.stringify(setupBlocks.blocks))
+      response_blocks = response_blocks.concat(setupBlocks.blocks);
+    }
+  
     response_blocks.push(greet3);
     // add Interviews the user owns
     const Interview = require("../data-objects/interview");
@@ -567,7 +573,7 @@ module.exports = {
           ]
       }
     };
-
+    
     return response_view;
   },
 

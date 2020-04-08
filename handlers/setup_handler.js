@@ -4,7 +4,7 @@ class SetupHandler {
     }
     
 
-    async handleSetupSlashCommand(req, res,pool, slackTool ,team, user ) {
+    async handleSetup(req, res,pool, slackTool ,team, user ) {
     let context = {
       action: this.ACTION_SETUP,
       role: -1,
