@@ -35,8 +35,8 @@ const baseURL = process.env.BASE_URL;
 const stripeSK = process.env.STRIPE_SK;
 const stripePK = process.env.STRIPE_PK;
 const stripeStandardPlan = process.env.STRIPE_STANDARD_PLAN;
-const stripeActivateWebhookSigning  = process.env.STRIPE_WEBHOOK_SIGNING;
-const stripeDeactivateWebhookSigning  = process.env.STRIPE_DEACTIVATE_WEBHOOK_SIGNING;
+const stripeActivateWebhookSigning = process.env.STRIPE_WEBHOOK_SIGNING;
+const stripeDeactivateWebhookSigning = process.env.STRIPE_DEACTIVATE_WEBHOOK_SIGNING;
 const cronSecret = process.env.CRON_SECRET;
 const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
@@ -59,7 +59,7 @@ const templateDO = new Template(pool);
 passport.use(new SlackStrategy({
   clientID: clientId,
   clientSecret: clientSecret,
-  callbackURL: baseURL+"/auth/slack/callback"
+  callbackURL: baseURL + "/auth/slack/callback"
 }, (accessToken, refreshToken, profile, done) => {
   // optionally persist profile data
   done(null, profile);
@@ -78,9 +78,11 @@ session = require("express-session");
 express()
   .use(express.static(path.join(__dirname, 'public')))
   .use(session({ secret: "cats" }))
-  .use(require('body-parser').urlencoded({ extended: true , verify: (req, res, buf) => {
-    req.rawBody = buf;
-  } }))
+  .use(require('body-parser').urlencoded({
+    extended: true, verify: (req, res, buf) => {
+      req.rawBody = buf;
+    }
+  }))
   .use(passport.initialize())
   .use(passport.session())
   .set('views', path.join(__dirname, 'views'))
@@ -94,43 +96,43 @@ express()
     res.redirect('/');
   })
   .get('/auth/slack', passport.authenticate('slack'))
-  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/' }), (req, res) => res.redirect('/billed') )
+  .get('/auth/slack/callback', passport.authenticate('slack', { failureRedirect: '/' }), (req, res) => res.redirect('/billed'))
   .get('/pre-active', async (req, res) => {
     if (!req.user) {
       res.redirect('/');
       return;
     }
-    
-    console.log("pre active user"+ JSON.stringify(req.user));
-    console.log("pre active user id"+ JSON.stringify(req.user.id));
+
+    console.log("pre active user" + JSON.stringify(req.user));
+    console.log("pre active user id" + JSON.stringify(req.user.id));
     const userDO = new User();
     let ownerUser = await userDO.getUserBySlackID(req.user.id, pool);
-    let rawdata = JSON.parse(ownerUser.raw); 
+    let rawdata = JSON.parse(ownerUser.raw);
 
     const standardStripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       subscription_data: {
         items: [{
-          plan:stripeStandardPlan,
+          plan: stripeStandardPlan,
         }],
         trial_from_plan: true,
       },
-      success_url: baseURL+'/billed?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: baseURL+'/pre-active',
-      client_reference_id:req.user.id,
-      customer_email:rawdata.user.profile.email
+      success_url: baseURL + '/billed?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: baseURL + '/pre-active',
+      client_reference_id: req.user.id,
+      customer_email: rawdata.user.profile.email
     });
 
-   
-    let results = { "data": req.user, "stripe":{"standard_plan_session":standardStripeSession, "pk":stripePK} };
+
+    let results = { "data": req.user, "stripe": { "standard_plan_session": standardStripeSession, "pk": stripePK } };
     //console.log("Resutls"+ JSON.stringify(results));
 
     res.render('pages/pre-active', results);
-  }).post('/events', express.json({verify: (req, res, buf) => {req.rawBody = buf;}}), async (request, response) => {
+  }).post('/events', express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }), async (request, response) => {
     //console.log("got event"+ JSON.stringify(request.body));
     response.send("ok");
     //verify the request
-    let parseRawBody  = request.rawBody;
+    let parseRawBody = request.rawBody;
     //console.log("body"+parseRawBody);
     //let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
     //if(!goodCall){
@@ -142,34 +144,34 @@ express()
     team = await teamDO.getTeamBySlackID(team_id, pool);
     let eventType = request.body.event.type;
     let channelId = request.body.event.channel;
-    if(eventType == "group_archive"){
+    if (eventType == "group_archive") {
       let interviewDO = new Interview();
       let interview = await interviewDO.getInterviewByChannel(channelId, pool);
-      if(interview){
-        await interview.updateStatus(0,pool);
-        await setTeamAndUser(request.body.event.actor_id, request.body.team_id);
-        await updateAppHome(); 
-      } 
-    }else if(eventType == "group_unarchive"){
-      let interviewDO = new Interview();
-      let interview = await interviewDO.getInterviewByChannel(channelId, pool);
-      if(interview){
-        await interview.updateStatus(1,pool); 
+      if (interview) {
+        await interview.updateStatus(0, pool);
         await setTeamAndUser(request.body.event.actor_id, request.body.team_id);
         await updateAppHome();
-      } 
-    }else if(eventType == "app_home_opened"){
+      }
+    } else if (eventType == "group_unarchive") {
+      let interviewDO = new Interview();
+      let interview = await interviewDO.getInterviewByChannel(channelId, pool);
+      if (interview) {
+        await interview.updateStatus(1, pool);
+        await setTeamAndUser(request.body.event.actor_id, request.body.team_id);
+        await updateAppHome();
+      }
+    } else if (eventType == "app_home_opened") {
       //console.log("got home event:" + JSON.stringify(request.body));
-      await setTeamAndUser(request.body.event.user, request.body.team_id);     
+      await setTeamAndUser(request.body.event.user, request.body.team_id);
       await updateAppHome();
     }
 
-    
+
 
     //console.log(request.body);
     //response.send(request.body.challenge); 
-  
-  }).post('/deactivate', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+
+  }).post('/deactivate', bodyParser.raw({ type: 'application/json' }), async (request, response) => {
     // this is a callback webhook from stripe when a user pays.
     const sig = request.headers['stripe-signature'];
     let event;
@@ -178,10 +180,10 @@ express()
     } catch (err) {
       return response.status(400).send(`Webhook Error: ${err.message}`);
     }
-    console.log(":(  team unsubscribed "+ JSON.stringify(event));
-    response.json({received: true});
+    console.log(":(  team unsubscribed " + JSON.stringify(event));
+    response.json({ received: true });
   })
-  .post('/activate', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+  .post('/activate', bodyParser.raw({ type: 'application/json' }), async (request, response) => {
     // this is a callback webhook from stripe when a user pays.
     const sig = request.headers['stripe-signature'];
     let event;
@@ -190,7 +192,7 @@ express()
     } catch (err) {
       return response.status(400).send(`Webhook Error: ${err.message}`);
     }
-  
+
     // Handle the checkout.session.completed event
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
@@ -198,30 +200,46 @@ express()
       let paying_user_id = session.client_reference_id;
       let userDO = new User();
       user = await userDO.getUserBySlackID(paying_user_id, pool);
-      console.log("plan: "+JSON.stringify(session.display_items[0]));
+      console.log("plan: " + JSON.stringify(session.display_items[0]));
 
       let teamDO = new Team();
       team = await teamDO.getTeam(user.team_id, pool);
-      await team.activateTeam(session.display_items[0].plan.id,JSON.stringify(session), pool);
-      console.log("Team activated "+ team.slack_team_id);
+      await team.activateTeam(session.display_items[0].plan.id, JSON.stringify(session), pool);
+      console.log("Team activated " + team.slack_team_id);
     }
-  
+
     // Return a response to acknowledge receipt of the event
-    response.json({received: true});
+    response.json({ received: true });
+  }).get('/activate_covid', async (req, res) => {
+
+
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    //console.log("got user billed check"+ JSON.stringify(req.user));
+    let teamDO = new Team();
+    team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
+    await team.activateTeamTrial("covid-19", "covid-19", pool);
+    console.log("Team activated" + team.slack_team_id);
+    res.redirect("/billed");
+
+    // Return a response to acknowledge receipt of the event
+    response.json({ received: true });
   }).get('/cron', async (req, res) => {
     let curCronSecret = req.query.code;
-    if(!curCronSecret || CurCronSecret != cronSecret){
+    if (!curCronSecret || CurCronSecret != cronSecret) {
       res.status(500).send("unauthorized");
       return;
     }
     console.log("running cron");
-    
+
     let teamDO = new Team();
     let teams = await teamDO.getActiveTeamData(pool);
     let userDO = new User();
     for (let index = 0; index < teams.length; index++) {
       const curTeam = teams[index];
-      console.log("Processing team:"+curTeam.name)
+      console.log("Processing team:" + curTeam.name)
       let panelists = await userDO.getTodaysPanelistsToNotify(curTeam.id, pool);
       for (let index = 0; index < panelists.length; index++) {
         const panelist = panelists[index];
@@ -252,9 +270,9 @@ express()
           body: `${JSON.stringify(imParams)}`
         });
 
-        
+
       }
-      
+
     }
 
 
@@ -269,13 +287,13 @@ express()
     //console.log("got user billed check"+ JSON.stringify(req.user));
     let teamDO = new Team();
     team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
-    if(team.status < 1){
+    if (team.status < 1) {
       res.redirect("/pre-active")
-    }else{
+    } else {
       res.redirect("/dashboard");
     }
     //console.log("Billed user!"+req.query.session_id);
-    
+
   }).get('/unsubscribe', async (req, res) => {
     if (!req.user) {
       res.redirect('/');
@@ -283,7 +301,7 @@ express()
     }
     const userDO = new User();
     let currentUser = await userDO.getUserBySlackID(req.user.id, pool);
-    
+
     let teamDO = new Team();
     team = await teamDO.getTeam(currentUser.team_id, pool);
     let rawData = JSON.parse(await team.deactivateTeam(pool));
@@ -302,14 +320,14 @@ express()
     let rawData = JSON.parse(currentUser.raw);
     let teamDO = new Team();
     team = await teamDO.getTeam(currentUser.team_id, pool);
-    if(team.status < 1){
+    if (team.status < 1) {
       res.redirect("/pre-active");
       return;
     }
     currentUser.photo = rawData.user.profile.image_48;
-    let results={
-      user:currentUser,
-      team:team,
+    let results = {
+      user: currentUser,
+      team: team,
     };
     res.render('pages/account', results);
 
@@ -320,27 +338,27 @@ express()
       res.redirect('/');
       return;
     }
-    
+
     const userDO = new User();
     let currentUser = await userDO.getUserBySlackID(req.user.id, pool);
     let rawData = JSON.parse(currentUser.raw);
     let teamDO = new Team();
     team = await teamDO.getTeam(currentUser.team_id, pool);
-    if(team.status < 1){
+    if (team.status < 1) {
       res.redirect("/pre-active");
       return;
     }
     let interviewDO = new Interview();
-    let activeInterviews = await interviewDO.getInterviewDataByStatus(1, team.id, pool); 
+    let activeInterviews = await interviewDO.getInterviewDataByStatus(1, team.id, pool);
     let archivedInterviews = await interviewDO.getInterviewDataByStatus(0, team.id, pool);
     //console.log("User photo: "+ JSON.stringify(rawData.user.profile.image_48));
     currentUser.photo = rawData.user.profile.image_48;
 
-    let results={
-      user:currentUser,
-      team:team,
-      activeInterviews:activeInterviews,
-      archivedInterviews:archivedInterviews
+    let results = {
+      user: currentUser,
+      team: team,
+      activeInterviews: activeInterviews,
+      archivedInterviews: archivedInterviews
     };
     res.render('pages/dashboard', results);
   })
@@ -423,13 +441,13 @@ express()
       body: `${JSON.stringify(imParams)}`
     });
 
-    let systemUser = { 
-        "user":{"name": ownerUser.name, "id": ownerUser.slack_user_id},
-        "team":{"id":curteam.slack_team_id},
-        "id":ownerUser.slack_user_id
+    let systemUser = {
+      "user": { "name": ownerUser.name, "id": ownerUser.slack_user_id },
+      "team": { "id": curteam.slack_team_id },
+      "id": ownerUser.slack_user_id
     }
 
-    console.log("login user"+ JSON.stringify(systemUser));
+    console.log("login user" + JSON.stringify(systemUser));
 
     req.login(systemUser, function (err) {
       if (err) {
@@ -477,7 +495,7 @@ express()
 
     res.status(200).send('');
     //verify the request
-    let parseRawBody  = req.rawBody;
+    let parseRawBody = req.rawBody;
     //let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
     //if(!goodCall){
     //  console.log("bad call");
@@ -489,7 +507,7 @@ express()
     if (response.type === "shortcut") {
       // mimic click on "Start an Interview Panel"
       response.type = "block_actions";
-      response.actions = [{"action_id":"new_interview","block_id":"6666|src=app_home&action=6"}];
+      response.actions = [{ "action_id": "new_interview", "block_id": "6666|src=app_home&action=6" }];
     }
 
     if (response.type === "block_actions") {
@@ -517,24 +535,24 @@ express()
             body: `${JSON.stringify(msg)}`
           });
         } else if (value.action_id === "setup") {
-          if(context.src && context.src === "app_home"){
-            
+          if (context.src && context.src === "app_home") {
+
             let context = {
               action: 4,
               role: -1,
               level: -1,
               type: -1,
               result_index: 0,
-              src:"app_home"
+              src: "app_home"
             };
             let setupBlocks = await slackTool.getSetupResponse(req, res, pool, context);
-            
+
             await updateAppHome(setupBlocks);
 
-          }else{
+          } else {
             setupHandler.handleSetup(req, res, pool, slackTool, team, user);
           }
-          
+
         }
 
       } else if (context.action == setupHandler.ACTION_SETUP) {
@@ -543,10 +561,10 @@ express()
           context.role = parseInt(value.selected_option.value);
         } else if (value.action_id === "filter_by_level") {
           context.level = parseInt(value.selected_option.value);
-        } else if (value.action_id  === "clone_template"){
+        } else if (value.action_id === "clone_template") {
           let newTemplate = await templateDO.clonePublicTemplate(context.role, context.level, team.id, user.id);
           context.template_id = newTemplate.id;
-        }else if (value.action_id  === "revert_template"){
+        } else if (value.action_id === "revert_template") {
           await templateDO.removeTemplate(context.template_id);
           delete context.template_id;
         }
@@ -555,10 +573,10 @@ express()
           let newTemplate = await templateDO.createTemplate(context.role, context.level, team.id, "Custom Template", user.id);
           context.template_id = newTemplate.id;
         } else if (value.action_id === "done_template_setup") {
-          if(context.src && context.src ==="app_home"){
+          if (context.src && context.src === "app_home") {
             updateAppHome()
             return;
-          }else{
+          } else {
             let imParams = {
               "text": `Thank you for installing Interviewsly!`,
               "blocks": [{
@@ -567,7 +585,7 @@ express()
                   "type": "mrkdwn",
                   "text": "Setup done!\n _Pro tip: You can always re-access interviewsly setup by typing `/interviewsly` in Slack._"
                 }
-  
+
               }]
             }
             const fetch = require('node-fetch');
@@ -577,12 +595,12 @@ express()
             })
             return;
           }
-          
+
 
         } else if (value.action_id === "add_onsite_interview_type") {
           // prompt user to add Competency
           context.org_msg_ts = response.container.message_ts;
-          if(response.channel) context.org_channel = response.channel.id;
+          if (response.channel) context.org_channel = response.channel.id;
           let msg = await slackTool.getAddOnsiteInterviewTypeResponse(response.trigger_id, context);
           //console.log("****view msg"+ JSON.stringify(msg) );
           const fetch = require('node-fetch');
@@ -605,7 +623,7 @@ express()
             //let result = await template.removeInterviewType(onsiteInterview);
           } else if (subAction == "edit") {
             context.org_msg_ts = response.container.message_ts;
-            if(response.channel) context.org_channel = response.channel.id;
+            if (response.channel) context.org_channel = response.channel.id;
             context.competency_id = competencyId;
             let template = await templateDO.getTemplateById(context.template_id);
             let questions = await template.getQuestions(competencyId);
@@ -629,7 +647,7 @@ express()
 
           if (subAction == "add") {
             context.org_msg_ts = response.container.message_ts;
-            if(response.channel) context.org_channel = response.channel.id;
+            if (response.channel) context.org_channel = response.channel.id;
             context.onsite_interview_type_id = onsiteInterview;
             let msg = await slackTool.getAddCompetencyResponse(response.trigger_id, context);
             const fetch = require('node-fetch');
@@ -666,12 +684,12 @@ express()
         }
         let currentTemplate = null;
         let publicTemplate = null;
-        if (context.template_id && context.template_id !="null"){
+        if (context.template_id && context.template_id != "null") {
           currentTemplate = await templateDO.getTemplateById(context.template_id);
         } else if (context.role > 0 && context.level > 0 && !context.current_template_id) {
           currentTemplate = await templateDO.getTemplate(context.role, context.level, team.id);
           //console.log("found template: "+currentTemplate.description);
-          
+
           if (currentTemplate) {
             context.template_id = currentTemplate.id;
           } else {
@@ -682,18 +700,18 @@ express()
         }
         // todo potentialy route to app home
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, currentTemplate, publicTemplate);
-        if(context.src && context.src === "app_home"){
+        if (context.src && context.src === "app_home") {
           await updateAppHome(response_message);
-        }else{
-        const fetch = require('node-fetch');
-        let debug = await fetch(response_url, {
-          method: 'post',
-          body: `${JSON.stringify(response_message)}`
-        })
-        let dblog = await debug.json();
+        } else {
+          const fetch = require('node-fetch');
+          let debug = await fetch(response_url, {
+            method: 'post',
+            body: `${JSON.stringify(response_message)}`
+          })
+          let dblog = await debug.json();
 
         }
-        
+
         //console.log(dblog);
 
       } else if (context.action == ACTION_ASSESSMENT) {
@@ -805,7 +823,7 @@ express()
           // send a message to the panelist 
           context.result_index = 0;
           context.action == ACTION_PANELIST_QUESTION;
-          
+
           let assessmentContext = {
             "interview_id": context.interview_id,
             "interview_type": interviewType,
@@ -813,7 +831,7 @@ express()
             "action": ACTION_ASSESSMENT
           };
 
-          let questions = await slackTool.getPannelistQuestionResponse(interview, interviewType,  pool, assessmentContext);
+          let questions = await slackTool.getPannelistQuestionResponse(interview, interviewType, pool, assessmentContext);
           let imParams = {
             "text": `you have been invited to ${interview.candidate_name}'s interview pannel`,
             "channel": `${slackUserId}`,
@@ -863,7 +881,7 @@ express()
           let questionsType = value.value.split("|")[1];
           context.panelistId = panelistId;
           context.questionsType = questionsType;
-          let msg = await slackTool.getScheduleResponse(response.trigger_id,  context, pool);
+          let msg = await slackTool.getScheduleResponse(response.trigger_id, context, pool);
           const fetch = require('node-fetch');
           let debug = await fetch("https://slack.com/api/views.open", {
             method: 'post',
@@ -874,8 +892,8 @@ express()
             body: `${JSON.stringify(msg)}`
           });
 
-        
-        }else if (value.action_id == "remove_panelist") {
+
+        } else if (value.action_id == "remove_panelist") {
 
           let panelistId = value.value.split("|")[0];
           let questionsType = value.value.split("|")[1];
@@ -974,16 +992,16 @@ express()
 
 
     } else if (response.type === "view_submission") {
-      if (response.view.callback_id == "schedule-interview"){
-        console.log("schedule output"+JSON.stringify(response.view.state.values));
+      if (response.view.callback_id == "schedule-interview") {
+        console.log("schedule output" + JSON.stringify(response.view.state.values));
         const values = response.view.state.values;
         let metadata = response.view.private_metadata;
         let context = slackTool.decodeBlockID(metadata);
         let date = values.interview_date.interview_date_value.selected_date;
-        let time =  values.interview_time.interview_time_value.selected_option.value;
+        let time = values.interview_time.interview_time_value.selected_option.value;
 
         let location = null;
-        if(values.interview_location && values.interview_location.interview_location_value && values.interview_location.interview_location_value.value){
+        if (values.interview_location && values.interview_location.interview_location_value && values.interview_location.interview_location_value.value) {
           location = values.interview_location.interview_location_value.value;
         }
         //console.log(`context: ${JSON.stringify(context)}`);
@@ -992,10 +1010,10 @@ express()
         let panelistId = context.panelistId;
         const interviewDO = new Interview();
         let interview = await interviewDO.getInterviewById(interviewId, pool);
-        await interview.setInterviewTypeTimeDateAndLocation(interviewType, panelistId, date, time, location,  pool );
+        await interview.setInterviewTypeTimeDateAndLocation(interviewType, panelistId, date, time, location, pool);
 
         // update the panelist interview panel
-        
+
         let assessmentContext = {
           "interview_id": context.interview_id,
           "interview_type": context.questionsType,
@@ -1046,7 +1064,7 @@ express()
 
 
 
-      }else if (response.view.callback_id == "interview-assessment") {
+      } else if (response.view.callback_id == "interview-assessment") {
         const values = response.view.state.values;
         let metadata = response.view.private_metadata;
         let context = slackTool.decodeBlockID(metadata);
@@ -1113,12 +1131,12 @@ express()
         let assessment = values.onsite_interview.onsite_interview_value.value;
 
         let notes = "N/A";
-        if(values.interview_notes && values.interview_notes.interview_notes_value && values.interview_notes.interview_notes_value.value ){
+        if (values.interview_notes && values.interview_notes.interview_notes_value && values.interview_notes.interview_notes_value.value) {
           notes = values.interview_notes.interview_notes_value.value;
         }
         const interviewDO = new Interview();
         let interview = await interviewDO.getInterviewById(context.interview_id, pool);
-        
+
         let prevAssessment = await interview.getAssessment(context.panelist_id, context.competency_id, pool);
         if (!prevAssessment) {
           let result = await interview.addAssessment(context.panelist_id, context.competency_id, assessment, notes, pool);
@@ -1135,7 +1153,7 @@ express()
           "action": ACTION_ASSESSMENT
         };
 
-        let questions = await slackTool.getPannelistQuestionResponse(interview, context.interview_type,  pool, assessmentContext);
+        let questions = await slackTool.getPannelistQuestionResponse(interview, context.interview_type, pool, assessmentContext);
         let onsite = await interview.getPanelist(context.interview_type, pool);
         let imParams = {
           "text": `updated`,
@@ -1169,28 +1187,28 @@ express()
         let question1 = values.example_question1.example_question1_value.value;
         //todo: check if we can pull the user ID
         template.addQuestion(competency_id, question1, template.user_id);
-        
-        if(values.example_question2 && values.example_question2.example_question2_value ){
+
+        if (values.example_question2 && values.example_question2.example_question2_value) {
           let question2 = values.example_question2.example_question2_value.value;
           if (question2) await template.addQuestion(competency_id, question2, template.user_id);
         }
-        if(values.example_question3 && values.example_question3.example_question3_value){
+        if (values.example_question3 && values.example_question3.example_question3_value) {
           let question3 = values.example_question3.example_question3_value.value;
           if (question3) await template.addQuestion(competency_id, question3, template.user_id);
         }
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
-        if(context.src && context.src == "app_home"){
+        if (context.src && context.src == "app_home") {
           await updateAppHome(response_message);
-        }else{
+        } else {
           let imParams = {
             "text": `added`,
             "channel": `${context.org_channel}`,
             "ts": `${context.org_msg_ts}`,
             "blocks": response_message.blocks
           }
-  
+
           const fetch = require('node-fetch');
           let http_response = await fetch("https://slack.com/api/chat.update", {
             method: 'post',
@@ -1203,7 +1221,7 @@ express()
           let debug = await http_response.json()
 
         }
-        
+
 
       } else if (response.view.callback_id == "add-competency") {
 
@@ -1221,30 +1239,30 @@ express()
         console.log(`Adding question = ${interview_type_id}, ${competency_id} , ${question1} `);
         //todo: check if we can pull the user ID
         await template.addQuestion(competency_id, question1, template.user_id);
-        if(values.example_question2 && values.example_question2.example_question2_value ){
+        if (values.example_question2 && values.example_question2.example_question2_value) {
           let question2 = values.example_question2.example_question2_value.value;
           if (question2) await template.addQuestion(competency_id, question2, template.user_id);
         }
-        
-        if(values.example_question3 && values.example_question3.example_question3_value ){
+
+        if (values.example_question3 && values.example_question3.example_question3_value) {
           let question3 = values.example_question3.example_question3_value.value;
           if (question3) await template.addQuestion(competency_id, question3, template.user_id);
         }
-        
+
 
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
-        if(context.src && context.src == "app_home"){
+        if (context.src && context.src == "app_home") {
           await updateAppHome(response_message);
-        }else{
+        } else {
           let imParams = {
             "text": `added`,
             "channel": `${context.org_channel}`,
             "ts": `${context.org_msg_ts}`,
             "blocks": response_message.blocks
           }
-  
+
           const fetch = require('node-fetch');
           let http_response = await fetch("https://slack.com/api/chat.update", {
             method: 'post',
@@ -1256,9 +1274,9 @@ express()
           });
           let debug = await http_response.json()
         }
-        
 
-        
+
+
 
       } else if (response.view.callback_id == "edit-onsite-interview-type") {
         const values = response.view.state.values;
@@ -1271,16 +1289,16 @@ express()
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
-        if(context.src && context.src == "app_home"){
+        if (context.src && context.src == "app_home") {
           await updateAppHome(response_message);
-        }else{
+        } else {
           let imParams = {
             "text": `added`,
             "channel": `${context.org_channel}`,
             "ts": `${context.org_msg_ts}`,
             "blocks": response_message.blocks
           }
-  
+
           const fetch = require('node-fetch');
           let http_response = await fetch("https://slack.com/api/chat.update", {
             method: 'post',
@@ -1290,12 +1308,12 @@ express()
             },
             body: `${JSON.stringify(imParams)}`
           });
-  
+
           let debug = await http_response.json();
 
         }
 
-        
+
       } else if (response.view.callback_id == "add-onsite-interview-type") {
         const values = response.view.state.values;
         let metadata = response.view.private_metadata;
@@ -1307,16 +1325,16 @@ express()
 
         let response_message = await slackTool.getSetupResponse(req, res, pool, context, template, null);
 
-        if(context.src && context.src == "app_home"){
+        if (context.src && context.src == "app_home") {
           await updateAppHome(response_message);
-        }else{
+        } else {
           let imParams = {
             "text": `added`,
             "channel": `${context.org_channel}`,
             "ts": `${context.org_msg_ts}`,
             "blocks": response_message.blocks
           }
-  
+
           const fetch = require('node-fetch');
           let http_response = await fetch("https://slack.com/api/chat.update", {
             method: 'post',
@@ -1326,10 +1344,10 @@ express()
             },
             body: `${JSON.stringify(imParams)}`
           });
-  
+
           let debug = await http_response.json()
         }
-        
+
 
 
       } else if (response.view.callback_id == "create-interview") {
@@ -1340,13 +1358,13 @@ express()
         const userDO = new User();
         let currentUser = await userDO.getUserBySlackID(response.user.id, pool);
         let linkedIn = "N/A";
-        
-        if(values.linkedin_url && values.linkedin_url.linkedin_url_value && values.linkedin_url.linkedin_url_value.value){
+
+        if (values.linkedin_url && values.linkedin_url.linkedin_url_value && values.linkedin_url.linkedin_url_value.value) {
           linkedIn = values.linkedin_url.linkedin_url_value.value;
         }
 
-        let notes ="N/A";
-        if(values.notes && values.notes.notes_value && values.notes.notes_value.value){
+        let notes = "N/A";
+        if (values.notes && values.notes.notes_value && values.notes.notes_value.value) {
           notes = values.notes.notes_value.value;
         }
         let param = {
@@ -1505,7 +1523,7 @@ async function setTeamAndUser(slack_user_id, slack_team_id) {
 
 }
 
-async function getMessageLink(slack_channel_id, slack_message_id, team ) {
+async function getMessageLink(slack_channel_id, slack_message_id, team) {
   const fetch1 = require('node-fetch');
   const responsePremLinkinfo = await fetch1("https://slack.com/api/chat.getPermalink", {
     method: 'post',
@@ -1518,69 +1536,69 @@ async function getMessageLink(slack_channel_id, slack_message_id, team ) {
   const premLinkResJSON = await responsePremLinkinfo.json();
   let link = premLinkResJSON.permalink;
   return link;
-  
+
 }
 
 async function updateAppHome(setupBlocks) {
-  
-  let context = {"src":"app_home", "action": startHandler.ACTION_START};
-      let appHomeBlocks = await slackTool.getAppHomeResponse(user, context,  pool, setupBlocks);
-      //console.log("App home res:" + JSON.stringify(appHomeBlocks));
-      let imParams = {
-        "user_id": user.slack_user_id,
 
-        "view":{
-          "type": "home",
-          "blocks": appHomeBlocks
-        }
-       
-      }
-      const fetch2 = require('node-fetch');
-      let http_response = fetch2("https://slack.com/api/views.publish", {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
-          'Authorization': `Bearer ${team.token}`
-        },
-        body: `${JSON.stringify(imParams)}`
-      }); 
-  
+  let context = { "src": "app_home", "action": startHandler.ACTION_START };
+  let appHomeBlocks = await slackTool.getAppHomeResponse(user, context, pool, setupBlocks);
+  //console.log("App home res:" + JSON.stringify(appHomeBlocks));
+  let imParams = {
+    "user_id": user.slack_user_id,
+
+    "view": {
+      "type": "home",
+      "blocks": appHomeBlocks
+    }
+
+  }
+  const fetch2 = require('node-fetch');
+  let http_response = fetch2("https://slack.com/api/views.publish", {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8; charset=utf-8',
+      'Authorization': `Bearer ${team.token}`
+    },
+    body: `${JSON.stringify(imParams)}`
+  });
+
 }
 
-  /**
-   * Method to verify signature of requests
-   *
-   * @param signingSecret - Signing secret used to verify request signature
-   * @param requestHeaders - The signing headers. If `req` is an incoming request, then this should be `req.headers`.
-   * @param body - Raw body string
-   * @returns Indicates if request is verified
-   */
-  function verifyRequestSignature(signingSecret,requestHeaders,body){
+/**
+ * Method to verify signature of requests
+ *
+ * @param signingSecret - Signing secret used to verify request signature
+ * @param requestHeaders - The signing headers. If `req` is an incoming request, then this should be `req.headers`.
+ * @param body - Raw body string
+ * @returns Indicates if request is verified
+ */
+function verifyRequestSignature(signingSecret, requestHeaders, body) {
 
-    //console.log(`debuging verify: '${signingSecret}', '${requestHeaders}', '${body}' `)
-    // Request signature
-    const signature = requestHeaders['x-slack-signature'];
-    // Request timestamp
-    const ts = parseInt(requestHeaders['x-slack-request-timestamp'], 10);
+  //console.log(`debuging verify: '${signingSecret}', '${requestHeaders}', '${body}' `)
+  // Request signature
+  const signature = requestHeaders['x-slack-signature'];
+  // Request timestamp
+  const ts = parseInt(requestHeaders['x-slack-request-timestamp'], 10);
 
-    // Divide current date to match Slack ts format
-    // Subtract 5 minutes from current time
-    const fiveMinutesAgo = Math.floor(Date.now() / 1000) - (60 * 5);
+  // Divide current date to match Slack ts format
+  // Subtract 5 minutes from current time
+  const fiveMinutesAgo = Math.floor(Date.now() / 1000) - (60 * 5);
 
-    if (ts < fiveMinutesAgo) {
-      console.log('request is older than 5 minutes');
-      return false;
-    }
-
-    const hmac = crypto.createHmac('sha256', signingSecret);
-    const [version, hash] = signature.split('=');
-    hmac.update(`${version}:${ts}:${body}`);
-
-    if (!timingSafeCompare(hash, hmac.digest('hex'))) {
-      console.log('request signature is not valid');
-      return false;
-    }
-
-    console.log('request signing verification success');
-    return true;
+  if (ts < fiveMinutesAgo) {
+    console.log('request is older than 5 minutes');
+    return false;
   }
+
+  const hmac = crypto.createHmac('sha256', signingSecret);
+  const [version, hash] = signature.split('=');
+  hmac.update(`${version}:${ts}:${body}`);
+
+  if (!timingSafeCompare(hash, hmac.digest('hex'))) {
+    console.log('request signature is not valid');
+    return false;
+  }
+
+  console.log('request signing verification success');
+  return true;
+}
