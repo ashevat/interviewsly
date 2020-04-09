@@ -225,7 +225,7 @@ express()
     res.redirect("/billed");
 
     // Return a response to acknowledge receipt of the event
-    response.json({ received: true });
+    //response.json({ received: true });
   }).get('/cron', async (req, res) => {
     let curCronSecret = req.query.code;
     if (!curCronSecret || CurCronSecret != cronSecret) {
