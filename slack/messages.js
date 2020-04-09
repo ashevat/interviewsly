@@ -890,7 +890,7 @@ module.exports = {
                 "block_id": `${this.encodeBlockID(context)}`,
                 "text": {
                   "type": "mrkdwn",
-                  "text": `:pencil: *${onsite.name}*: ${pannelist.name}`
+                  "text": `:pencil: *${onsite.name}*: @${pannelist.name}`
                 }
               };
               scheduleAction = {

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <title>Interviewsly</title>
     <link href="assets/img/favicon.png" rel="icon" type="image/x-icon">
@@ -7,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Goole fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700%7CMerriweather+Sans:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700%7CMerriweather+Sans:300,400,700"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="assets/css/all.min.css">
@@ -28,24 +30,25 @@
                 <a class="navbar-brand text-dark" href="/">
                     <img src="assets/img/ilogo.png" alt="Interviewsly">
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fas fa-bars fa-lg"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav align-items-lg-center text-uppercase pt-3 pt-lg-0 ml-auto">
-                      <% if (!user) { %>
+                        <% if (!user) { %>
                         <li class="nav-item">
-                          <a class="nav-link" href="/auth/slack">Login with Slack</a>
-                      </li> 
-                      <% } %>
-                      <% if (user) { %>
+                            <a class="nav-link" href="/auth/slack">Login with Slack</a>
+                        </li>
+                        <% } %>
+                        <% if (user) { %>
                         <li class="nav-item">
-                          <a class="nav-link" href="/dashboard">Dashboard</a>
-                      </li> 
-                      <li class="nav-item">
-                        <a class="nav-link" href="/logout">logout</a>
-                    </li>
-                      <% } %>
+                            <a class="nav-link" href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">logout</a>
+                        </li>
+                        <% } %>
                     </ul>
                 </div>
             </nav>
@@ -58,8 +61,11 @@
             <div class="row justify-content-lg-between align-items-lg-center py-5">
                 <div class="col-lg-6 text-center text-lg-left">
                     <h1 class="display-4 mb-4">Simple and effective Interview Management Solution</h1>
-                    <p class="lead text-secondary mb-4">We make interviews high-signal for hiring managers and an amazing experience for candidates</p>
-                    <a class="btn btn-primary btn-block rounded-pill d-md-inline-block w-auto mr-md-4 mb-4 mb-md-0" href="https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:write,im:write,mpim:write,users:read,users:read.email">Add to Slack</a>
+                    <p class="lead text-secondary mb-4">We make interviews high-signal for hiring managers and an
+                        amazing experience for candidates</p>
+                    <a class="btn btn-primary btn-block rounded-pill d-md-inline-block w-auto mr-md-4 mb-4 mb-md-0"
+                        href="https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:write,im:write,mpim:write,users:read,users:read.email">Add
+                        to Slack</a>
                 </div>
                 <div class="col-lg-6">
                     <img src="assets/img/revenue.svg" class="img-fluid d-none d-lg-block" alt="">
@@ -67,20 +73,54 @@
             </div>
         </section>
 
-        
+        <div class="bg-skew bg-skew-light">
 
-            <hr class="sep border-primary" role="presentation">
+            <!-- Demo pages -->
+            <section class="container">
+                <h2 class="sr-only">Pages</h2>
+                <div class="row py-5">
+                    <div class="col-lg-6 mb-4">
 
-            <!-- Call to action -->
-            <div class="container py-5">
-                <div class="text-center">
-                    <h2 class="mb-4">Are you ready to begin?</h2>
-                    <div class="mb-4">
-                      <!--  href="https://forms.gle/AJtWUsBGrpcXvynz5" -->
-                        <a class="btn btn-primary rounded-pill" href="https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:write,im:write,mpim:write,users:read,users:read.email" role="button">Add to Slack</a>
+                        <img src="assets/img/entry.png" style="height: 400px;" class="img-fluid img-thumbnail img-thumbnail-hover mb-4"
+                            alt="App demo">
+                        <h3 class="h5 text-center text-dark">Easily start an interview loop</h3>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <a href="course.html" class="stretched-link">
+                            <img src="assets/img/course.png" class="img-fluid img-thumbnail mb-4" alt="Course demo">
+                            <h3 class="h5 text-center text-dark">Course</h3>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <a href="event.html" class="stretched-link">
+                            <img src="assets/img/event.jpg" class="img-fluid img-thumbnail mb-4" alt="Event demo">
+                            <h3 class="h5 text-center text-dark">Event</h3>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <a href="saas.html" class="stretched-link">
+                            <img src="assets/img/saas.png" class="img-fluid img-thumbnail mb-4" alt="Saas demo">
+                            <h3 class="h5 text-center text-dark">SaaS</h3>
+                        </a>
                     </div>
                 </div>
+            </section>
+        </div><!-- end bg-skew -->
+
+        <hr class="sep border-primary" role="presentation">
+
+        <!-- Call to action -->
+        <div class="container py-5">
+            <div class="text-center">
+                <h2 class="mb-4">Are you ready to begin?</h2>
+                <div class="mb-4">
+                    <!--  href="https://forms.gle/AJtWUsBGrpcXvynz5" -->
+                    <a class="btn btn-primary rounded-pill"
+                        href="https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:write,im:write,mpim:write,users:read,users:read.email"
+                        role="button">Add to Slack</a>
+                </div>
             </div>
+        </div>
 
         </div><!-- end bg-skew -->
     </main>
@@ -119,18 +159,21 @@
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-center">
                 <ul class="list-inline">
                     <li class="list-inline-item">
-                        <a class="icon icon-sm icon-secondary" href="#"><i class="icon-inner fab fa-twitter" aria-hidden="true"></i><span class="sr-only">Twitter</span></a>
+                        <a class="icon icon-sm icon-secondary" href="#"><i class="icon-inner fab fa-twitter"
+                                aria-hidden="true"></i><span class="sr-only">Twitter</span></a>
                     </li>
                     <li class="list-inline-item">
-                        <a class="icon icon-sm icon-secondary" href="#"><i class="icon-inner fab fa-facebook-f" aria-hidden="true"></i><span class="sr-only">Facebook</span></a>
+                        <a class="icon icon-sm icon-secondary" href="#"><i class="icon-inner fab fa-facebook-f"
+                                aria-hidden="true"></i><span class="sr-only">Facebook</span></a>
                     </li>
                     <li class="list-inline-item">
-                        <a class="icon icon-sm icon-secondary" href="#"><i class="icon-inner fab fa-linkedin-in" aria-hidden="true"></i><span class="sr-only">Linkedin</span></a>
+                        <a class="icon icon-sm icon-secondary" href="#"><i class="icon-inner fab fa-linkedin-in"
+                                aria-hidden="true"></i><span class="sr-only">Linkedin</span></a>
                     </li>
                 </ul>
             </div>
         </div>
     </footer>
 </body>
-</html>
 
+</html>
