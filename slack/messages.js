@@ -25,7 +25,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "*Let's get started:* \n\n You can always access Interviewsly by typing `/interviewsly` in Slack. \n\n This leads to your control panel. Here, you can configure your company's interview templates or start a new interview process."
+          "text": "*Let's get started:* \n\n You can always access Interviewsly by typing `/interviewsly` in Slack. \n\n Now, with Interviewsly you can:\n* Start an interview loop (assign and schedule interviews, collect feedback) \n* Configure interview settings (competencies to evaluate, questions to ask, etc.)\n\n Let’s get started!"
         }
       },
       {
