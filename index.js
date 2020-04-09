@@ -269,10 +269,10 @@ express()
     //console.log("got user billed check"+ JSON.stringify(req.user));
     let teamDO = new Team();
     team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
-    if(team.status == 1){
-      res.redirect("/dashboard");
-    }else{
+    if(team.status < 1){
       res.redirect("/pre-active")
+    }else{
+      res.redirect("/dashboard");
     }
     //console.log("Billed user!"+req.query.session_id);
     
