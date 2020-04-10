@@ -134,10 +134,10 @@ express()
     //verify the request
     let parseRawBody = request.rawBody;
     //console.log("body"+parseRawBody);
-    //let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
-    //if(!goodCall){
-    //  console.log("bad call");
-    //}
+    let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
+    if(!goodCall){
+      console.log("bad call");
+    }
 
     let team_id = request.body.team_id;
     let teamDO = new Team();
