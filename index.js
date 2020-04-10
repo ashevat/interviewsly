@@ -164,6 +164,18 @@ express()
       //console.log("got home event:" + JSON.stringify(request.body));
       await setTeamAndUser(request.body.event.user, request.body.team_id);
       await updateAppHome();
+    } if (eventType == "message") {
+      await setTeamAndUser(request.body.event.user, request.body.team_id);
+      //let responseBlocks = slackTool.getStartResponse();
+      if(request.body.event.bot_id){
+        console.log("ignoring bot message");
+      }else{
+        console.log("human message message");
+        startHandler.handleStartSlashCommand(slackTool, team, user);
+
+      }
+      
+      //;
     }
 
 
@@ -486,7 +498,7 @@ express()
     await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.end("");
 
-    let responseBlocks = slackTool.getStartResponse();
+    //let responseBlocks = slackTool.getStartResponse();
     startHandler.handleStartSlashCommand(slackTool, team, user);
 
   })

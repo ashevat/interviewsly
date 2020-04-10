@@ -17,7 +17,7 @@ class StartHandler {
       "blocks": response_message
     }
 
-    console.log(imParams);
+    //console.log(imParams);
 
     const fetch = require('node-fetch');
     let slackRes = await fetch("https://slack.com/api/chat.postMessage", {
@@ -30,7 +30,7 @@ class StartHandler {
     })
 
     let jsonRes = await slackRes.json()
-    console.log(jsonRes);
+    //console.log(jsonRes);
     }
 
 }
