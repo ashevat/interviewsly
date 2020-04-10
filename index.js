@@ -306,9 +306,14 @@ express()
       res.redirect('/');
       return;
     }
-    //console.log("got user billed check"+ JSON.stringify(req.user));
     let teamDO = new Team();
     team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
+    if(!team ){
+      res.redirect("/slack_redirect");
+      // this is for BETA interviewsly:
+      //res.redirect("https://slack.com/oauth/v2/authorize?client_id=959957947635.1000424138385&scope=commands,channels:manage,chat:write,groups:write,im:write,mpim:write,users:read,users:read.email,channels:read,groups:read,im:history");
+      return;
+    }
     if (team.status < 1) {
       res.redirect("/pre-active")
     } else {
