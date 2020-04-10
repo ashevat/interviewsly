@@ -224,7 +224,7 @@ express()
     // Return a response to acknowledge receipt of the event
     response.json({ received: true });
   }).get('/privacy', async (req, res) => {
-    //todo create page
+    res.render('pages/privacy');
   
    }).get('/support', async (req, res) => {
     //todo create page
