@@ -750,7 +750,7 @@ module.exports = {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": `:notebook_with_decorative_cover: *${element.name} interview* conducted by ${element.username}: *${score[element.score]}* :notebook_with_decorative_cover:\n\n General notes: ${element.notes} `
+          "text": `:notebook_with_decorative_cover: *${element.name} interview* conducted by @${element.username}: *${score[element.score]}* :notebook_with_decorative_cover:\n\n General notes: ${element.notes} `
         }
       }
       response.push(interviewAssessmentResults);
@@ -839,7 +839,6 @@ module.exports = {
 
       const Template = require("../data-objects/template");
       const templateDO = new Template(pool);
-      //todo fix team to interview.team_id
       let template = await templateDO.getTemplate(interview.role_id, interview.role_level_id, team.id);
       if(!template){
         template = await  templateDO.getPublicTemplateByRoleAndLevel(interview.role_id, interview.role_level_id);
