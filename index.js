@@ -227,7 +227,7 @@ express()
     res.render('pages/privacy');
   
    }).get('/support', async (req, res) => {
-    //todo create page
+    res.render('pages/support');
   
   }).get('/activate_covid', async (req, res) => {
 
