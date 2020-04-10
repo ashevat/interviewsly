@@ -136,7 +136,8 @@ express()
     //console.log("body"+parseRawBody);
     let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
     if(!goodCall){
-      console.log("bad call");
+      console.error("bad call!!! verification faild!");
+      return;
     }
 
     let team_id = request.body.team_id;
@@ -222,6 +223,12 @@ express()
 
     // Return a response to acknowledge receipt of the event
     response.json({ received: true });
+  }).get('/privacy', async (req, res) => {
+    //todo create page
+  
+   }).get('/support', async (req, res) => {
+    //todo create page
+  
   }).get('/activate_covid', async (req, res) => {
 
 
@@ -508,10 +515,11 @@ express()
     res.status(200).send('');
     //verify the request
     let parseRawBody = req.rawBody;
-    //let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
-    //if(!goodCall){
-    //  console.log("bad call");
-    //}
+    let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
+    if(!goodCall){
+      console.error("bad call, verification failed");
+      return;
+    }
 
     const response = JSON.parse(req.body.payload);
     await setTeamAndUser(response.user.id, response.team.id);
