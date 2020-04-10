@@ -1602,7 +1602,6 @@ async function updateAppHome(setupBlocks) {
  * @returns Indicates if request is verified
  */
 function verifyRequestSignature(signingSecret, requestHeaders, body) {
-  console.log(`shhh - '${signingSecret}'`);
   //console.log(`debuging verify: '${signingSecret}', '${requestHeaders}', '${body}' `)
   // Request signature
   const signature = requestHeaders['x-slack-signature'];

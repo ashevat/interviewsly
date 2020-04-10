@@ -708,9 +708,10 @@ module.exports = {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": `:champagne: Interview Feedback (published by the request of ${user.name}):\n *Feedback summary:*`
-      }
-    }];
+        "text": `*Feedback summary for ${interview.candidate_name}:*`
+      }, 
+    }
+  ];
     let result = await interview.getInterviewAssessments(pool);
     let score = ["NA", "Strong don't hire", "Don't hire", "Hire", "Strong hire"];
     // added exec summary
@@ -726,6 +727,14 @@ module.exports = {
       }
       response.push(assessmentResults)
     }
+    let spacer = {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": `   `
+      }
+    }
+    response.push(spacer)
     let header = {
       "type": "section",
       "text": {
@@ -764,6 +773,17 @@ module.exports = {
 
 
     }
+
+    footer= {
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": `This interview feedback was published by the request of ${user.name}`
+				}
+			]
+    };
+    response.push(footer);
     return response;
 
   },
