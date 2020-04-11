@@ -66,7 +66,7 @@
             <div class="col-xl-10 col-lg-11">
               <div class="page-header">
                 <h1>Dashboard</h1>
-                <p class="lead">Interviews conducted at <%= team.name %><br> <small style="color: black; font-style: italic; font-size: small;">Tip: type <b>/interviewsly</b> in your Slack to get started at any time</small> </p>
+                <p class="lead">Interview loops conducted at <%= team.name %><br> <small style="color: black; font-style: italic; font-size: small;">Tip: type <b>/interviewsly</b> in your Slack to get started at any time</small> </p>
                 
               </div>
               
@@ -74,7 +74,7 @@
                 <div class="tab-pane fade show active" id="tasks" role="tabpanel" data-filter-list="card-list-body">
                   <div class="row content-list-head">
                     <div class="col-auto">
-                      <h3>Interviews</h3>
+                      <h3>Candidate interview loops</h3>
                     </div>
                     <form class="col-md-auto">
                       <div class="input-group input-group-round">
@@ -102,7 +102,7 @@
                           </div>
                           <div class="card-body">
                             <div class="card-title">
-                              <a href="#">
+                              <a target="new" href="<%= interview.link_to_dashboard %>">
                                 <h6 data-filter-by="text"><%= interview.candidate_name %></h6>
                               </a>
                               <span class="text-small"><%= interview.name %></span>
@@ -140,7 +140,7 @@
                               </div>
                               <div class="card-body">
                                 <div class="card-title">
-                                  <a href="#">
+                                  <a target="new" href="<%= interview.link_to_dashboard %>">
                                     <h6 data-filter-by="text"><%= interview.candidate_name %></h6>
                                   </a>
                                   <span class="text-small"><%= interview.name %></span>
