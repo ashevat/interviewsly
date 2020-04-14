@@ -513,7 +513,8 @@ express()
 
     let text = req.body.text;
     if(text.toLowerCase() == "feedback" || text.toLowerCase() == "help"){
-      res.end("To get started, head to the Interviewly app home in Slack. If you need further assistance, or want to give us feedback, please contact us at support@interviewsly.com"); 
+      res.end("To get started, head to the Interviewly app home in Slack. If you need further assistance, or want to give us feedback, please contact us at support@interviewsly.com");
+      return; 
     }
     await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.end("");
