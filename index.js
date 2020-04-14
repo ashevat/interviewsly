@@ -230,7 +230,7 @@ express()
     res.render('pages/support');
   
   }).get('/slack_redirect', async (req, res) => {
-    res.redirect('https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:read,groups:write,im:write,mpim:write,users:read,users:read.email');
+    res.redirect('https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:read,groups:write,im:history,im:write,mpim:write,users:read,users:read.email');
   
   }).get('/activate_covid', async (req, res) => {
 
