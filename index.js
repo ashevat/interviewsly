@@ -134,8 +134,8 @@ express()
     //verify the request
     let parseRawBody = request.rawBody;
     //console.log("body"+parseRawBody);
-    let goodCall = verifyRequestSignature( signingSecret,request.headers,parseRawBody);
-    if(!goodCall){
+    let goodCall = verifyRequestSignature(signingSecret, request.headers, parseRawBody);
+    if (!goodCall) {
       console.error("bad call!!! verification faild!");
       return;
     }
@@ -166,16 +166,20 @@ express()
       await setTeamAndUser(request.body.event.user, request.body.team_id);
       await updateAppHome();
     } if (eventType == "message") {
-      await setTeamAndUser(request.body.event.user, request.body.team_id);
-      //let responseBlocks = slackTool.getStartResponse();
-      if(request.body.event.bot_id){
-        console.log("ignoring bot message");
-      }else{
-        console.log("human message message");
-        startHandler.handleStartSlashCommand(slackTool, team, user);
+      let eventSubtype = request.body.event.subtype;
+      if (eventSubtype == "message_changed") {
+        console.log("ignoring update message");
+      } else {
+        await setTeamAndUser(request.body.event.user, request.body.team_id);
+        //let responseBlocks = slackTool.getStartResponse();
+        if (request.body.event.bot_id) {
+          console.log("ignoring bot message");
+        } else {
+          console.log("human message message");
+          startHandler.handleStartSlashCommand(slackTool, team, user);
 
+        }
       }
-      
       //;
     }
 
@@ -225,13 +229,13 @@ express()
     response.json({ received: true });
   }).get('/privacy', async (req, res) => {
     res.render('pages/privacy');
-  
-   }).get('/support', async (req, res) => {
+
+  }).get('/support', async (req, res) => {
     res.render('pages/support');
-  
+
   }).get('/slack_redirect', async (req, res) => {
     res.redirect('https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:read,groups:write,im:history,im:write,mpim:write,users:read,users:read.email');
-  
+
   }).get('/activate_covid', async (req, res) => {
 
 
@@ -308,7 +312,7 @@ express()
     }
     let teamDO = new Team();
     team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
-    if(!team ){
+    if (!team) {
       res.redirect("/slack_redirect");
       // this is for BETA interviewsly:
       //res.redirect("https://slack.com/oauth/v2/authorize?client_id=959957947635.1000424138385&scope=commands,channels:manage,chat:write,groups:write,im:write,mpim:write,users:read,users:read.email,channels:read,groups:read,im:history");
@@ -512,9 +516,9 @@ express()
   }).post('/start', express.urlencoded(), async (req, res) => {
 
     let text = req.body.text;
-    if(text.toLowerCase() == "feedback" || text.toLowerCase() == "help"){
+    if (text.toLowerCase() == "feedback" || text.toLowerCase() == "help") {
       res.end("To get started, head to the Interviewly app home in Slack. If you need further assistance, or want to give us feedback, please contact us at support@interviewsly.com");
-      return; 
+      return;
     }
     await setTeamAndUser(req.body.user_id, req.body.team_id);
     res.end("");
@@ -529,8 +533,8 @@ express()
     res.status(200).send('');
     //verify the request
     let parseRawBody = req.rawBody;
-    let goodCall = verifyRequestSignature( signingSecret,req.headers,parseRawBody);
-    if(!goodCall){
+    let goodCall = verifyRequestSignature(signingSecret, req.headers, parseRawBody);
+    if (!goodCall) {
       console.error("bad call, verification failed");
       return;
     }
@@ -1520,7 +1524,7 @@ async function postInterviewDashboard(interview, req, res, pool, context) {
 async function setTeamAndUser(slack_user_id, slack_team_id) {
   //let slack_user_id = req.body.user_id;
   //let slack_team_id = req.body.team_id;
-
+  console.log("Slack user -" + slack_user_id);
   let teamDO = new Team();
   team = await teamDO.getTeamBySlackID(slack_team_id, pool);
 
