@@ -404,9 +404,9 @@ express()
       },
       body: `code=${code}&client_secret=${clientSecret}&client_id=${clientId}`
     });
-    console.log(`code=${code}&client_secret=${clientSecret}&client_id=${clientId}`);
+   // console.log(`code=${code}&client_secret=${clientSecret}&client_id=${clientId}`);
     const responseJSON = await responseinfo.json();
-    console.log("got response" + JSON.stringify(responseJSON));
+   //console.log("got response" + JSON.stringify(responseJSON));
     let owner_slack_id = responseJSON.authed_user.id;
     let token = responseJSON.access_token;
     const userDO = new User();
@@ -501,7 +501,7 @@ express()
     res.end("");
 
     let msg = await slackTool.getInterviewResponse(req.body.trigger_id, pool);
-    console.log(msg);
+    //console.log(msg);
     const fetch = require('node-fetch');
     fetch("https://slack.com/api/views.open", {
       method: 'post',
@@ -773,7 +773,7 @@ express()
           });
 
           let debugJson = await debug.json();
-          console.log(JSON.stringify(msg));
+          //console.log(JSON.stringify(msg));
 
         } else if (action == "start_assessment") {
           let msg = await slackTool.getAssesmentResponse(response.trigger_id, interview, data, context, null, pool);
