@@ -81,32 +81,49 @@
                 <div class="col-lg-10 col-xl-8 text-center mb-xl-4">
                     <h1 class="display-4 mb-4">Welcome <%= data.user.name %></h1>
                     <p class="lead">Please activate your account to get started:</p>
-                    <p class="lead">Hiring during COVID-19? <a href="/activate_covid">Get two months free</a>!</p>
                 </div>
 
             </div>
         </section>
 
         <div class="bg-skew bg-skew-light py-4">
-
             <!-- Pricing cards -->
             <section class="container">
-                <h2 class="text-center mb-4">Pick a plan that works for you- all plans come with 14 days free trial.
-                </h2>
-
+                <h2 class="text-center mb-4">Choose the plan that works for you</h2>
+    
                 <div class="row py-5">
-                    <div class="col-lg-6">
-                        <div class="card card-price card-featured shadow-lg mb-6">
+                    <div class="col-lg-4">
+                        <div class="card card-price shadow-lg mb-4">
+                            <div class="card-header">
+                                <h3 class="h4 font-weight-normal">Basic</h3>
+                                <div class="d-flex justify-content-center">
+                                    <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">0</span>
+                                </div>
+                                <span class="d-block text-muted">forever</span>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled text-secondary mb-4">
+                                    <li class="py-2">3 active candidates</li>
+                                    <li class="py-2">Unlimited seats</li>
+                                    <li class="py-2">Unlimited interviews</li>
+                                    <li class="py-2">Unlimited panelists</li>
+                                </ul>
+                                <a class="btn btn-outline-primary rounded-pill mb-3" href="/activate_basic">Activate</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-price card-featured shadow-lg mb-4">
                             <div class="card-header">
                                 <h3 class="h4 font-weight-normal">Standard</h3>
                                 <div class="d-flex justify-content-center">
-                                    <span class="h4 font-weight-normal mt-1">$</span><span
-                                        class="display-4 font-weight-bold">29</span>
+                                    <span class="h4 font-weight-normal mt-1">$</span><span class="display-4 font-weight-bold">29</span>
                                 </div>
                                 <span class="d-block text-muted">per month, billed yearly</span>
                             </div>
                             <div class="card-body">
                                 <ul class="list-unstyled text-secondary mb-4">
+                                    <li class="py-2">Unlimited active candidates</li>
                                     <li class="py-2">Unlimited seats</li>
                                     <li class="py-2">Unlimited interviews</li>
                                     <li class="py-2">Unlimited panelists</li>
@@ -116,8 +133,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="card card-price shadow-lg mb-6">
+                    <div class="col-lg-4">
+                        <div class="card card-price shadow-lg mb-4">
                             <div class="card-header">
                                 <h3 class="h4 font-weight-normal">Enterprise</h3>
                                 <div class="d-flex justify-content-center">
@@ -128,8 +145,9 @@
                             <div class="card-body">
                                 <ul class="list-unstyled mb-4">
                                     <li class="py-2 text-secondary">Everything in Standard +</li>
-                                    <li class="py-2 text-secondary">Active directory support</li>
-                                    <li class="py-2 text-secondary">Full audit log</li>
+                                        <li class="py-2 text-secondary">Active directory support</li>
+                                        <li class="py-2 text-secondary">Full audit log</li>
+                                        <li class="py-2 text-secondary">ATS integrations</li>
                                 </ul>
                                 <a class="btn btn-outline-primary rounded-pill mb-3" href="/support">Contact us</a>
                             </div>
@@ -138,6 +156,8 @@
                 </div>
             </section>
 
+            
+            
             <hr class="sep border-primary">
 
             <!-- Accordion -->

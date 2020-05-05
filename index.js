@@ -103,7 +103,7 @@ express()
       return;
     }
 
-    console.log("pre active user" + JSON.stringify(req.user));
+    //console.log("pre active user" + JSON.stringify(req.user));
     console.log("pre active user id" + JSON.stringify(req.user.id));
     const userDO = new User();
     let ownerUser = await userDO.getUserBySlackID(req.user.id, pool);
@@ -236,6 +236,22 @@ express()
   }).get('/slack_redirect', async (req, res) => {
     res.redirect('https://slack.com/oauth/v2/authorize?client_id=959957947635.974835054183&scope=channels:manage,chat:write,commands,groups:read,groups:write,im:history,im:write,mpim:write,users:read,users:read.email');
 
+  }).get('/activate_basic', async (req, res) => {
+
+
+    if (!req.user) {
+      res.redirect('/');
+      return;
+    }
+    //console.log("got user billed check"+ JSON.stringify(req.user));
+    let teamDO = new Team();
+    team = await teamDO.getTeamBySlackID(req.user.team.id, pool);
+    await team.activateTeamBasic("Basic", "Basic", pool);
+    console.log("Team activated" + team.slack_team_id);
+    res.redirect("/billed");
+
+    // Return a response to acknowledge receipt of the event
+    //response.json({ received: true });
   }).get('/activate_covid', async (req, res) => {
 
 
@@ -319,7 +335,7 @@ express()
       return;
     }
     if (team.status < 1) {
-      res.redirect("/pre-active")
+      res.redirect("/pre-active");
     } else {
       res.redirect("/dashboard");
     }
@@ -335,9 +351,14 @@ express()
 
     let teamDO = new Team();
     team = await teamDO.getTeam(currentUser.team_id, pool);
-    let rawData = JSON.parse(await team.deactivateTeam(pool));
-    let subscription = rawData.subscription;
-    stripe.subscriptions.del(subscription);
+    if(team.status == 1){
+      let rawData = JSON.parse(await team.deactivateTeam(pool));
+      let subscription = rawData.subscription;
+      stripe.subscriptions.del(subscription);
+    }else{
+      await team.deactivateTeam(pool);
+    }
+    
     res.redirect("/pre-active");
   })
   .get('/account', async (req, res) => {

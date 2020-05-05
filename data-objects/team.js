@@ -126,6 +126,17 @@ class Team {
 
     }
 
+    async activateTeamBasic(plan, raw, pool){
+        //const client = await pool.connect();
+        const query = 'UPDATE teams SET billing_data_raw=$1, status=$2, plan_id=$3  WHERE id=$4 RETURNING id';
+        const values = [raw, 3, plan, this.id];
+        let res1 = await pool.query(query, values);
+        this.id = res1.rows[0].id;
+        //client.release(); 
+        return this;
+
+    }
+
     async deactivateTeam(pool){
         //const client = await pool.connect();
         const query = 'UPDATE teams SET  status=$1  WHERE id=$2 RETURNING billing_data_raw';

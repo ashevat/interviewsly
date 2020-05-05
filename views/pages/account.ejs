@@ -88,41 +88,81 @@
             <div class="page-header">
               <h1>Account settings</h1>
             </div>
-
+            
             <h6>Plan Details</h6>
-            <div class="card text-center">
-              <div class="card-body">
-                <div class="row">
-
-                  <div class="col">
-                    <div class="mb-4">
-                      <h6>Pro</h6>
-                      <h5 class="display-4 d-block mb-2 font-weight-normal">$29</h5>
-                      <span class="text-muted text-small">Per Month</span>
-                    </div>
-                    <ul class="list-unstyled">
-                      <li>
-                        Unlimited seats
-                      </li>
-                      <li>
-                        Unlmited interviews
-                      </li>
-                      <li>
-                        Unlimited panelists
-                      </li>
-                    </ul>
-                    <div class="custom-control custom-radio d-inline-block">
-                      <button class="btn btn-sm btn-primary">
-                        Upgreade to Enterprise
-                      </button>
-                      <button class="btn btn-sm btn-danger" onclick="unsubscribe()">
-                        Deactivate Plan
-                      </button>
+            <% if (team.status == 1) { %>
+              <div class="card text-center">
+                <div class="card-body">
+                  <div class="row">
+  
+                    <div class="col">
+                      <div class="mb-4">
+                        <h6>Standard</h6>
+                        <h5 class="display-4 d-block mb-2 font-weight-normal">$29</h5>
+                        <span class="text-muted text-small">Per Month</span>
+                      </div>
+                      <ul class="list-unstyled">
+                        <li>
+                          Unlimited seats
+                        </li>
+                        <li>
+                          Unlmited interviews
+                        </li>
+                        <li>
+                          Unlimited panelists
+                        </li>
+                      </ul>
+                      <div class="custom-control custom-radio d-inline-block">
+                        <a href="/pre-active" style="color: white;" class="btn btn-sm btn-primary">
+                          Upgreade to Enterprise
+                        </a>
+                        <button class="btn btn-sm btn-danger" onclick="unsubscribe()">
+                          Deactivate Plan
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+              <% } %>
+              <% if (team.status == 3) { %>
+                <div class="card text-center">
+                  <div class="card-body">
+                    <div class="row">
+    
+                      <div class="col">
+                        <div class="mb-4">
+                          <h6>Basic</h6>
+                          <h5 class="display-4 d-block mb-2 font-weight-normal">$0</h5>
+                          <span class="text-muted text-small">Per Month</span>
+                        </div>
+                        <ul class="list-unstyled">
+                          <li>
+                            3 active candidate
+                          </li>
+                          <li>
+                            Unlimited seats
+                          </li>
+                          <li>
+                            Unlmited interviews
+                          </li>
+                          <li>
+                            Unlimited panelists
+                          </li>
+                        </ul>
+                        <div class="custom-control custom-radio d-inline-block">
+                          <a href="/pre-active" style="color: white;" class="btn btn-sm btn-primary">
+                            Upgreade 
+                          </a>
+                          <button class="btn btn-sm btn-danger" onclick="unsubscribe()">
+                            Deactivate Plan
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
 
           </div>
         </div>
